@@ -1,0 +1,102 @@
+section: pointing
+keywords:
+  TIME_QBI:
+    required: true
+    type: str
+    format: isot
+    example: '''2025-10-01T00:00:04.662'''
+    comment: Packet time of the quateriion parameters
+  AEULRBRX:
+    required: true
+    type: float
+    example: '8.4016002699999995E-2'
+    comment: Euler Angle Sun ref to S/C body frame X comp.
+  AEULRBRY:
+    required: true
+    type: float
+    example: '0.28441301000000002'
+    comment: Euler Angle Sun ref to S/C body frame X comp.
+  AEULRBRZ:
+    required: true
+    type: float
+    example: '7.8499998199999996E-4'
+    comment: Euler Angle Sun ref to S/C body frame X comp.
+  ACG_ROLL:
+    required: true
+    type: int
+    example: '0'
+    comment: Roll profile commanded angle from solar north
+  OPHASE:
+    required: true
+    type: float
+    example: '0.54705297900000005'
+    comment: Orbital phase
+  SAT_ROT:
+    required: true
+    type: float
+    example: '7.8499998199999996E-4'
+    comment: 'Satellite roll angle: M_TAT_ACS_SC_ROLL'
+  FLAT_REC:
+    required: false
+    comment: flatfield series record pointer; JSOC refrence???
+  ORB_REC:
+    required: false
+    comment: Orbit vector series record pointer; JSOC refrence???
+  RSUN_OBS:
+    required: true
+    type: float
+    example: '957.88000488281205'
+    comment: '[arcsec] apparent radius of the Sun seen at MUSE loc.'
+  DSUN_OBS:
+    required: true
+    type: float
+    example: '149788100000.84698'
+    comment: '[m] Distance from MUSE to Sun center'
+  GEIX_OBS:
+    required: true
+    type: float
+    example: '2177500.6095787999'
+    comment: '[m] Geocentric Equatorial Inertial x'
+  GEIY_OBS:
+    required: true
+    type: float
+    example: '-6616753.8780381503'
+    comment: '[m] Geocentric Equatorial Inertial y'
+  GEIZ_OBS:
+    required: true
+    type: float
+    example: '-676401.96173936804'
+    comment: '[m] Geocentric Equatorial Inertial z'
+  HEIX_OBS:
+    required: true
+    type: float
+    example: '-148431839336.996'
+    comment: '[m] Heliocentric Equatorial Inertial x'
+  HEIY_OBS:
+    required: true
+    type: float
+    example: '-18451587397.969398'
+    comment: '[m] Heliocentric Equatorial Inertial y'
+  HEIZ_OBS:
+    required: true
+    type: float
+    example: '-8000180892.0775299'
+    comment: '[m] Heliocentric Equatorial Inertial z'
+  OBS_VR:
+    required: true
+    type: float
+    example: '-2064.40584080296'
+    comment: '[m/s] Speed of observer in radial direction'
+  HLZ:
+    required: true
+    type: int
+    example: '0'
+    comment: High Latitude Flag
+  SAA:
+    required: true
+    type: int
+    example: '1'
+    comment: South Atlantic Anomaly Flag
+  TEMP_REC:
+    required: false
+    comment: JSOC refrence???

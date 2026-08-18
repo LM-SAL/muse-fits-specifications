@@ -1,0 +1,74 @@
+section: isp-pointing
+keywords:
+  MIS_PZT1:
+    required: true
+    source: M_ISS_PZTOFF_P1
+    comment: PZT P1 actuator offset value
+  MIS_PZT2:
+    required: true
+    source: M_ISS_PZTOFF_P2
+    comment: PZT P2 actuator offset value
+  MIS_PZTA:
+    required: true
+    source: M_ISS_PZTOFFA
+    comment: PZT A actuator offset value
+  MIS_PZTB:
+    required: true
+    source: M_ISS_PZTOFFB
+    comment: PZT B actuator offset value
+  MIS_PZTC:
+    required: true
+    source: M_ISS_PZTOFFC
+    comment: PZT C actuator offset value
+  MIS_CTRL:
+    required: true
+    type: int
+    source: M_ISS_CONTROL
+    example: '7'
+    comment: ISS parameters (loop, diodes, offset range, gain)
+  MIS_DIOD:
+    required: true
+    type: int
+    source: M_ISS_DIODES
+    example: '1'
+    comment: 'ISS diode: primary (1) or redundant (0)'
+  MIS_LOOP:
+    required: true
+    source: M_ISS_LOOP
+    comment: 'ISS loop: open (0) or closed (1) control'
+  MIS_SRC:
+    required: true
+    source: M_ISS_SOURCE
+    comment: LAMP (0 or high gain) or SUN (1 or low gain)
+  MIS_XERR:
+    required: true
+    source: M_ISS_X_ERROR
+    comment: instantaneous ISS X axis error
+  MIS_XAVG:
+    required: true
+    source: M_ISS_X_ERROR_AVG
+    comment: average of M_ISS_X_ERROR_MAPPED over one packet
+  MIS_XMAX:
+    required: true
+    source: M_ISS_X_ERROR_MAX
+    comment: maximum of M_ISS_X_ERROR_MAPPED over one packet
+  MIS_XMIN:
+    required: true
+    source: M_ISS_X_ERROR_MIN
+    comment: minimum of M_ISS_X_ERROR_MAPPED over one packet
+  MIS_YERR:
+    required: true
+    source: M_ISS_Y_ERROR
+    comment: instantaneous ISS Y axis error
+  MIS_YAVG:
+    required: true
+    source: M_ISS_Y_ERROR_AVG
+    comment: average of M_ISS_Y_ERROR_MAPPED over one packet
+  MIS_YMAX:
+    required: true
+    source: M_ISS_Y_ERROR_MAX
+    comment: maximum of M_ISS_Y_ERROR_MAPPED over one packet
+  MIS_YMIN:
+    required: true
+    source: M_ISS_Y_ERROR_MIN
+    comment: minimum of M_ISS_Y_ERROR_MAPPED over one packet

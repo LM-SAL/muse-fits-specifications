@@ -1,0 +1,18 @@
+section: isp
+keywords:
+  ISPSNAME:
+    required: true
+    type: str
+    example: '''muse.isp'''
+    comment: ISP Series Name
+  ISPPKTIM:
+    required: true
+    type: str
+    format: isot
+    example: '''2024-11-08T00:59:04.661'''
+    comment: '[ISO] PACKET_TIME for image status packet'
+  ISPPKTVN:
+    required: true
+    type: str
+    example: '''010.058 '''
+    comment: PACKET_VERSION_NUMBER

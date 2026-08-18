@@ -1,0 +1,57 @@
+section: statistics
+keywords:
+  TOTVALS:
+    required: true
+    type: int
+    example: '36100'
+    comment: Expected number of data values (pixels)
+  DATAVALS:
+    required: true
+    type: int
+    example: '36100'
+    comment: Actual number of data values in image
+  MISSVALS:
+    required: true
+    type: int
+    example: '0'
+    comment: 'Missing values: TOTVALS'
+  PERCENTD:
+    required: true
+    type: int
+    example: '100'
+    comment: Percent data; 100*DATAVALS
+  DATAMIN:
+    required: true
+    type: int
+    example: '101'
+    comment: Minimum value of all pixels
+  DATAMAX:
+    required: true
+    type: int
+    example: '216'
+    comment: Maximum value of all pixels
+  DATAMEDN:
+    required: true
+    type: int
+    example: '110'
+    comment: Median value of all pixels
+  DATAMEAN:
+    required: true
+    type: float
+    example: '114.620529'
+    comment: Mean value of all pixels
+  DATARMS:
+    required: true
+    type: float
+    example: '12.355817800000001'
+    comment: Rms deviation from the mean value of all pixels
+  DATASKEW:
+    required: true
+    type: float
+    example: '3.4021735199999998'
+    comment: Skewness from the mean value of all pixels
+  DATAKURT:
+    required: true
+    type: float
+    example: '14.218980800000001'
+    comment: Kurtosis of all pixels; Are these series a JSOC artifact?

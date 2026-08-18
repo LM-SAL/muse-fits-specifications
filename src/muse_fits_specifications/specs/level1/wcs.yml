@@ -1,0 +1,83 @@
+section: wcs
+keywords:
+  WCSNAME:
+    required: true
+    type: str
+    example: '''Helioprojective-cartesian'''
+    comment: Thompson A&A 449, 791 (2006); For more Windows add WCS sections
+  CTYPE1:
+    required: true
+    type: str
+    example: '''HPLN-TAN'''
+    comment: Axis label; for SG 'WAVE'; In SGs, one section per slit?
+  CTYPE2:
+    required: true
+    type: str
+    example: '''HPLN-TAN'''
+    comment: Axis label
+  CNAME1:
+    required: false
+    comment: listed without details in the source sheet
+  CNAME2:
+    required: false
+    comment: listed without details in the source sheet
+  CRPIX1:
+    required: true
+    type: int
+    example: '1'
+    comment: Reference pixel
+  CRPIX2:
+    required: true
+    type: int
+    example: '1'
+    comment: Reference pixel
+  CUNIT1:
+    required: true
+    type: str
+    example: '''deg'''
+    comment: Angle in degrees; Angstrom for SGs?
+  CUNIT2:
+    required: true
+    type: str
+    example: '''deg'''
+    comment: Angle in degrees
+  CDELT1:
+    required: true
+    type: float
+    example: '9.1669999999999995E-5'
+    comment: '[deg|A] plate scale'
+  CDELT2:
+    required: true
+    type: float
+    example: '9.1669999999999995E-5'
+    comment: '[deg] plate scale'
+  PC1_1:
+    required: true
+    type: int
+    example: '1'
+    comment: Rotation matrix
+  PC1_2:
+    required: true
+    type: int
+    example: '0'
+    comment: Rotation matrix
+  PC2_1:
+    required: true
+    type: int
+    example: '0'
+    comment: Rotation matrix
+  PC2_2:
+    required: true
+    type: int
+    example: '1'
+    comment: Rotation matrix
+  CRVAL1:
+    required: true
+    type: int
+    example: '0'
+    comment: '[deg]'
+  CRVAL2:
+    required: true
+    type: int
+    example: '0'
+    comment: '[deg]'

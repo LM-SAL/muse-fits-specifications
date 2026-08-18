@@ -1,0 +1,65 @@
+section: isp-mechanisms
+keywords:
+  MM_ENCP1:
+    required: true
+    source: M_MC_ENCODER_P1
+  MM_ENCP2:
+    required: true
+    source: M_MC_ENCODER_P2
+  MMFMCIP3:
+    required: true
+    source: M_MC_FMCI_P3
+  MMFMCICP:
+    required: true
+    source: M_MC_FMCI_CMDED_POS
+    comment: CI focus mech. commanded pos
+  MMFMCIPS:
+    required: true
+    source: M_MC_FMCI_POS
+    comment: CI focus mechanism current software position
+  MMFMGRP4:
+    required: true
+    source: M_MC_FMGR_P4
+  MMFCGRCP:
+    required: true
+    source: M_MC_FMGR_CMDED_POS
+    comment: Grating focus mech. commanded pos
+  MMFMGRPS:
+    required: true
+    source: M_MC_FMGR_POS
+    comment: Grating focus mechanism current software position
+  MMFMSLP3:
+    required: true
+    source: M_MC_FMSL_P3
+  MMFMSLCP:
+    required: true
+    source: M_MC_FMSL_CMDED_POS
+    comment: Slit focus mech. commanded pos
+  MMFMSLPS:
+    required: true
+    source: M_MC_FMSL_POS
+    comment: Slit focus mechanism current software position
+  MMWM1_CT:
+    required: true
+    source: M_MC_WM1_CMDED_TGT
+    comment: wedge motor 1 commanded target value
+  MMWM1ENC:
+    required: true
+    source: M_MC_WM1_ENCODER
+    comment: wedge motor 1 HW encoder position
+  MMWM1POS:
+    required: true
+    source: M_MC_WM1_POS
+    comment: wedge motor 1 current software position
+  MMWM2_CT:
+    required: true
+    source: M_MC_WM2_CMDED_TGT
+    comment: wedge motor 2 commanded target value
+  MMWM2ENC:
+    required: true
+    source: M_MC_WM2_ENCODER
+    comment: wedge motor 2 HW encoder position
+  MMWM2POS:
+    required: true
+    source: M_MC_WM2_POS
+    comment: wedge motor 2 current software position

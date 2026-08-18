@@ -1,0 +1,41 @@
+section: readout
+keywords:
+  IICRSID:
+    required: true
+    type: int
+    example: '936'
+    comment: Camera Readout Specification ID
+  CRS_DESC:
+    required: true
+    type: str
+    example: '''CI, 2x2, 0119'''
+    comment: 'CRS regions description: comma separated list'
+  CRS_TYPE:
+    required: false
+    comment: CRS type; Redundant with CAMERA???
+  CRS_NREG:
+    required: false
+    type: int
+    example: '1'
+    comment: Number of CRS regions; Applicable for MUSE???
+  WIN_FLIP:
+    required: true
+    type: int
+    example: '0'
+    comment: 'Window axis flip parameter; 0:none, 1:x, 2:y, 3: both'
+  TSRN:
+    required: false
+    comment: Window start row for region N=1..8; Will MUSE have windowed readout??? (indexed
+      keyword, N=1..8; expansion not yet modeled)
+  TERN:
+    required: false
+    comment: Window end row for region N=1..8 (indexed keyword, N=1..8; expansion not yet
+      modeled)
+  TSCN:
+    required: false
+    comment: Window start column for region N=1..8 (indexed keyword, N=1..8; expansion not
+      yet modeled)
+  TECN:
+    required: false
+    comment: Window end column for region N=1..8 (indexed keyword, N=1..8; expansion not yet
+      modeled)

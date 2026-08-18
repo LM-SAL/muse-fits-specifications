@@ -1,0 +1,136 @@
+section: isp-sequencer
+keywords:
+  MSQFLTDX:
+    required: true
+    type: int
+    source: M_SQ_FLT_IDX
+    example: '9'
+    comment: Frame list table current index
+  MSQFLTNX:
+    required: true
+    type: int
+    source: M_SQ_FLT_N_IDX
+    example: '10'
+    comment: Frame list table number of indices
+  MSQFLTNR:
+    required: true
+    type: int
+    source: M_SQ_FLT_N_REPEAT
+    example: '21'
+    comment: Frame list table number of repeats
+  MSQFLTRP:
+    required: true
+    type: int
+    source: M_SQ_FLT_REPEAT
+    example: '4'
+    comment: Current frame list repeat index
+  MSQ_FSN:
+    required: true
+    source: M_SQ_FRAME_SN
+    comment: ISP Frame sequence number
+  MSQSG108:
+    required: true
+    source: M_SQ_SG108_FDBT_ID
+    comment: SG108 frame definition block
+  MSQSG171:
+    required: true
+    source: M_SQ_SG171_FDBT_ID
+    comment: SG171 frame definition block
+  MSQSG284:
+    required: true
+    source: M_SQ_SG284_FDBT_ID
+    comment: SG284 frame definition block
+  MSQOLTDX:
+    required: true
+    type: int
+    source: M_SQ_OLT_IDX
+    example: '1'
+    comment: Observing list table current index
+  MSQOLTNX:
+    required: true
+    type: int
+    source: M_SQ_OLT_N_IDX
+    example: '2'
+    comment: Observing list table number of of indices
+  MSQOLTNR:
+    required: true
+    type: int
+    source: M_SQ_OLT_N_REPEAT
+    example: '22'
+    comment: Obsering list table number of repeats
+  MSQOLTRP:
+    required: true
+    type: int
+    source: M_SQ_OLT_REPEAT
+    example: '3'
+    comment: Current observing list repeat index
+  MSQOEQSE:
+    required: true
+    type: int
+    source: M_SQ_ORB_EQ_SEC
+    example: '2109645086'
+    comment: Equator crossing time, seconds
+  MSQOEQSS:
+    required: true
+    type: int
+    source: M_SQ_ORB_EQ_SUB
+    example: '0'
+    comment: Equator crossing time, subseconds
+  MSQORBPD:
+    required: true
+    type: int
+    source: M_SQ_ORB_PERIOD
+    example: '5828'
+    comment: '[s] MUSE Orbital period'
+  MSSGPZT1:
+    required: true
+    source: M_SQ_PZTSG_P1
+    comment: SG PZT P1 total offset
+  MSQSGGWT:
+    required: true
+    source: M_SQ_OWTSG_ID
+    comment: SG current orbital wobble table ID
+  MSQSGSRT:
+    required: true
+    type: int
+    source: M_SQ_SRTSG_ID
+    example: '24312'
+    comment: SG Solar Rotation tracking table ID
+  MSSGPZTA:
+    required: true
+    source: M_SQ_PZTSG_A
+    comment: SG PZT A  total offset
+  MSSGPZTB:
+    required: true
+    source: M_SQ_PZTSG_B
+    comment: SG PZT B  total offset
+  MSSGPZTC:
+    required: true
+    source: M_SQ_PZTSG_C
+    comment: SG PZT C  total offset
+  MSCIPZT1:
+    required: true
+    source: M_SQ_PZTCI_P1
+    comment: CI PZT P1 total offset
+  MSQCIGWT:
+    required: true
+    type: int
+    source: M_SQ_OWTCI_ID
+    example: '20312'
+    comment: CI current orbital wobble table ID
+  MSQCISRT:
+    required: true
+    source: M_SQ_SRTCI_ID
+    comment: CI Solar rotation tracking table ID
+  MSCIPZTA:
+    required: true
+    source: M_SQ_PZTCI_A
+    comment: CI PZT A  total offset
+  MSCIPZTB:
+    required: true
+    source: M_SQ_PZTCI_B
+    comment: CI PZT B  total offset
+  MSCIPZTC:
+    required: true
+    source: M_SQ_PZTCI_C
+    comment: CI PZT C total offset

@@ -1,0 +1,12 @@
+section: downlink
+keywords:
+  CROPID:
+    required: true
+    type: int
+    example: '936'
+    comment: Crop Table ID
+  LUTID:
+    required: true
+    type: int
+    example: '4'
+    comment: Look up table ID

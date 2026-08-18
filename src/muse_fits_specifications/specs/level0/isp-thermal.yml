@@ -1,0 +1,47 @@
+section: isp-thermal
+keywords:
+  MTCSGCCD:
+    required: true
+    source: M_TC_SGCCD
+  MTCSGCHD:
+    required: true
+    source: M_TC_SGCCDHEAD
+  MTCSGCPR:
+    required: true
+    source: M_TC_SGCCDPRE
+  MTCSGCEB:
+    required: true
+    source: M_TC_SGCEB
+  MTCSG_PM:
+    required: true
+    source: M_TC_SGPM
+  MTCSG_SL:
+    required: true
+    source: M_TC_SGSL
+  MTCSG_GR:
+    required: true
+    source: M_TC_SGGR
+  MTCGTOBJ:
+    required: true
+    source: M_TC_GTOBJ
+  MTCGTIEB:
+    required: true
+    source: M_TC_IEB
+  MCTCICCD:
+    required: true
+    source: M_TC_CICCD
+  MCTCICHD:
+    required: true
+    source: M_TC_CICCDHEAD
+  MCTCICPR:
+    required: true
+    source: M_TC_CICCDPRE
+  MCTCICEB:
+    required: true
+    source: M_TC_CICEB
+  MCTCI_PM:
+    required: true
+    source: M_TC_CIPM
+  MCTCI_SM:
+    required: true
+    source: M_TC_CISM

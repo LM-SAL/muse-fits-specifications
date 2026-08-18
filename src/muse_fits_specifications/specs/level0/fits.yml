@@ -1,0 +1,78 @@
+section: fits
+keywords:
+  XTENSION:
+    required: false
+    type: str
+    example: '''BINTABLE'''
+    comment: binary table extension; structural card owned by the FITS library
+  BITPIX:
+    required: false
+    type: int
+    example: '8'
+    comment: 8-bit bytes; structural card owned by the FITS library
+  NAXIS:
+    required: false
+    type: int
+    example: '2'
+    comment: 2-dimensional binary table; structural card owned by the FITS library
+  NAXIS1:
+    required: false
+    type: int
+    example: '8'
+    comment: width of table in bytes; structural card owned by the FITS library
+  NAXIS2:
+    required: false
+    type: int
+    example: '548'
+    comment: number of rows in table; structural card owned by the FITS library
+  PCOUNT:
+    required: false
+    type: int
+    example: '61099'
+    comment: size of special data area; structural card owned by the FITS library
+  GCOUNT:
+    required: false
+    type: int
+    example: '1'
+    comment: one data group (required keyword); structural card owned by the FITS library
+  TFIELDS:
+    required: false
+    type: int
+    example: '1'
+    comment: number of fields in each row; structural card owned by the FITS library
+  EXTNAME:
+    required: false
+    type: str
+    example: COMPRESSED_IMAGE'
+    comment: name of this binary table extension; structural card owned by the FITS library
+  BZERO:
+    required: false
+    type: int
+    example: '32768'
+    comment: structural card owned by the FITS library
+  BSCALE:
+    required: false
+    type: int
+    example: '1'
+    comment: structural card owned by the FITS library
+  TTYPE1:
+    required: false
+    type: str
+    example: '''COMPRESSED_DATA'''
+    comment: structural card owned by the FITS library
+  TFORM1:
+    required: false
+    type: str
+    example: '''1PB(295)'''
+    comment: structural card owned by the FITS library
+  CHECKSUM:
+    required: false
+    type: str
+    example: '''gAEnh8ClgAClg5Cl'''
+    comment: HDU checksum updated 2024-11-08T18:13:07; structural card owned by the FITS library
+  DATASUM:
+    required: false
+    type: str
+    example: '''3204300732'''
+    comment: data unit checksum updated 2024-11-08T17:00:20; structural card owned by the
+      FITS library

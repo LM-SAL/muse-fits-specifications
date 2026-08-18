@@ -1,0 +1,62 @@
+section: isp-thermal
+keywords:
+  MTCSGCCD:
+    required: true
+    source: M_TC_SGCCD
+    comment: '[C] SG CCD temperature'
+  MTCSGCHD:
+    required: true
+    source: M_TC_SGCCDHEAD
+    comment: '[C] SG CCD head temperature'
+  MTCSGCPR:
+    required: true
+    source: M_TC_SGCCDPRE
+    comment: '[C] SG CCD pre-amp temperature'
+  MTCSGCEB:
+    required: true
+    source: M_TC_SGCEB
+    comment: '[C] SG elec. box temperature'
+  MTCSG_PM:
+    required: true
+    source: M_TC_SGPM
+    comment: '[C] SG prime. mirror temperature'
+  MTCSG_SL:
+    required: true
+    source: M_TC_SGSL
+    comment: '[C] SG slit temperature'
+  MTCSG_GR:
+    required: true
+    source: M_TC_SGGR
+    comment: '[C] SG grating temperature'
+  MTCGTOBJ:
+    required: true
+    source: M_TC_GTOBJ
+    comment: '[C] guide telescope temperature'
+  MTCGTIEB:
+    required: true
+    source: M_TC_IEB
+    comment: '[C] IEB temperature'
+  MCTCICCD:
+    required: true
+    source: M_TC_CICCD
+    comment: '[C] CI CCD temperature'
+  MCTCICHD:
+    required: true
+    source: M_TC_CICCDHEAD
+    comment: '[C] CI CCD head temperature'
+  MCTCICPR:
+    required: true
+    source: M_TC_CICCDPRE
+    comment: '[C] CI CCD pre-amp temperature'
+  MCTCICEB:
+    required: true
+    source: M_TC_CICEB
+    comment: '[C] CI elec. Box  temperature'
+  MCTCI_PM:
+    required: true
+    source: M_TC_CIPM
+    comment: '[C] CI prime. mirror temperature'
+  MCTCI_SM:
+    required: true
+    source: M_TC_CISM
+    comment: '[C] CI sec. mirror temperature'

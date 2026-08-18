@@ -1,0 +1,77 @@
+section: compression
+keywords:
+  ZIMAGE:
+    required: false
+    type: bool
+    example: T
+    comment: extension contains compressed image; structural card owned by the FITS library
+  ZTENSION:
+    required: false
+    type: str
+    example: IMAGE
+    comment: Image extension; structural card owned by the FITS library
+  ZBITPIX:
+    required: false
+    type: int
+    example: '16'
+    comment: data type of original image; structural card owned by the FITS library
+  ZNAXIS:
+    required: false
+    type: int
+    example: '2'
+    comment: dimension of original image; structural card owned by the FITS library
+  ZNAXIS1:
+    required: false
+    type: int
+    example: '1036'
+    comment: length of original image axis; structural card owned by the FITS library
+  ZNAXIS2:
+    required: false
+    type: int
+    example: '548'
+    comment: length of original image axis; structural card owned by the FITS library
+  ZPCOUNT:
+    required: false
+    type: int
+    example: '0'
+    comment: number of parameters; structural card owned by the FITS library
+  ZGCOUNT:
+    required: false
+    type: int
+    example: '1'
+    comment: number of groups; structural card owned by the FITS library
+  ZTILE1:
+    required: false
+    type: int
+    example: '1036'
+    comment: size of tiles to be compressed; structural card owned by the FITS library
+  ZTILE2:
+    required: false
+    type: int
+    example: '1'
+    comment: size of tiles to be compressed; structural card owned by the FITS library
+  ZCMPTYPE:
+    required: false
+    type: str
+    example: '''RICE_1  '''
+    comment: compression algorithm; structural card owned by the FITS library
+  ZNAME1:
+    required: false
+    type: str
+    example: '''BLOCKSIZE'''
+    comment: compression block size; structural card owned by the FITS library
+  ZVAL1:
+    required: false
+    type: int
+    example: '32'
+    comment: pixels per block; structural card owned by the FITS library
+  ZNAME2:
+    required: false
+    type: str
+    example: '''BYTEPIX '''
+    comment: bytes per pixel (1; structural card owned by the FITS library
+  ZVAL2:
+    required: false
+    type: int
+    example: '2'
+    comment: bytes per pixel (1; structural card owned by the FITS library

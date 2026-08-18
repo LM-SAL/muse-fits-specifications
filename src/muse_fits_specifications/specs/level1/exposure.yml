@@ -1,0 +1,107 @@
+section: exposure
+keywords:
+  DATE-OBS:
+    required: true
+    type: str
+    format: isot
+    example: '''2024-11-08T00:59:04.234'''
+    comment: '[ISO] Date when observation started; ISO 8; Keep due to IRIS heritage?'
+  DATE-BEG:
+    required: true
+    type: str
+    format: isot
+    example: '''2024-11-08T00:59:04.234'''
+    comment: Start time of data in ISO 8601; Perferred over DATE-OBS (thompson 2015)
+  T_OBS:
+    required: true
+    type: str
+    format: isot
+    example: '''2024-11-08T00:59:04.383'''
+    comment: '[ISO] Observation time'
+  IMGFPT:
+    required: true
+    type: str
+    format: isot
+    example: '''2024-11-08T00:59:04.793'''
+    comment: '[ISO] Telemetry First Packet Time'
+  ISYSN:
+    required: true
+    type: int
+    example: '1'
+    comment: "System Number: CI=0,\u2026; Redundant with CAMERA?"
+  FSN:
+    required: true
+    type: int
+    example: '136374300'
+    comment: Filtergram Sequence Number
+  FID:
+    required: true
+    type: int
+    example: '65570'
+    comment: Filtergram ID
+  INSTRUME:
+    required: true
+    type: str
+    example: '''SG'''
+    comment: SG or CI
+    values:
+    - SG
+    - CI
+  IMG_PATH:
+    required: true
+    comment: Light path and SJI filter setting
+  IMG_TYPE:
+    required: true
+    type: str
+    example: '''LIGHT   '''
+    comment: 'Image type: LIGHT; DARK; LED; LTC; SPAT; VPAT'
+    values:
+    - LIGHT
+    - DARK
+    - LED
+    - LTC
+    - SPAT
+    - VPAT
+  CAMERA:
+    required: true
+    type: str
+    example: '''SG108'''
+    comment: CI, SG108, SG171, or SG 284
+    values:
+    - CI
+    - SG108
+    - SG171
+    - SG284
+  SUMSPTRL:
+    required: true
+    type: int
+    example: '2'
+    comment: CCD summing in spectral direction
+  SUMSPAT:
+    required: true
+    type: int
+    example: '2'
+    comment: CCD summing in spatial direction
+  EXPTIME:
+    required: true
+    type: float
+    example: '0.298752815'
+    comment: '[sec] Exposure duration: mean shutter open time'
+  EXPSDEV:
+    required: true
+    type: float
+    example: '1.02368744E-4'
+    comment: '[sec] Exposure standard deviation'
+  INT_TIME:
+    required: true
+    type: float
+    example: '0.515625'
+    comment: '[sec] CCD integration duration'
+  QUALLEV0:
+    required: true
+    comment: Level 0 Quality word
+    type: int
+  QUALLEV1:
+    required: true
+    comment: Level 1 Quality word
+    type: int

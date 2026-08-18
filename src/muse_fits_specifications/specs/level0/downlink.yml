@@ -1,0 +1,62 @@
+section: downlink
+keywords:
+  TAPCODE:
+    required: true
+    type: int
+    example: '10'
+    comment: Take A Picture code
+  BITSELID:
+    required: true
+    type: int
+    example: '0'
+    comment: Bit select ID
+  COMPID:
+    required: true
+    type: int
+    example: '114'
+    comment: Compression ID; n
+  CROPID:
+    required: true
+    type: int
+    example: '1223'
+    comment: Crop table ID
+  LUTID:
+    required: true
+    type: int
+    example: '4'
+    comment: Look
+  NPACKETS:
+    required: true
+    type: int
+    example: '11'
+    comment: Number of packets in image
+  NERRORS:
+    required: true
+    type: int
+    example: '0'
+    comment: Number of decompression errors
+  EOIERROR:
+    required: true
+    type: int
+    example: '0'
+    comment: Last pixel error; End Of Image error
+  HEADRERR:
+    required: true
+    type: int
+    example: '0'
+    comment: Header error in image
+  OVERFLOW:
+    required: true
+    type: int
+    example: '0'
+    comment: Data overflow error in image
+  TLMDSNAM:
+    required: true
+    type: str
+    example: '''muse.tlm[VC03_2024_312_23_29_42]'''
+    comment: Telemety data series name with fi
+  IMGAPID:
+    required: true
+    type: int
+    example: '768'
+    comment: Image Application ID; Are these series a JSOC artifact?

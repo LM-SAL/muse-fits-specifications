@@ -1,0 +1,10 @@
+section: data
+keywords:
+  BTYPE:
+    required: true
+    type: str
+    example: '''Intensity'''
+  BUNIT:
+    required: true
+    type: str
+    example: '''Corrected DN'''

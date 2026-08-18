@@ -1,0 +1,52 @@
+section: isp-camera
+keywords:
+  MIMGSHCE:
+    required: true
+    source: M_IMG_SH_CMDED_EXPOSURE
+  MAECENA:
+    required: true
+    source: M_AEC_ENA
+  MAECFLFG:
+    required: true
+    source: M_AEC_FL_FLAG
+  MAECSGLP:
+    required: true
+    source: M_AEC_SG_LAPSE_TIME
+    comment: SG AEC timeout to reset the exposure
+  MAECSGLG:
+    required: true
+    source: M_AEC_SG_LAG_TIME
+  MAECCILP:
+    required: true
+    source: M_AEC_CI_LAPSE_TIME
+    comment: CI AEC timeout to reset the exposure
+  MAECCILG:
+    required: true
+    source: M_AEC_CI_LAG_TIME
+  MAEC_P:
+    required: true
+    source: M_AEC_P
+  MIHIS1:
+    required: true
+    source: M_IMG_HIST_BIN_1
+    comment: Histogram count for bin 1
+  MIHIS2:
+    required: true
+    source: M_IMG_HIST_BIN_2
+    comment: Histogram count for bin 2
+  MIHIS3:
+    required: true
+    source: M_IMG_HIST_BIN_3
+    comment: Histogram count for bin 3
+  MIHIS4:
+    required: true
+    source: M_IMG_HIST_BIN_4
+    comment: Histogram count for bin 4
+  MIHIS5:
+    required: true
+    source: M_IMG_HIST_BIN_5
+    comment: Histogram count for bin 5
+  MIHISTN:
+    required: true
+    source: M_IMG_HIST_FRAME_SN
+    comment: Image FSN of histogram

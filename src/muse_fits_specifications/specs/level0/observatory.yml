@@ -1,0 +1,47 @@
+section: observatory
+keywords:
+  FILENAME:
+    required: true
+    comment: filename of the fits file
+    type: str
+  SOLARNET:
+    required: true
+    type: float
+    example: '0.5'
+    comment: at least partially SOLARNET compliant
+  OBS_HDU:
+    required: true
+    type: int
+    example: '1'
+    comment: Contains observational data
+  ORIGIN:
+    required: true
+    type: str
+    example: '''MUSE/SSL'''
+    values:
+    - MUSE/SSL
+  TELESCOP:
+    required: true
+    type: str
+    example: '''MUSE'''
+    comment: MUSE
+    values:
+    - MUSE
+  BLD_VERS:
+    required: true
+    type: str
+    example: '''V9R5X   '''
+    comment: 'Build Version: from xxx_version.h'
+  LEVEL:
+    required: true
+    type: int
+    example: '0'
+    comment: Level 0 data
+    values:
+    - 0
+  DATE:
+    required: true
+    type: str
+    format: isot
+    example: '''2024-11-08T16:59:51.000'''
+    comment: '[ISO] Date_time of processing; ISO 8601'

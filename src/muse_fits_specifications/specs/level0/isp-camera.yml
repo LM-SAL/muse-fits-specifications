@@ -1,0 +1,122 @@
+section: isp-camera
+keywords:
+  MAECENA:
+    required: true
+    source: M_AEC_ENA
+  MAECFLFG:
+    required: true
+    source: M_AEC_FL_FLAG
+  MAECSGLP:
+    required: true
+    source: M_AEC_SG_LAPSE_TIME
+  MAECSGLG:
+    required: true
+    source: M_AEC_SG_LAG_TIME
+  MAECCILP:
+    required: true
+    source: M_AEC_CI_LAPSE_TIME
+  MAECCILG:
+    required: true
+    source: M_AEC_CI_LAG_TIME
+  MAEC_P:
+    required: true
+    source: M_AEC_P
+  MCAMCPBW:
+    required: true
+    source: M_CAM_COMP_BSWORDS
+  MCAMCPBP:
+    required: true
+    source: M_CAM_COMP_BPLENC
+  MCAMCPSS:
+    required: true
+    source: M_CAM_COMP_STAGESTOP
+  MCAMCPDC:
+    required: true
+    source: M_CAM_COMP_DCSTOP
+  MCAMCPC1:
+    required: true
+    source: M_CAM_CPCP_1
+  MCAMCPC2:
+    required: true
+    source: M_CAM_CPCP_2
+  MIAEC_P1:
+    required: true
+    source: M_IMG_AEC_P1
+  MIAECTID:
+    required: true
+    source: M_IMG_AEC_TABLE_ID
+  MICFGCPD:
+    required: true
+    source: M_IMG_CFG_CPDUR
+  MICFGNRP:
+    required: true
+    source: M_IMG_CFG_NREP
+  MICFGFOF:
+    required: true
+    source: M_IMG_CFG_FOFF
+  MICFGRDO:
+    required: true
+    source: M_IMG_CFG_RDOPT
+  MICFGWN1:
+    required: true
+    source: M_IMG_CFG_WIN1
+  MICFGWN2:
+    required: true
+    source: M_IMG_CFG_WIN2
+  MICFGWN3:
+    required: true
+    source: M_IMG_CFG_WIN3
+  MICFGWN4:
+    required: true
+    source: M_IMG_CFG_WIN4
+  MICFGLUT:
+    required: true
+    source: M_IMG_CFG_ENA_LUT
+  MI_LUTID:
+    required: true
+    source: M_IMG_LUT_ID
+  MIFDB_FP:
+    required: true
+    source: M_IMG_FDB_FRM_ID_P
+  MIFDB_ID:
+    required: true
+    source: M_IMG_FDB_ID
+  MIFRMTYP:
+    required: true
+    source: M_IMG_FRAME_TYPE
+  MIFRMLID:
+    required: true
+    source: M_IMG_FRMLIST_ID
+  MIHIS1:
+    required: true
+    source: M_IMG_HIST_BIN_1
+  MIHIS2:
+    required: true
+    source: M_IMG_HIST_BIN_2
+  MIHIS3:
+    required: true
+    source: M_IMG_HIST_BIN_3
+  MIHIS4:
+    required: true
+    source: M_IMG_HIST_BIN_4
+  MIHIS5:
+    required: true
+    source: M_IMG_HIST_BIN_5
+  MIHISTN:
+    required: true
+    source: M_IMG_HIST_FRAME_SN
+  MIHISFSN:
+    required: true
+    source: M_IMG_HIST_FSN
+  MIHISISN:
+    required: true
+    source: M_IMG_HIST_ISYS_NUM
+  MIOBSLID:
+    required: true
+    source: M_IMG_OBSLIST_ID
+  MIMGSHCE:
+    required: true
+    source: M_IMG_SH_CMDED_EXPOSURE
+  MISTATUS:
+    required: true
+    source: M_IMG_STATUS

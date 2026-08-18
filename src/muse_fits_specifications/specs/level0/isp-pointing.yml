@@ -1,0 +1,139 @@
+section: isp-pointing
+keywords:
+  MGTPOFFX:
+    required: true
+    source: M_GTP_BIAS_OFFSET_X
+  MGTPOFFY:
+    required: true
+    source: M_GTP_BIAS_OFFSET_Y
+  MGTP_P1:
+    required: true
+    source: M_GTP_P1
+  MGTP_P2:
+    required: true
+    source: M_GTP_P2
+  MGTPSVX:
+    required: true
+    source: M_GTP_SUNVECTOR_X
+  MGTPSVY:
+    required: true
+    source: M_GTP_SUNVECTOR_Y
+  MIS_CTRL:
+    required: true
+    source: M_ISS_CONTROL
+  MIS_DIOD:
+    required: true
+    source: M_ISS_DIODES
+  MIS_LOOP:
+    required: true
+    source: M_ISS_LOOP
+  MISEROFP:
+    required: true
+    source: M_ISS_ERROFF_P
+  MISEROFX:
+    required: true
+    source: M_ISS_ERROFF_X
+  MISEROFY:
+    required: true
+    source: M_ISS_ERROFF_Y
+  MIS_PZT1:
+    required: true
+    source: M_ISS_PZTOFF_P1
+  MIS_PZT2:
+    required: true
+    source: M_ISS_PZTOFF_P2
+  MIS_PZTA:
+    required: true
+    source: M_ISS_PZTOFFA
+  MIS_PZTB:
+    required: true
+    source: M_ISS_PZTOFFB
+  MIS_PZTC:
+    required: true
+    source: M_ISS_PZTOFFC
+  MIS_SRC:
+    required: true
+    source: M_ISS_SOURCE
+  MIS_XERR:
+    required: true
+    source: M_ISS_X_ERROR
+  MIS_XAVG:
+    required: true
+    source: M_ISS_X_ERROR_AVG
+  MIS_XMAX:
+    required: true
+    source: M_ISS_X_ERROR_MAX
+  MIS_XMIN:
+    required: true
+    source: M_ISS_X_ERROR_MIN
+  MIS_YERR:
+    required: true
+    source: M_ISS_Y_ERROR
+  MIS_YAVG:
+    required: true
+    source: M_ISS_Y_ERROR_AVG
+  MIS_YMAX:
+    required: true
+    source: M_ISS_Y_ERROR_MAX
+  MIS_YMIN:
+    required: true
+    source: M_ISS_Y_ERROR_MIN
+  MISGPZTP:
+    required: true
+    source: M_ISS_GRPZTOFF_P
+  MISGPZTA:
+    required: true
+    source: M_ISS_GRPZTOFFA
+  MISGPZTB:
+    required: true
+    source: M_ISS_GRPZTOFFB
+  MISGPZTC:
+    required: true
+    source: M_ISS_GRPZTOFFC
+  MRT_PZT1:
+    required: true
+    source: M_RT_PZTOFF_P1
+  MRT_PZT2:
+    required: true
+    source: M_RT_PZTOFF_P2
+  MRT_PZTA:
+    required: true
+    source: M_RT_PZTOFFA
+  MRT_PZTB:
+    required: true
+    source: M_RT_PZTOFFB
+  MRT_PZTC:
+    required: true
+    source: M_RT_PZTOFFC
+  MWB_PZT1:
+    required: true
+    source: M_WB_PZTOFF_P1
+  MWB_PZT2:
+    required: true
+    source: M_WB_PZTOFF_P2
+  MWB_PZTA:
+    required: true
+    source: M_WB_PZTOFFA
+  MWB_PZTB:
+    required: true
+    source: M_WB_PZTOFFB
+  MWB_PZTC:
+    required: true
+    source: M_WB_PZTOFFC
+  MTACS_MD:
+    required: true
+    source: M_TAT_ACS_MODE
+  MTACSULD:
+    required: true
+    source: M_TAT_ACS_MOMENTUM_UNLD
+  MTACSRTM:
+    required: true
+    source: M_TAT_ACS_RDY_TO_MOVE
+  MTACSROL:
+    required: true
+    source: M_TAT_ACS_SC_ROLL
+  MTACSSTS:
+    required: true
+    type: int
+    source: M_TAT_ACS_STATUS
+    example: '20521'

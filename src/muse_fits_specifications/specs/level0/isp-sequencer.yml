@@ -1,0 +1,138 @@
+section: isp-sequencer
+keywords:
+  ISQISYSN:
+    required: true
+    type: int
+    example: '1'
+    comment: I_SQ_ISYS_NUM; ISP ID number for image light pa
+  ISQFSN:
+    required: true
+    type: int
+    example: '136374300'
+    comment: I_SQ_FRAME_SN; ISP Filtergram Sequence Number
+  MOBCSH_S:
+    required: true
+    type: int
+    source: M_OBC_TIME_SH_SEC
+    example: '2109718774'
+  MOBCSHSS:
+    required: true
+    type: int
+    source: M_OBC_TIME_SH_SS
+    example: '9301'
+  MSQFLTDX:
+    required: true
+    type: int
+    source: M_SQ_FLT_IDX
+    example: '9'
+  MSQFLTNX:
+    required: true
+    type: int
+    source: M_SQ_FLT_N_IDX
+    example: '10'
+  MSQFLTNR:
+    required: true
+    type: int
+    source: M_SQ_FLT_N_REPEAT
+    example: '21'
+  MSQFLTRP:
+    required: true
+    type: int
+    source: M_SQ_FLT_REPEAT
+    example: '4'
+  MSQ_FSN:
+    required: true
+    source: M_SQ_FRAME_SN
+  MSQ_HDR:
+    required: true
+    source: M_SQ_HEADER
+  MSQ_INUM:
+    required: true
+    source: M_SQ_ISYS_NUM
+  MSQCIFDB:
+    required: true
+    source: M_SQ_CI_FDBT_ID
+  MSQSG108:
+    required: true
+    source: M_SQ_SG108_FDBT_ID
+  MSQSG171:
+    required: true
+    source: M_SQ_SG171_FDBT_ID
+  MSQSG284:
+    required: true
+    source: M_SQ_SG284_FDBT_ID
+  MSQOLTDX:
+    required: true
+    type: int
+    source: M_SQ_OLT_IDX
+    example: '1'
+  MSQOLTNX:
+    required: true
+    type: int
+    source: M_SQ_OLT_N_IDX
+    example: '2'
+  MSQOLTNR:
+    required: true
+    type: int
+    source: M_SQ_OLT_N_REPEAT
+    example: '22'
+  MSQOLTRP:
+    required: true
+    type: int
+    source: M_SQ_OLT_REPEAT
+    example: '3'
+  MSQOEQSE:
+    required: true
+    type: int
+    source: M_SQ_ORB_EQ_SEC
+    example: '2109645086'
+  MSQOEQSS:
+    required: true
+    type: int
+    source: M_SQ_ORB_EQ_SUB
+    example: '0'
+  MSQORBPD:
+    required: true
+    type: int
+    source: M_SQ_ORB_PERIOD
+    example: '5828'
+  MSSGPZT1:
+    required: true
+    source: M_SQ_PZTSG_P1
+  MSQSGGWT:
+    required: true
+    source: M_SQ_OWTSG_ID
+  MSQSGSRT:
+    required: true
+    type: int
+    source: M_SQ_SRTSG_ID
+    example: '24312'
+  MSSGPZTA:
+    required: true
+    source: M_SQ_PZTSG_A
+  MSSGPZTB:
+    required: true
+    source: M_SQ_PZTSG_B
+  MSSGPZTC:
+    required: true
+    source: M_SQ_PZTSG_C
+  MSCIPZT1:
+    required: true
+    source: M_SQ_PZTCI_P1
+  MSQCIGWT:
+    required: true
+    type: int
+    source: M_SQ_OWTCI_ID
+    example: '20312'
+  MSQCISRT:
+    required: true
+    source: M_SQ_SRTCI_ID
+  MSCIPZTA:
+    required: true
+    source: M_SQ_PZTCI_A
+  MSCIPZTB:
+    required: true
+    source: M_SQ_PZTCI_B
+  MSCIPZTC:
+    required: true
+    source: M_SQ_PZTCI_C

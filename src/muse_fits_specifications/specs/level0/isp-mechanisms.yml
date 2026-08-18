@@ -1,0 +1,212 @@
+section: isp-mechanisms
+keywords:
+  MLEDSTHW:
+    required: true
+    source: M_LED_STATUS_HW
+  MLEDSTSW:
+    required: true
+    source: M_LED_STATUS_SW
+  MLED1HWP:
+    required: true
+    source: M_LED1_HW
+  MLED1SWP:
+    required: true
+    source: M_LED1_SW
+  MLED2HWP:
+    required: true
+    source: M_LED2_HW
+  MLED2SWP:
+    required: true
+    source: M_LED2_SW
+  MLED3HWP:
+    required: true
+    source: M_LED3_HW
+  MLED3SWP:
+    required: true
+    source: M_LED3_SW
+  MM_ENCP1:
+    required: true
+    source: M_MC_ENCODER_P1
+  MM_ENCP2:
+    required: true
+    source: M_MC_ENCODER_P2
+  MMFMCIP3:
+    required: true
+    source: M_MC_FMCI_P3
+  MMFMCICP:
+    required: true
+    source: M_MC_FMCI_CMDED_POS
+  MMFMCIPS:
+    required: true
+    source: M_MC_FMCI_POS
+  MMFMGRP4:
+    required: true
+    source: M_MC_FMGR_P4
+  MMFCGRCP:
+    required: true
+    source: M_MC_FMGR_CMDED_POS
+  MMFMGRPS:
+    required: true
+    source: M_MC_FMGR_POS
+  MMFMSLP3:
+    required: true
+    source: M_MC_FMSL_P3
+  MMFMSLCP:
+    required: true
+    source: M_MC_FMSL_CMDED_POS
+  MMFMSLPS:
+    required: true
+    source: M_MC_FMSL_POS
+  MMSHACLT:
+    required: true
+    source: M_MC_SH_A_CLOSE_TIME
+  MMSHAOPT:
+    required: true
+    source: M_MC_SH_A_OPEN_TIME
+  MMSHBCLT:
+    required: true
+    source: M_MC_SH_B_CLOSE_TIME
+  MMSHBOPT:
+    required: true
+    source: M_MC_SH_B_OPEN_TIME
+  MMSHCCLT:
+    required: true
+    source: M_MC_SH_C_CLOSE_TIME
+  MMSHCOPT:
+    required: true
+    source: M_MC_SH_C_OPEN_TIME
+  MMSHCDEL:
+    required: true
+    source: M_MC_SH_CMDED_DELAY
+  MMSHCEXP:
+    required: true
+    source: M_MC_SH_CMDED_EXP
+  MMSHDCLT:
+    required: true
+    source: M_MC_SH_D_CLOSE_TIME
+  MMSHDOPT:
+    required: true
+    source: M_MC_SH_D_OPEN_TIME
+  MMSHECLT:
+    required: true
+    source: M_MC_SH_E_CLOSE_TIME
+  MMSHEOPT:
+    required: true
+    source: M_MC_SH_E_OPEN_TIME
+  MMSH_ENC:
+    required: true
+    source: M_MC_SH_ENCODER
+  MMSHFCLT:
+    required: true
+    source: M_MC_SH_F_CLOSE_TIME
+  MMSHFOPT:
+    required: true
+    source: M_MC_SH_F_OPEN_TIME
+  MMSH_P1:
+    required: true
+    source: M_MC_SH_P1
+  MMFWSGCD:
+    required: true
+    source: M_MC_FWSG_CMDED_DELAY
+  MMFWSGCT:
+    required: true
+    source: M_MC_FWSG_CMDED_TGT
+  MMFWSGEN:
+    required: true
+    source: M_MC_FWSG_ENCODER
+  MMFWSGPS:
+    required: true
+    source: M_MC_FWSG_POS
+  MMFWSGST:
+    required: true
+    source: M_MC_FWSG_SPIN_TIME
+  MMFWSGP1:
+    required: true
+    source: M_MC_FWSG_WD_P1
+  MMFWSGP2:
+    required: true
+    source: M_MC_FWSG_WD_P2
+  MMASCDEL:
+    required: true
+    source: M_MC_AS_CMDED_DELAY
+  MMASCTGT:
+    required: true
+    source: M_MC_AS_CMDED_TGT
+  MMAS_ENC:
+    required: true
+    source: M_MC_AS_ENCODER
+  MMAS_POS:
+    required: true
+    source: M_MC_AS_POS
+  MMASSPTM:
+    required: true
+    source: M_MC_AS_SPIN_TIME
+  MMAS_P1:
+    required: true
+    source: M_MC_AS_WD_P1
+  MMAS_P2:
+    required: true
+    source: M_MC_AS_WD_P2
+  MMFWCICD:
+    required: true
+    source: M_MC_FWCI_CMDED_DELAY
+  MMFWCICT:
+    required: true
+    source: M_MC_FWCI_CMDED_TGT
+  MMFWCIEN:
+    required: true
+    source: M_MC_FWCI_ENCODER
+  MMFWCIPS:
+    required: true
+    source: M_MC_FWCI_POS
+  MMFWCIST:
+    required: true
+    source: M_MC_FWCI_SPIN_TIME
+  MMFWCIP1:
+    required: true
+    source: M_MC_FWCI_WD_P1
+  MMFWCIP2:
+    required: true
+    source: M_MC_FWCI_WD_P2
+  MMWM1_CD:
+    required: true
+    source: M_MC_WM1_CMDED_DELAY
+  MMWM1_CT:
+    required: true
+    source: M_MC_WM1_CMDED_TGT
+  MMWM1ENC:
+    required: true
+    source: M_MC_WM1_ENCODER
+  MMWM1POS:
+    required: true
+    source: M_MC_WM1_POS
+  MMWM1_ST:
+    required: true
+    source: M_MC_WM1_SPIN_TIME
+  MMWM1_P1:
+    required: true
+    source: M_MC_WM1_WD_P1
+  MMWM1_P2:
+    required: true
+    source: M_MC_WM1_WD_P2
+  MMWM2_CD:
+    required: true
+    source: M_MC_WM2_CMDED_DELAY
+  MMWM2_CT:
+    required: true
+    source: M_MC_WM2_CMDED_TGT
+  MMWM2ENC:
+    required: true
+    source: M_MC_WM2_ENCODER
+  MMWM2POS:
+    required: true
+    source: M_MC_WM2_POS
+  MMWM2_ST:
+    required: true
+    source: M_MC_WM2_SPIN_TIME
+  MMWM2_P1:
+    required: true
+    source: M_MC_WM2_WD_P1
+  MMWM2_P2:
+    required: true
+    source: M_MC_WM2_WD_P2
