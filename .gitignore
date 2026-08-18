@@ -1,0 +1,10 @@
+__pycache__/
+*.egg-info/
+build/
+dist/
+.tox/
+.tmp/
+docs/_build/
+# Generated at docs build time from the packaged specs
+docs/level0.rst
+docs/level1.rst
