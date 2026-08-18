@@ -5,6 +5,8 @@ keywords:
     type: str
     example: '''BINTABLE'''
     comment: binary table extension; structural card owned by the FITS library
+    values:
+    - BINTABLE
   BITPIX:
     required: false
     type: int
@@ -45,6 +47,8 @@ keywords:
     type: str
     example: COMPRESSED_IMAGE'
     comment: name of this binary table extension; structural card owned by the FITS library
+    values:
+    - COMPRESSED_IMAGE
   BZERO:
     required: false
     type: int

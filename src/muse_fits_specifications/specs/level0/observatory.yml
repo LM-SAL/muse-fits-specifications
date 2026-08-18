@@ -9,11 +9,17 @@ keywords:
     type: float
     example: '0.5'
     comment: at least partially SOLARNET compliant
+    values:
+    - 0.0
+    - 0.5
+    - 1.0
   OBS_HDU:
     required: true
     type: int
     example: '1'
     comment: Contains observational data
+    values:
+    - 1
   ORIGIN:
     required: true
     type: str

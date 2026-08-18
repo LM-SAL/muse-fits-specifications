@@ -5,21 +5,29 @@ keywords:
     type: bool
     example: T
     comment: extension contains compressed image; structural card owned by the FITS library
+    values:
+    - true
   ZTENSION:
     required: false
     type: str
     example: IMAGE
     comment: Image extension; structural card owned by the FITS library
+    values:
+    - IMAGE
   ZBITPIX:
     required: false
     type: int
     example: '16'
     comment: data type of original image; structural card owned by the FITS library
+    values:
+    - 16
   ZNAXIS:
     required: false
     type: int
     example: '2'
     comment: dimension of original image; structural card owned by the FITS library
+    values:
+    - 2
   ZNAXIS1:
     required: false
     type: int
@@ -55,6 +63,8 @@ keywords:
     type: str
     example: '''RICE_1  '''
     comment: compression algorithm; structural card owned by the FITS library
+    values:
+    - RICE_1
   ZNAME1:
     required: false
     type: str

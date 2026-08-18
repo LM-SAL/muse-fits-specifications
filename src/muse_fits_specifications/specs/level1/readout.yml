@@ -23,6 +23,11 @@ keywords:
     type: int
     example: '0'
     comment: 'Window axis flip parameter; 0:none, 1:x, 2:y, 3: both'
+    values:
+    - 0
+    - 1
+    - 2
+    - 3
   TSRN:
     required: false
     comment: Window start row for region N=1..8; Will MUSE have windowed readout??? (indexed
