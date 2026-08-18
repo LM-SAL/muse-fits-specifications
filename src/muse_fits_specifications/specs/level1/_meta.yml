@@ -1,6 +1,6 @@
 spec: muse-level1
 spec_version: 1
-title: MUSE Level 1 FITS header specification
+title: Level 1 Specification
 source_document: MUSEMW251165 via "MUSE FITS Keywords.xlsx", sheet "L1 FITS"
 hdus:
 - name: COMPRESSED_IMAGE

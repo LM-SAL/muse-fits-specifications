@@ -1,4 +1,4 @@
-Release history
+Release History
 ===============
 
 .. include:: ../CHANGELOG.rst

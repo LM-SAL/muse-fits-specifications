@@ -25,6 +25,7 @@ exclude_patterns = ["_build"]
 
 html_theme = "pydata_sphinx_theme"
 html_title = f"{project} {release}"
+html_sidebars = {"**": []}
 
 autodoc_member_order = "bysource"
 

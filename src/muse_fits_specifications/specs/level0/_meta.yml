@@ -1,6 +1,6 @@
 spec: muse-level0
 spec_version: 1
-title: MUSE Level 0 FITS header specification
+title: Level 0 Specification
 source_document: MUSEMW251165 via "MUSE FITS Keywords.xlsx", sheet "L0 & ISP"
 hdus:
 - name: COMPRESSED_IMAGE

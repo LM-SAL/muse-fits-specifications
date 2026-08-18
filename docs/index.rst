@@ -1,4 +1,4 @@
-MUSE FITS specifications
+MUSE FITS Specifications
 ========================
 
 Machine-readable MUSE FITS keyword specifications and header validation, modeled on the DKIST Data Center's ``dkist-fits-specifications`` and ``dkist-header-validator``.
@@ -7,7 +7,7 @@ One directory of small per-section YAML files per data level — under ``src/mus
 The loader, the header validator, and the keyword reference pages below all read the same YAML; the reference pages are regenerated on every docs build.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    format
    level0
@@ -15,7 +15,7 @@ The loader, the header validator, and the keyword reference pages below all read
    reference
    changelog
 
-Quick start
+Quick Start
 -----------
 
 .. code-block:: python

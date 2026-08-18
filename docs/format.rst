@@ -7,8 +7,7 @@ Provenance
 .. code-block:: text
 
     MUSEMW251165 ("MUSE FITS Keywords.xlsx")
-                  →  src/muse_fits_specifications/specs/<level>/*.yml   ← EDIT THIS
-                  →  loader / validator / generated docs
+                  →  src/muse_fits_specifications/specs/<level>/*.yml
 
 The YAML files were bootstrapped on 2026-08-18 from the mission keyword spreadsheet ("MUSE FITS Keywords.xlsx", based on MUSEMW251165).
 
@@ -22,7 +21,7 @@ Level 0 sections: ``fits``, ``compression``, ``observatory``, ``exposure``, ``do
 Level 1 adds ``readout``, ``wcs``, ``pointing``, and ``data``.
 The ISP subsystem assignment keys off the mnemonic prefixes (``M_AEC_*``, ``M_ISS_*``, ``M_TC_*``, …).
 
-Keyword fields
+Keyword Fields
 --------------
 
 .. list-table::

@@ -44,12 +44,6 @@ def render_spec(spec: Spec) -> str:
         f"Spec ``{spec.name}`` version {spec.version}.",
         f"Source: {spec.source_document}.",
         "",
-        (
-            "This page is generated from the packaged YAML by"
-            " ``python -m muse_fits_specifications.render docs``;"
-            " edit the YAML, not this file."
-        ),
-        "",
         *_heading("HDUs", "-"),
         *_table(
             ["Name", "Kind", "Compression"],
