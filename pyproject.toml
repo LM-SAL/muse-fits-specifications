@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "muse-fits-specifications"
+version = "0.1.0"
+description = "Machine-readable MUSE FITS keyword specifications and header validation"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = [
+    "pyyaml>=6",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+docs = [
+    "sphinx",
+    "pydata-sphinx-theme",
+]
+
+# Keep isort's wrapping style identical to ruff-format's so the two
+# pre-commit hooks converge instead of rewriting each other's output.
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+muse_fits_specifications = ["specs/*/*.yml"]
