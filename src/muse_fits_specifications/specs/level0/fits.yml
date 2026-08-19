@@ -70,13 +70,13 @@ keywords:
     example: '''1PB(295)'''
     comment: structural card owned by the FITS library
   CHECKSUM:
-    required: false
+    required: true
     type: str
     example: '''gAEnh8ClgAClg5Cl'''
-    comment: HDU checksum updated 2024-11-08T18:13:07; structural card owned by the FITS library
+    comment: HDU checksum; required so the file self-validates on disk (MOC sends no hashes)
   DATASUM:
-    required: false
+    required: true
     type: str
     example: '''3204300732'''
-    comment: data unit checksum updated 2024-11-08T17:00:20; structural card owned by the
-      FITS library
+    comment: data unit checksum; required so the file self-validates on disk (MOC sends
+      no hashes)
