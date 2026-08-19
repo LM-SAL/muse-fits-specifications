@@ -67,9 +67,12 @@ keywords:
     required: true
     type: str
     example: '''SG108'''
-    comment: CI, SG108, SG171, or SG 284
+    comment: CI, SG108, SG171, or SG 284; CI171/CI304 are prototype-era
+      camera names retained until the C11 keyword reconciliation
     values:
     - CI
+    - CI171
+    - CI304
     - SG108
     - SG171
     - SG284

@@ -170,3 +170,55 @@ def load_spec(level: str) -> Spec:
         hdus=hdus,
         keywords=MappingProxyType(keywords),
     )
+
+
+def example_value(kw: KeywordSpec) -> bool | int | float | str | None:
+    """
+    Parse the keyword's source-document example into a typed header value.
+
+    Returns ``None`` when the spec records no example.
+    """
+    if kw.example is None:
+        return None
+    raw = kw.example.strip()
+    if raw.startswith("'") and raw.endswith("'") and len(raw) >= 2:
+        # FITS string values are quoted and may carry padding.
+        raw = raw[1:-1].rstrip()
+    if kw.type == "bool":
+        return raw in ("T", "True", "1")
+    if kw.type == "int":
+        return int(raw)
+    if kw.type == "float":
+        return float(raw)
+    return raw
+
+
+_PLACEHOLDER_VALUES = {"bool": False, "int": 0, "float": 0.0, "str": "UNKNOWN"}
+
+
+def example_header(
+    spec: Spec, *, skip_sections: tuple[str, ...] = ("fits",)
+) -> dict[str, bool | int | float | str]:
+    """
+    A complete conforming header for every required keyword.
+
+    Generators (simulators, fixture writers) start from this so their files
+    conform to the same spec the validator enforces. Values are the source
+    document's examples where recorded; otherwise the first allowed value for
+    closed sets, then a neutral typed placeholder (``0``/``0.0``/``UNKNOWN``,
+    presence-only for untyped keywords). Structural cards (the ``fits``
+    section: checksums and tile-compression bookkeeping) are skipped because
+    the FITS library computes them. The result passes :func:`validate`.
+    """
+    header: dict[str, bool | int | float | str] = {}
+    for name, kw in spec.keywords.items():
+        if not kw.required or kw.section in skip_sections:
+            continue
+        value = example_value(kw)
+        if value is None:
+            if kw.values:
+                value = kw.values[0]
+            else:
+                value = _PLACEHOLDER_VALUES.get(kw.type or "int", 0)
+        header[name] = value
+    return header
