@@ -196,9 +196,7 @@ def example_value(kw: KeywordSpec) -> bool | int | float | str | None:
 _PLACEHOLDER_VALUES = {"bool": False, "int": 0, "float": 0.0, "str": "UNKNOWN"}
 
 
-def example_header(
-    spec: Spec, *, skip_sections: tuple[str, ...] = ("fits",)
-) -> dict[str, bool | int | float | str]:
+def example_header(spec: Spec, *, skip_sections: tuple[str, ...] = ("fits",)) -> dict[str, bool | int | float | str]:
     """
     A complete conforming header for every required keyword.
 
@@ -216,9 +214,6 @@ def example_header(
             continue
         value = example_value(kw)
         if value is None:
-            if kw.values:
-                value = kw.values[0]
-            else:
-                value = _PLACEHOLDER_VALUES.get(kw.type or "int", 0)
+            value = kw.values[0] if kw.values else _PLACEHOLDER_VALUES.get(kw.type or "int", 0)
         header[name] = value
     return header

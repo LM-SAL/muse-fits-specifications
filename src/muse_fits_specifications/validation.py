@@ -63,9 +63,9 @@ def validate(
     """
     Return every way ``header`` violates ``spec``; empty means valid.
 
-    ``skip_sections`` excludes whole sections, e.g. the structural ``fits``
-    section whose cards (checksums, tile-compression bookkeeping) are owned
-    and verified by the FITS library rather than header comparison.
+    ``skip_sections`` excludes whole sections, e.g. the structural ``fits`` section
+    whose cards (checksums, tile-compression bookkeeping) are owned and verified by the
+    FITS library rather than header comparison.
     """
     errors = []
     for name, kw in spec.keywords.items():
