@@ -25,7 +25,7 @@ You need git and Python 3.12 or newer.
    source .venv/bin/activate
    ```
 
-   On Windows, run `py -m venv .venv` and then `.venv\Scripts\activate`.
+   On Windows, run `py -m venv .venv`, then in PowerShell run `.\.venv\Scripts\Activate.ps1`; in Command Prompt, run `.venv\Scripts\activate`.
    Your prompt now starts with `(.venv)`. Activate the environment again in every new terminal; `deactivate` leaves it.
 
 3. Install the package in editable mode together with the test and docs tools, and turn on the pre-commit checks:
