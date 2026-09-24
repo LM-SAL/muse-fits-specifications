@@ -19,7 +19,8 @@ from muse_fits_specifications import (
     load_spec,
     validate,
 )
-from muse_fits_specifications.spec import _LIBRARY_OWNED, _collect, _parse_meta, defined_levels
+from muse_fits_specifications.render import main, render_sheet, render_spec
+from muse_fits_specifications.spec import _LIBRARY_OWNED, _collect, _parse_meta, defined_levels, load_sheet
 from muse_fits_specifications.spec import parse_sheet
 
 SHEET_HEADER = "ISP,L0,L1,L2,L3,FITS  KW,Type,Lower Limit,Upper Limit,FITS Comment,Comment"
@@ -45,6 +46,7 @@ def test_levels_load_from_the_sheet():
     level0, level1 = load_spec("level0"), load_spec("level1")
     assert level0.name == "muse-level0"
     assert level0.version == level1.version != ""  # every sheet export bumps both
+    assert f"version {level0.version}." in render_spec(level0)
     assert list(level0.keywords)[:3] == ["XTENSION", "BITPIX", "NAXIS"]  # sheet order
 
 
@@ -251,3 +253,28 @@ def test_library_owned_matches_astropy():
         hidden = [key for key in hdul[1].header if key and key not in image_header]
     assert hidden  # astropy really does hide cards from hdul[1].header
     assert all(_LIBRARY_OWNED.fullmatch(key) for key in hidden), hidden
+
+
+def test_render_lists_keywords_and_unassigned_fields_and_escapes_markup():
+    page = render_spec(load_spec("level0"))
+    assert "   * - MSQ\\_FSN\n     - int\n     - 0\n     - 4294967295\n     - FSN" in page
+    assert "Unassigned ISP fields (" in page
+    assert "   * - CCSDS\\_SECONDS\n     - int\n     - 0\n     - 4294967295" in page
+    assert "Unassigned" not in render_spec(load_spec("level1"))
+    spec = _spec(P=KeywordSpec("P", comment="a|b*c"))
+    assert "a\\|b\\*c" in render_spec(spec)
+
+
+def test_render_sheet_mirrors_the_sheet_with_a_column_per_level():
+    page = render_sheet(load_sheet())
+    assert "   * - L0\n     - L1\n     - L2\n     - L3\n     - Keyword" in page
+    assert "   * - X\n     -\n     -\n     -\n     - MSQ\\_FSN\n     - int" in page  # level 0 only
+    assert "   * -\n     - X\n     -\n     -\n     - WCSAXES" in page
+    # an unassigned row keeps its place, with a blank keyword cell
+    assert "     -\n     - int\n     - 0\n     - 4294967295\n     - CCSDS\\_SECONDS" in page
+
+
+def test_main_writes_the_sheet_page_and_one_page_per_defined_level(tmp_path):
+    (tmp_path / "level3.rst").write_text("stale page from a level that is no longer defined")
+    assert main([str(tmp_path)]) == 0
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["keywords.csv", "keywords.rst", "level0.rst", "level1.rst"]
