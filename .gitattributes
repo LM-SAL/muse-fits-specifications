@@ -1,0 +1,3 @@
+# The keyword sheet is re-exported from a spreadsheet
+# normalise line endings so git diffs stay row by row
+src/muse_fits_specifications/specs/keywords.csv text

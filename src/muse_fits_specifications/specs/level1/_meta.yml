@@ -1,8 +1,0 @@
-spec: muse-level1
-spec_version: 1
-title: Level 1 Specification
-source_document: MUSEMW251165 via "MUSE FITS Keywords.xlsx", sheet "L1 FITS"
-hdus:
-- name: COMPRESSED_IMAGE
-  kind: compressed-image
-  compression: RICE_1
