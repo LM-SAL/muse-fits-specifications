@@ -2,8 +2,10 @@
 
 Machine-readable MUSE FITS keyword specifications and header validation.
 
-One directory of small per-section YAML files per data level is the single source of truth for the mission's FITS keyword contract.
-The loader, the header validator, and the generated keyword reference docs all read the same YAML, so they cannot drift apart.
+The mission keyword sheet, kept in `src/muse_fits_specifications/specs/keywords.csv`, is the source of truth for the mission's FITS keywords; each level's `_meta.toml` adds the spec name, version, title, source document and HDU layout.
+The loader, the header validator, and the generated keyword reference docs all read the same files, so they cannot drift apart.
+To update the spec, export the sheet over that file, review `git diff`, and run the tests: the loader rejects a malformed row with its row number.
+`muse_fits_specifications.SHEET_PATH` points at the installed copy of the sheet for reading it directly.
 
 This is modeled on the DKIST Data Center's [`dkist-fits-specifications`](https://bitbucket.org/dkistdc/dkist-fits-specifications) and [`dkist-header-validator`](https://bitbucket.org/dkistdc/dkist-header-validator).
 
