@@ -21,15 +21,25 @@ You need git and Python 3.12 or newer.
 2. Create a virtual environment and activate it.
    A virtual environment keeps this project's packages apart from everything else on your machine.
 
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+
+   On Windows, run `py -m venv .venv`, then `.\.venv\Scripts\Activate.ps1` in PowerShell or `.venv\Scripts\activate` in Command Prompt.
+   Your prompt now starts with `(.venv)`. Activate the environment again in every new terminal; `deactivate` leaves it.
+
 3. Install the package in editable mode together with the test and docs tools, and turn on the pre-commit checks:
 
    ```bash
-   python -m pip install -e ".[test,docs]" tox
+   python -m pip install -e ".[test,docs]" tox pre-commit
+   pre-commit install
    ```
 
    Editable mode (`-e`) makes Python import the code straight from this directory, so your edits take effect without reinstalling.
+   `pre-commit install` makes git run the commit-stage hooks (formatting and linting) before every commit.
 
-5. Check that everything works:
+4. Check that everything works:
 
    ```bash
    pytest --pyargs muse_fits_specifications
