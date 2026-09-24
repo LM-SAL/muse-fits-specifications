@@ -1,8 +1,5 @@
 """
 Sphinx configuration.
-
-Mirrors the DKIST docs pattern: the keyword reference pages are generated from the
-packaged specs at build time, so they cannot drift from the YAML.
 """
 
 import sys
@@ -29,7 +26,14 @@ html_sidebars = {"**": []}
 
 autodoc_member_order = "bysource"
 
-# Regenerate the keyword reference pages from the packaged specs.
+# Regenerate the keyword reference pages from the packaged specs
 from muse_fits_specifications.render import main as _render_specs
+from muse_fits_specifications.spec import load_spec
 
 _render_specs([str(DOCS)])
+html_theme_options = {
+    "announcement": (
+        f"Draft {load_spec('level0').version} — Keyword definitions are still being completed. "
+        "Fields without assigned FITS keywords are not validated."
+    ),
+}
