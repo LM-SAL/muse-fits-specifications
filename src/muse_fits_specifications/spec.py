@@ -1,73 +1,82 @@
 """
-Load the packaged MUSE FITS keyword specifications.
+Load the packaged MUSE FITS keyword specification.
 
-Each level's specification is a directory of small per-section YAML files
-under ``specs/<level>/`` (DKIST-style layout): ``_meta.yml`` carries the
-spec-wide fields, and every other file holds one section's keywords. The
-loader checks the spec files themselves against the field rules below, so a
-typo in a spec fails at load time, not silently during header validation.
+The specification is the mission keyword sheet, ``specs/keywords.csv``
+(:data:`SHEET_PATH`), one row per keyword. An ``X`` in a level column
+(``L0``..``L3``) means the card is present in every file of that level; a
+keyword is never optional. Each level's ``specs/<level>/_meta.toml`` carries
+what the sheet lacks: spec name, version, title, source document and HDU
+layout.
 
-Keyword fields:
+Sheet columns:
 
-- ``required``: the keyword must be present in a conforming header. Structural
-  cards owned by the FITS library (tile-compression bookkeeping, checksums)
-  and keywords with unresolved ICD questions are recorded but not required.
-- ``type``: one of bool/int/float/str; omitted when the source document does
-  not yet pin the type down. Omitted means no type check.
-- ``values``: closed set of allowed values.
-- ``format``: ``isot`` marks an ISO 8601 timestamp string.
-- ``source``: the ISP mnemonic or other upstream source of the value.
-- ``example``: an example value, verbatim from the source document.
+- ``FITS KW``: the keyword. Trailing padding is stripped. Blank or ``tbd``
+  marks an ISP field with no keyword assigned yet; such rows load as
+  :attr:`Spec.unassigned` and are never validated.
+- ``Type``: ``Integer``/``String``/``Float``/``Boolean``; blank means no type
+  check.
+- ``Lower Limit``/``Upper Limit``: inclusive numeric range.
+- ``FITS Comment``: the card comment (the ISP mnemonic on ISP rows).
+- ``Comment``: free-text notes.
 
-The section name is not stored per keyword; it comes from the file the
-keyword lives in.
+Cards the FITS library writes and consumes itself (table structure,
+tile-compression bookkeeping, checksums) are flagged ``library_owned``:
+astropy hides or rewrites them in ``hdul[1].header``, so the validator and
+:func:`example_header` leave them to the library.
+
+The loader checks the sheet against these rules, so a typo in the sheet fails
+at load time with its row number, not silently during header validation.
 """
 
 from __future__ import annotations
 
+import csv
+import re
+import tomllib
 from dataclasses import dataclass
 from functools import cache
 from importlib.resources import files
+from math import isfinite
 from types import MappingProxyType
-from typing import TYPE_CHECKING, Any
-
-import yaml
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterable, Mapping
 
-LEVELS = ("level0", "level1")
+LEVELS = ("level0", "level1", "level2", "level3")
+SHEET = "keywords.csv"
+SHEET_PATH = files("muse_fits_specifications") / "specs" / SHEET
+"""
+The packaged keyword sheet, e.g. ``SHEET_PATH.read_text(encoding="utf-8-sig")`` for the
+raw CSV.
+"""
 
-_KEYWORD_FIELDS = {
-    "required": bool,
-    "type": str,
-    "values": list,
-    "format": str,
-    "source": str,
-    "example": str,
-    "comment": str,
-}
-_TYPES = ("bool", "int", "float", "str")
-_FORMATS = ("isot",)
+_COLUMNS = ("FITS KW", "Type", "Lower Limit", "Upper Limit", "FITS Comment", "Comment")
+_TYPES = {"Integer": "int", "String": "str", "Float": "float", "Boolean": "bool", "": None}
+_META_FIELDS = ("spec", "spec_version", "title", "source_document")
+_KEYWORD = re.compile(r"[A-Z0-9_-]{1,8}")
+# Written and consumed by the FITS library (astropy CompImageHDU, checksums): hidden or
+# rewritten in hdul[1].header, so never validated. Pinned by test_library_owned_matches_astropy.
+_LIBRARY_OWNED = re.compile(
+    r"XTENSION|BITPIX|NAXIS\d*|PCOUNT|GCOUNT|TFIELDS|TTYPE\d+|TFORM\d+|Z[A-Z0-9]*|EXTNAME|BZERO|BSCALE|CHECKSUM|DATASUM"
+)
 
 
 class SpecDefinitionError(Exception):
     """
-    A packaged spec file violates the spec-file rules.
+    The keyword sheet or a level's ``_meta.toml`` violates the spec rules.
     """
 
 
 @dataclass(frozen=True)
 class KeywordSpec:
     name: str
-    required: bool
     type: str | None = None
-    values: tuple[Any, ...] | None = None
-    format: str | None = None
-    source: str | None = None
-    example: str | None = None
+    minimum: int | float | None = None
+    maximum: int | float | None = None
     comment: str = ""
-    section: str = ""
+    notes: str = ""
+    library_owned: bool = False
 
 
 @dataclass(frozen=True)
@@ -80,52 +89,179 @@ class HduSpec:
 @dataclass(frozen=True)
 class Spec:
     name: str
-    version: int
+    version: str
     title: str
     source_document: str
     hdus: tuple[HduSpec, ...]
     keywords: Mapping[str, KeywordSpec]
-
-    @property
-    def sections(self) -> tuple[str, ...]:
-        seen: dict[str, None] = {}
-        for kw in self.keywords.values():
-            seen.setdefault(kw.section)
-        return tuple(seen)
+    unassigned: tuple[KeywordSpec, ...] = ()
 
 
-def _keyword(name: str, raw: object, source: str, section: str) -> KeywordSpec:
-    if not isinstance(raw, dict):
-        msg = f"{source}: {name} must be a mapping"
+def _limit(raw: str, kind: str | None, row: int, column: str) -> int | float | None:
+    if raw == "":
+        return None
+    if kind not in ("int", "float"):
+        msg = f"row {row}: {column} needs an Integer or Float Type, got {kind!r}"
         raise SpecDefinitionError(msg)
-    unknown = set(raw) - set(_KEYWORD_FIELDS)
-    if unknown:
-        msg = f"{source}: {name} has unknown fields {sorted(unknown)}"
+    try:
+        value = int(raw) if kind == "int" else float(raw)
+    except ValueError:
+        msg = f"row {row}: {column} {raw!r} is not a number"
+        raise SpecDefinitionError(msg) from None
+    if isinstance(value, float) and not isfinite(value):
+        msg = f"row {row}: {column} must be finite, got {raw!r}"
         raise SpecDefinitionError(msg)
-    for fname, ftype in _KEYWORD_FIELDS.items():
-        if fname in raw and not isinstance(raw[fname], ftype):
-            msg = f"{source}: {name}.{fname} must be {ftype}"
-            raise SpecDefinitionError(msg)
-    if not isinstance(raw.get("required"), bool):
-        msg = f"{source}: {name}.required is mandatory"
+    return value
+
+
+def _row(record: Mapping[str, str], row: int) -> KeywordSpec:
+    name = record["FITS KW"]
+    if name.lower() == "tbd":
+        name = ""
+    if name and not _KEYWORD.fullmatch(name):
+        msg = f"row {row}: {name!r} is not a FITS keyword (1-8 characters of A-Z 0-9 _ -)"
         raise SpecDefinitionError(msg)
-    if "type" in raw and raw["type"] not in _TYPES:
-        msg = f"{source}: {name}.type must be one of {_TYPES}"
+    if record["Type"] not in _TYPES:
+        msg = f"row {row}: Type must be one of {[t for t in _TYPES if t]} or blank, got {record['Type']!r}"
         raise SpecDefinitionError(msg)
-    if "format" in raw and raw["format"] not in _FORMATS:
-        msg = f"{source}: {name}.format must be one of {_FORMATS}"
+    kind = _TYPES[record["Type"]]
+    minimum = _limit(record["Lower Limit"], kind, row, "Lower Limit")
+    maximum = _limit(record["Upper Limit"], kind, row, "Upper Limit")
+    if minimum is not None and maximum is not None and minimum > maximum:
+        msg = f"row {row}: Lower Limit {minimum} exceeds Upper Limit {maximum}"
         raise SpecDefinitionError(msg)
     return KeywordSpec(
         name=name,
-        required=raw["required"],
-        type=raw.get("type"),
-        values=tuple(raw["values"]) if "values" in raw else None,
-        format=raw.get("format"),
-        source=raw.get("source"),
-        example=raw.get("example"),
-        comment=raw.get("comment", ""),
-        section=section,
+        type=kind,
+        minimum=minimum,
+        maximum=maximum,
+        comment=record["FITS Comment"],
+        notes=record["Comment"],
+        library_owned=bool(_LIBRARY_OWNED.fullmatch(name)),
     )
+
+
+def parse_sheet(lines: Iterable[str]) -> list[tuple[frozenset[str], KeywordSpec]]:
+    """
+    Parse the keyword sheet into ``(levels, keyword)`` pairs, in sheet order.
+
+    ``levels`` holds the level names whose column is marked ``X``. Blank rows are
+    skipped; header names are matched with whitespace collapsed.
+    """
+    reader = csv.reader(lines, strict=True)
+    try:
+        return _parse_sheet(reader)
+    except csv.Error as exc:
+        msg = f"row {reader.line_num}: invalid CSV: {exc}"
+        raise SpecDefinitionError(msg) from exc
+
+
+def _parse_sheet(reader) -> list[tuple[frozenset[str], KeywordSpec]]:
+    header = [" ".join(cell.split()) for cell in next(reader, [])]
+    level_columns = {f"L{level.removeprefix('level')}": level for level in LEVELS}
+    expected = ("ISP", *level_columns, *_COLUMNS)
+    missing = [column for column in expected if column not in header]
+    if missing:
+        msg = f"sheet is missing columns {missing}"
+        raise SpecDefinitionError(msg)
+    unexpected = [column for column in header if column not in expected]
+    if unexpected:
+        msg = f"sheet has unexpected columns {unexpected}"
+        raise SpecDefinitionError(msg)
+    if len(header) != len(set(header)):
+        msg = "sheet has duplicate columns"
+        raise SpecDefinitionError(msg)
+    rows = []
+    for cells in reader:
+        if not any(cell.strip() for cell in cells):
+            continue
+        if len(cells) != len(header):
+            msg = f"row {reader.line_num}: expected {len(header)} cells, got {len(cells)}"
+            raise SpecDefinitionError(msg)
+        record = dict(zip(header, (cell.strip() for cell in cells), strict=True))
+        for column in ("ISP", *level_columns):
+            if record[column].upper() not in ("", "X"):
+                msg = f"row {reader.line_num}: {column} must be X or blank, got {record[column]!r}"
+                raise SpecDefinitionError(msg)
+        levels = frozenset(level for column, level in level_columns.items() if record[column].upper() == "X")
+        if not levels:
+            msg = f"row {reader.line_num}: not marked for any level"
+            raise SpecDefinitionError(msg)
+        rows.append((levels, _row(record, reader.line_num)))
+    return rows
+
+
+@cache
+def load_sheet() -> tuple[tuple[frozenset[str], KeywordSpec], ...]:
+    """
+    The packaged sheet as ``(levels, keyword)`` pairs, in sheet order.
+    """
+    with SHEET_PATH.open(encoding="utf-8-sig") as lines:
+        return tuple(parse_sheet(lines))
+
+
+def _collect(
+    rows: Iterable[tuple[frozenset[str], KeywordSpec]], level: str
+) -> tuple[dict[str, KeywordSpec], tuple[KeywordSpec, ...]]:
+    """
+    Split the sheet's rows for ``level`` into keywords and unassigned fields.
+    """
+    keywords: dict[str, KeywordSpec] = {}
+    unassigned: list[KeywordSpec] = []
+    for levels, kw in rows:
+        if level not in levels:
+            continue
+        if not kw.name:
+            unassigned.append(kw)
+        elif kw.name in keywords:
+            msg = f"{SHEET}: {kw.name} is listed twice for {level}"
+            raise SpecDefinitionError(msg)
+        else:
+            keywords[kw.name] = kw
+    if not keywords:
+        msg = f"{SHEET}: no keywords marked for {level}"
+        raise SpecDefinitionError(msg)
+    return keywords, tuple(unassigned)
+
+
+def _meta_path(level: str):
+    return files("muse_fits_specifications") / "specs" / level / "_meta.toml"
+
+
+def defined_levels() -> tuple[str, ...]:
+    """
+    The levels that have a ``specs/<level>/_meta.toml``, in :data:`LEVELS` order.
+    """
+    return tuple(level for level in LEVELS if _meta_path(level).is_file())
+
+
+def _parse_meta(text: str, source: str) -> dict:
+    """
+    Parse a level's ``_meta.toml``; ``source`` names the file in errors.
+    """
+    try:
+        meta = tomllib.loads(text)
+    except tomllib.TOMLDecodeError as exc:
+        msg = f"{source}: invalid TOML: {exc}"
+        raise SpecDefinitionError(msg) from exc
+    for field in _META_FIELDS:
+        if not isinstance(meta.get(field), str):
+            msg = f"{source}: {field} must be a quoted string"
+            raise SpecDefinitionError(msg)
+    hdus = meta.get("hdus")
+    if not isinstance(hdus, list) or not hdus:
+        msg = f"{source}: needs at least one [[hdus]] table"
+        raise SpecDefinitionError(msg)
+    for hdu in hdus:
+        if not (
+            isinstance(hdu, dict)
+            and isinstance(hdu.get("name"), str)
+            and isinstance(hdu.get("kind"), str)
+            and isinstance(hdu.get("compression", ""), str)
+        ):
+            msg = f"{source}: each [[hdus]] table needs string name and kind, optionally compression; got {hdu!r}"
+            raise SpecDefinitionError(msg)
+    return meta
 
 
 @cache
@@ -136,84 +272,38 @@ def load_spec(level: str) -> Spec:
     if level not in LEVELS:
         msg = f"unknown level {level!r}; expected one of {LEVELS}"
         raise ValueError(msg)
-    root = files("muse_fits_specifications").joinpath(f"specs/{level}")
-    meta_source = f"specs/{level}/_meta.yml"
-    meta = yaml.safe_load(root.joinpath("_meta.yml").read_text())
-    for field in ("spec", "spec_version", "title", "source_document", "hdus"):
-        if field not in meta:
-            msg = f"{meta_source}: missing field {field!r}"
-            raise SpecDefinitionError(msg)
-    hdus = tuple(HduSpec(name=h["name"], kind=h["kind"], compression=h.get("compression")) for h in meta["hdus"])
-    keywords: dict[str, KeywordSpec] = {}
-    for entry in sorted(root.iterdir(), key=lambda item: item.name):
-        if entry.name == "_meta.yml" or not entry.name.endswith(".yml"):
-            continue
-        source = f"specs/{level}/{entry.name}"
-        doc = yaml.safe_load(entry.read_text())
-        section = doc.get("section")
-        if not section or "keywords" not in doc:
-            msg = f"{source}: needs 'section' and 'keywords'"
-            raise SpecDefinitionError(msg)
-        for name, body in doc["keywords"].items():
-            if name in keywords:
-                msg = f"{source}: {name} already defined in section {keywords[name].section!r}"
-                raise SpecDefinitionError(msg)
-            keywords[name] = _keyword(name, body, source, section)
-    if not keywords:
-        msg = f"specs/{level}/ has no section files"
+    keywords, unassigned = _collect(load_sheet(), level)
+    source = f"specs/{level}/_meta.toml"
+    if level not in defined_levels():
+        msg = f"{source} does not exist; add it to define {level}"
         raise SpecDefinitionError(msg)
+    meta = _parse_meta(_meta_path(level).read_text(encoding="utf-8"), source)
     return Spec(
         name=meta["spec"],
-        version=int(meta["spec_version"]),
+        version=meta["spec_version"],
         title=meta["title"],
         source_document=meta["source_document"],
-        hdus=hdus,
+        hdus=tuple(HduSpec(h["name"], h["kind"], h.get("compression")) for h in meta["hdus"]),
         keywords=MappingProxyType(keywords),
+        unassigned=unassigned,
     )
 
 
-def example_value(kw: KeywordSpec) -> bool | int | float | str | None:
+_PLACEHOLDERS = {"bool": False, "int": 0, "float": 0.0, "str": "UNKNOWN", None: 0}
+
+
+def example_header(spec: Spec) -> dict[str, bool | int | float | str]:
     """
-    Parse the keyword's source-document example into a typed header value.
+    A conforming header: one value for every keyword the mission writes.
 
-    Returns ``None`` when the spec records no example.
+    Generators (simulators, fixture writers) start from this so their files conform to
+    the same spec the validator enforces. Values are the sheet's lower limit where there
+    is one, otherwise a neutral typed placeholder (``0``/``0.0``/``UNKNOWN``; presence-
+    only keywords get ``0``). Library-owned cards are left to the FITS library. The
+    result passes :func:`validate`.
     """
-    if kw.example is None:
-        return None
-    raw = kw.example.strip()
-    if raw.startswith("'") and raw.endswith("'") and len(raw) >= 2:
-        # FITS string values are quoted and may carry padding.
-        raw = raw[1:-1].rstrip()
-    if kw.type == "bool":
-        return raw in ("T", "True", "1")
-    if kw.type == "int":
-        return int(raw)
-    if kw.type == "float":
-        return float(raw)
-    return raw
-
-
-_PLACEHOLDER_VALUES = {"bool": False, "int": 0, "float": 0.0, "str": "UNKNOWN"}
-
-
-def example_header(spec: Spec, *, skip_sections: tuple[str, ...] = ("fits",)) -> dict[str, bool | int | float | str]:
-    """
-    A complete conforming header for every required keyword.
-
-    Generators (simulators, fixture writers) start from this so their files
-    conform to the same spec the validator enforces. Values are the source
-    document's examples where recorded; otherwise the first allowed value for
-    closed sets, then a neutral typed placeholder (``0``/``0.0``/``UNKNOWN``,
-    presence-only for untyped keywords). Structural cards (the ``fits``
-    section: checksums and tile-compression bookkeeping) are skipped because
-    the FITS library computes them. The result passes :func:`validate`.
-    """
-    header: dict[str, bool | int | float | str] = {}
-    for name, kw in spec.keywords.items():
-        if not kw.required or kw.section in skip_sections:
-            continue
-        value = example_value(kw)
-        if value is None:
-            value = kw.values[0] if kw.values else _PLACEHOLDER_VALUES.get(kw.type or "int", 0)
-        header[name] = value
-    return header
+    return {
+        name: kw.minimum if kw.minimum is not None else _PLACEHOLDERS[kw.type]
+        for name, kw in spec.keywords.items()
+        if not kw.library_owned
+    }
