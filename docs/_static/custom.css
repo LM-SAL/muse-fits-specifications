@@ -1,0 +1,40 @@
+.bd-main .bd-content .bd-article-container:has(.keyword-table) {
+  max-width: 100%;
+  overflow: visible;
+}
+
+.pst-scrollable-table-container:has(.keyword-table) {
+  overflow: visible;
+}
+
+table.keyword-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.keyword-table th,
+.keyword-table td {
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+
+.keyword-table thead th {
+  position: sticky;
+  top: var(--pst-header-height);
+  z-index: 1;
+  background: var(--pst-color-surface);
+}
+
+@media (max-width: 991.98px) {
+  .pst-scrollable-table-container:has(.keyword-table) {
+    overflow-x: auto;
+  }
+
+  table.keyword-table {
+    min-width: 60rem;
+  }
+
+  .keyword-table thead th {
+    position: static;
+  }
+}
