@@ -26,6 +26,7 @@ astropy hides or rewrites them in ``hdul[1].header``, so the validator and
 
 The loader checks the sheet against these rules, so a typo in the sheet fails
 at load time with its row number, not silently during header validation.
+``python -m muse_fits_specifications`` runs every check at once.
 """
 
 from __future__ import annotations
@@ -307,3 +308,21 @@ def example_header(spec: Spec) -> dict[str, bool | int | float | str]:
         for name, kw in spec.keywords.items()
         if not kw.library_owned
     }
+
+
+def main() -> int:
+    """
+    Check the packaged sheet and every defined level; run as ``python -m
+    muse_fits_specifications``.
+
+    Raises :class:`SpecDefinitionError` on any rule the loader enforces, and when the
+    sheet marks a level that has no ``_meta.toml``. Run by pre-commit on sheet changes.
+    """
+    marked = {level for levels, _ in load_sheet() for level in levels}
+    undefined = [level for level in LEVELS if level in marked and level not in defined_levels()]
+    if undefined:
+        msg = f"{SHEET} marks {undefined} but specs/<level>/_meta.toml is missing"
+        raise SpecDefinitionError(msg)
+    for level in defined_levels():
+        load_spec(level)
+    return 0
