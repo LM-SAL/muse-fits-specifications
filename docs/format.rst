@@ -51,6 +51,7 @@ Blank separator lines are allowed; quote comments containing commas when exporti
 Sheet typos fail loudly: ``load_spec`` raises ``SpecDefinitionError`` for malformed CSV, an illegal keyword (anything but 1-8 characters of ``A-Z0-9_-``), an unknown ``Type``, a limit on a non-numeric type, an unparsable or non-finite limit, a lower limit above the upper one, a row marked for no level, or a keyword listed twice for one level.
 A malformed ``_meta.toml`` raises the same error, naming the file and field.
 Row errors include their row number; duplicate-keyword errors identify the keyword and level.
+``python -m muse_fits_specifications`` runs every check and also fails when the sheet marks a level that has no ``_meta.toml``; pre-commit runs it whenever a file under ``specs/`` changes.
 Documentation builds render only the defined levels.
 
 Updating the Sheet
@@ -59,8 +60,8 @@ Updating the Sheet
 1. Export the spreadsheet as CSV over ``src/muse_fits_specifications/specs/keywords.csv``.
 2. ``git diff`` shows the change row by row.
    ``.gitattributes`` normalizes the file's line endings, so an export from a different tool does not rewrite every line.
-3. Run ``pytest --pyargs muse_fits_specifications``.
-   The loader rejects a malformed row with its row number, and the astropy round-trip test proves every mission keyword survives a compressed write and read.
+3. Commit: the pre-commit hook runs ``python -m muse_fits_specifications`` against the source tree and rejects a malformed row with its row number.
+   Run ``pytest --pyargs muse_fits_specifications`` too; the astropy round-trip test proves every mission keyword survives a compressed write and read.
 4. Bump ``spec_version`` in each level's ``_meta.toml``, build the docs (``tox -e build_docs``) and commit.
 
 Library-owned Cards

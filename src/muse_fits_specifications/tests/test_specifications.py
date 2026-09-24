@@ -21,6 +21,7 @@ from muse_fits_specifications import (
 )
 from muse_fits_specifications.render import main, render_sheet, render_spec
 from muse_fits_specifications.spec import _LIBRARY_OWNED, _collect, _parse_meta, defined_levels, load_sheet
+from muse_fits_specifications.spec import main as check_sheet
 from muse_fits_specifications.spec import parse_sheet
 
 SHEET_HEADER = "ISP,L0,L1,L2,L3,FITS  KW,Type,Lower Limit,Upper Limit,FITS Comment,Comment"
@@ -278,3 +279,13 @@ def test_main_writes_the_sheet_page_and_one_page_per_defined_level(tmp_path):
     (tmp_path / "level3.rst").write_text("stale page from a level that is no longer defined")
     assert main([str(tmp_path)]) == 0
     assert sorted(p.name for p in tmp_path.iterdir()) == ["keywords.csv", "keywords.rst", "level0.rst", "level1.rst"]
+
+
+def test_check_sheet_passes_and_rejects_a_marked_but_undefined_level(monkeypatch):
+    assert check_sheet() == 0
+    rows = load_sheet()
+    monkeypatch.setattr(
+        "muse_fits_specifications.spec.load_sheet", lambda: (*rows, (frozenset({"level3"}), KeywordSpec("KW")))
+    )
+    with pytest.raises(SpecDefinitionError, match="level3"):
+        check_sheet()

@@ -1,4 +1,4 @@
-exclude: .*(.fits|.fts|.fit|.txt|.csv)$
+exclude: .*(.fits|.fts|.fit|.txt)$
 repos:
     # This should be before any formatting hooks like isort
   - repo: https://github.com/PyCQA/docformatter
@@ -62,6 +62,15 @@ repos:
       - id: typos
         types_or: [python, rst]
         exclude: *exclude_dirs
+  - repo: local
+    hooks:
+      - id: keyword-sheet
+        name: check keyword sheet
+        # Loads the sheet and every defined level from the source tree; stdlib only.
+        entry: env PYTHONPATH=src python -m muse_fits_specifications
+        language: system
+        files: ^src/muse_fits_specifications/specs/
+        pass_filenames: false
 ci:
   autofix_prs: false
   autoupdate_schedule: "quarterly"
