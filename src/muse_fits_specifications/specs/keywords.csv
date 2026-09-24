@@ -1,0 +1,280 @@
+ISP,L0,L1,L2,L3,FITS  KW,Type,Lower Limit,Upper Limit,FITS Comment,Comment
+X,X,,,,XTENSION,String,,,,Assuming L0 data is written as a binary table in the first extension like for IRIS
+X,X,,,,BITPIX  ,Integer,,,,created by astropy fits
+X,X,,,,NAXIS   ,Integer,,,,created by astropy fits
+X,X,,,,NAXIS1  ,Integer,,,,created by astropy fits
+X,X,,,,NAXIS2  ,Integer,,,,created by astropy fits
+X,X,,,,PCOUNT  ,Integer,,,,created by astropy fits
+X,X,,,,GCOUNT  ,Integer,,,,created by astropy fits
+X,X,,,,TFIELDS ,Integer,,,,created by astropy fits
+X,X,,,,ZIMAGE  ,Boolean,,,,created by astropy fits
+X,X,,,,ZTENSION,String,,,,created by astropy fits
+X,X,,,,ZBITPIX ,Integer,,,,created by astropy fits
+X,X,,,,ZNAXIS  ,Integer,,,,created by astropy fits
+X,X,,,,ZNAXIS1 ,Integer,,,,created by astropy fits
+X,X,,,,ZNAXIS2 ,Integer,,,,created by astropy fits
+X,X,,,,ZPCOUNT,Integer,,,,created by astropy fits
+X,X,,,,ZGCOUNT,Integer,,,,created by astropy fits
+X,X,,,,ZTILE1  ,Integer,,,,created by astropy fits
+X,X,,,,ZTILE2  ,Integer,,,,created by astropy fits
+X,X,,,,ZCMPTYPE,String,,,,created by astropy fits
+X,X,,,,ZNAME1  ,String,,,,created by astropy fits
+X,X,,,,ZVAL1   ,Integer,,,,created by astropy fits
+X,X,,,,ZNAME2  ,String,,,,created by astropy fits
+X,X,,,,ZVAL2   ,Integer,,,,created by astropy fits
+X,X,,,,EXTNAME,String,,,,created by astropy fits
+X,X,,,,BZERO,Integer,,,,created by astropy fits
+X,X,,,,BSCALE,Integer,,,,created by astropy fits
+X,X,,,,FILENAME,String,,,,
+X,X,,,,SOLARNET,Float,,,,
+X,X,,,,OBS_HDU,Boolean,,,,
+X,X,,,,ORIGIN  ,String,,,,
+X,X,,,,TELESCOP,String,,,,
+X,X,,,,BLD_VERS,String,,,,
+X,X,,,,LEVEL,Integer,,,,
+X,X,,,,DATE    ,String,,,,
+X,X,,,,DATE-OBS,String,,,,
+X,X,,,,DATE-BEG,String,,,,
+X,X,,,,T_OBS   ,String,,,,
+X,X,,,,IMGFPT  ,String,,,,
+X,X,,,,,Integer,0,4294967295,CCSDS_SECONDS,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,CCSDS_SUBSECS,FITS comment is ISP mnemonic
+X,X,,,,MSQ_FSN,Integer,0,4294967295,FSN,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,ISP_CREATE_TIME_SEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,ISP_CREATED_TIME_SUBSEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,READOUT_ISP_DONE_TIME_SEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,READOUT_ISP_DONE_TIME_SUBSEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISP_VERSION,FITS comment is ISP mnemonic
+X,X,,,,MSQCIFDB,Integer,0,4294967295,SEQUENCER_CI_FDB_ID,FITS comment is ISP mnemonic
+X,X,,,,MSQSG108,Integer,0,4294967295,SEQUENCER_SG_CCD1_FDB_ID,FITS comment is ISP mnemonic
+X,X,,,,MSQSG171,Integer,0,4294967295,SEQUENCER_SG_CCD2_FDB_ID,FITS comment is ISP mnemonic
+X,X,,,,MSQSG284,Integer,0,4294967295,SEQUENCER_SG_CCD3_FDB_ID,FITS comment is ISP mnemonic
+X,X,,,,MSQOEQSE,Integer,0,4294967295,SEQUENCER_ORB_EQUATOR_SECONDS,FITS comment is ISP mnemonic
+X,X,,,,MSQOEQSS,Integer,0,4294967295,SEQUENCER_ORB_EQUATOR_SUBSECONDS,FITS comment is ISP mnemonic
+X,X,,,,MSQORBPD,Integer,0,4294967295,SEQUENCER_ORB_PERIOD_SECONDS,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,SEQUENCER_ORB_PERIOD_SUBSECONDS,FITS comment is ISP mnemonic
+X,X,,,,MSQSGGWT,Integer,0,65535,SEQUENCER_OWT_ID,FITS comment is ISP mnemonic
+X,X,,,,MSQSGSRT,Integer,0,65535,SEQUENCER_SRT_ID,FITS comment is ISP mnemonic
+X,X,,,,MSSGPZTA,Integer,0,65535,SEQUENCER_SG_FRAME_LIST_PZT_OFFSET_PZT_OFFSET_A,FITS comment is ISP mnemonic
+X,X,,,,MSSGPZTB,Integer,0,65535,SEQUENCER_SG_FRAME_LIST_PZT_OFFSET_PZT_OFFSET_B,FITS comment is ISP mnemonic
+X,X,,,,MSSGPZTC,Integer,0,65535,SEQUENCER_SG_FRAME_LIST_PZT_OFFSET_PZT_OFFSET_C,FITS comment is ISP mnemonic
+X,X,,,,MSCIPZTA,Integer,0,65535,SEQUENCER_CI_FRAME_LIST_PZT_OFFSET_PZT_OFFSET_A,FITS comment is ISP mnemonic
+X,X,,,,MSCIPZTB,Integer,0,65535,SEQUENCER_CI_FRAME_LIST_PZT_OFFSET_PZT_OFFSET_B,FITS comment is ISP mnemonic
+X,X,,,,MSCIPZTC,Integer,0,65535,SEQUENCER_CI_FRAME_LIST_PZT_OFFSET_PZT_OFFSET_C,FITS comment is ISP mnemonic
+X,X,,,,MSQOLTDX,Integer,0,65535,SEQUENCER_OBS_LIST_STAT_CURRENT_OL_INDX,FITS comment is ISP mnemonic
+X,X,,,,MSQOLTNX,Integer,0,65535,SEQUENCER_OBS_LIST_STAT_NUM_OL_INDX,FITS comment is ISP mnemonic
+X,X,,,,MSQFLTDX,Integer,0,65535,SEQUENCER_FRAME_LIST_STAT_CURRENT_FL_INDX,FITS comment is ISP mnemonic
+X,X,,,,MSQFLTNX,Integer,0,65535,SEQUENCER_FRAME_LIST_STAT_NUM_FL_INDX,FITS comment is ISP mnemonic
+X,X,,,,MSQFLTNR,Integer,0,65535,SEQUENCER_FRAME_LIST_STAT_CURRENT_FL_REPEAT_CNT,FITS comment is ISP mnemonic
+X,X,,,,MSQFLTRP,Integer,0,65535,SEQUENCER_FRAME_LIST_STAT_NUM_FL_REPEATS,FITS comment is ISP mnemonic
+X,X,,,,MIFRMLID,Integer,0,4294967295,SEQUENCER_FRAME_LIST_ID,FITS comment is ISP mnemonic
+X,X,,,,MIOBSLID,Integer,0,4294967295,SEQUENCER_OBS_LIST_ID,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_REPEAT_CADENCE_TIME,FITS comment is ISP mnemonic
+X,X,,,,MSQ_INUM,Integer,0,255,SEQUENCER_SYSTEM,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,SEQUENCER_RESERVED,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_CI_PZT_SEC_MOVE_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_CI_APERTURE_SEL_MOVE_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_CIM_CAM_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_CI_SHUTTER_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_CI_FILTER_WHEEL_MOVE_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_CI_FOCUS_MOVE_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_SG_PZT_PM_MOVE_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_SG_PZT_GR_MOVE_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_SGM_CAM_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_SG_FILTER_WHEEL_MOVE_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_SG_FOCUS_GR_MOVE_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,SEQUENCER_FL_STEPS_DT_SG_FOCUS_SLIT_MOVE_CMD_DT,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ADJUSTED_PZT_SRT_PZT_OFFSET_VALUES_PZT_OFFSET_A,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ADJUSTED_PZT_SRT_PZT_OFFSET_VALUES_PZT_OFFSET_B,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ADJUSTED_PZT_SRT_PZT_OFFSET_VALUES_PZT_OFFSET_C,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ADJUSTED_PZT_OWT_PZT_OFFSET_VALUES_PZT_OFFSET_A,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ADJUSTED_PZT_OWT_PZT_OFFSET_VALUES_PZT_OFFSET_B,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ADJUSTED_PZT_OWT_PZT_OFFSET_VALUES_PZT_OFFSET_C,FITS comment is ISP mnemonic
+X,X,,,,MIFDB_ID,Integer,0,4294967295,IMAGE_CFG_FDB_ID,FITS comment is ISP mnemonic
+X,X,,,,MICFGCPD,Integer,0,4294967295,IMAGE_CFG_COMMAND_PERIOD_DURATION,FITS comment is ISP mnemonic
+X,X,,,,tbd,Integer,0,4294967295,IMAGE_CFG_FRAME_READOUT_TIME,FITS comment is ISP mnemonic
+X,X,,,,MICFGFOF,Integer,0,4294967295,IMAGE_CFG_FLUSH_OFFSET,FITS comment is ISP mnemonic
+X,X,,,,MI_LUTID,Integer,0,65535,IMAGE_CFG_LUT_ID,FITS comment is ISP mnemonic
+X,X,,,,MICFGRDO,Integer,0,65535,IMAGE_CFG_READOUT_OPTIONS,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,IMAGE_CFG_FRAME_TRANSFER_TIME,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,IMAGE_CFG_RESERVED,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,IMAGE_CFG_COMP_CFG_COMP_WEIGHTS,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,IMAGE_CFG_COMP_CFG_SEG_SIZE,FITS comment is ISP mnemonic
+X,X,,,,MCAMCPBW,Integer,0,65535,IMAGE_CFG_COMP_CFG_BS_WORDS,FITS comment is ISP mnemonic
+X,X,,,,MCAMCPBP,Integer,0,65535,IMAGE_CFG_COMP_CFG_BP_LENC,FITS comment is ISP mnemonic
+X,X,,,,MCAMCPSS,Integer,0,65535,IMAGE_CFG_COMP_CFG_STAGE_STOP,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,IMAGE_CFG_COMP_CFG_RC_WINDOW,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,IMAGE_CFG_COMP_CFG_LUT_FLAG,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,IMAGE_CFG_COMP_CFG_COMPRESSION_ENABLE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,IMAGE_CFG_CROP_CFG_START_ROW,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,IMAGE_CFG_CROP_CFG_END_ROW,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,IMAGE_CFG_CROP_CFG_START_COLUMN,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,IMAGE_CFG_CROP_CFG_END_COLUMN,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,IMAGE_CFG_CROP_CFG_SUBFRAME1,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,IMAGE_CFG_CROP_CFG_SUBFRAME2,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,IMAGE_CFG_CROP_CFG_SUBFRAME3,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,IMAGE_CFG_CROP_CFG_OSCAN_ROW,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,IMAGE_CFG_CROP_CFG_OSCAN_COLS,FITS comment is ISP mnemonic
+X,X,,,,MGTPOFFX,Integer,-32768,32767,GT_BIAS_OFFSET_X,FITS comment is ISP mnemonic
+X,X,,,,MGTPOFFY,Integer,-32768,32767,GT_BIAS_OFFSET_Y,FITS comment is ISP mnemonic
+X,X,,,,MGTPSVX,Integer,-32768,32767,GT_SUN_VECTOR_X,FITS comment is ISP mnemonic
+X,X,,,,MGTPSVY,Integer,-32768,32767,GT_SUN_VECTOR_Y,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,THERMAL_CEB_DIGITAL_BOARD_TEMP,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,THERMAL_CEB_POWER_BOARD_TEMP,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,THERMAL_CEB_PRE_AMP_TEMP,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,THERMAL_CEB_CCD1_TEMP,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,THERMAL_CEB_CCD2_TEMP,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,THERMAL_CEB_CCD3_TEMP,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,THERMAL_CEB_ANALOG_BOARD_TEMP,FITS comment is ISP mnemonic
+X,X,,,,MTCGTIEB,Integer,0,65535,THERMAL_IEB_TEMP,FITS comment is ISP mnemonic
+X,X,,,,MTCGTOBJ,Integer,0,65535,THERMAL_GT_AFT_TEMP,FITS comment is ISP mnemonic
+X,X,,,,MCTCI_PM,Integer,0,65535,THERMAL_CI_PRIMARY_MIRROR_TEMP,FITS comment is ISP mnemonic
+X,X,,,,MCTCI_SM,Integer,0,65535,THERMAL_CI_SECONDARY_MIRROR_TEMP,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_SHUTTER_OPEN_TIME_SEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_SHUTTER_OPEN_TIME_SUBSEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_SHUTTER_AMAX,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_SHUTTER_EXP_DUR,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SHUTTER_POS_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SHUTTER_CMD_EXP,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SHUTTER_TSCALE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SHUTTER_POS_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_SHUTTER_ERR_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_SHUTTER_EXP_TYPE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_SHUTTER_ERR_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_SHUTTER_RESERVED,FITS comment is ISP mnemonic
+X,X,,,,MMFWSGST,Integer,0,4294967295,MECH_SGFILTER_WHEEL_MOVE_TIME_SEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_SGFILTER_WHEEL_MOVE_TIME_SUBSEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_SGFILTER_WHEEL_AMAX,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_SGFILTER_WHEEL_VMAX,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SGFILTER_WHEEL_POS_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SGFILTER_WHEEL_TARGET_POS,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SGFILTER_WHEEL_TSCALE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,-32768,32767,MECH_SGFILTER_WHEEL_XF,FITS comment is ISP mnemonic
+X,X,,,,MMFWSGPS,Integer,0,65535,MECH_SGFILTER_WHEEL_POS_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_SGFILTER_WHEEL_ERR_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_SGFILTER_WHEEL_ERR_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_CIFILTER_WHEEL_MOVE_TIME_SEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_CIFILTER_WHEEL_MOVE_TIME_SUBSEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_CIFILTER_WHEEL_AMAX,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_CIFILTER_WHEEL_VMAX,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_CIFILTER_WHEEL_POS_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_CIFILTER_WHEEL_TARGET_POS,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_CIFILTER_WHEEL_TSCALE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,-32768,32767,MECH_CIFILTER_WHEEL_XF,FITS comment is ISP mnemonic
+X,X,,,,MMFWCIPS,Integer,0,65535,MECH_CIFILTER_WHEEL_POS_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_CIFILTER_WHEEL_ERR_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_CIFILTER_WHEEL_ERR_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_SG_SLIT_FOCUS_MOVE_TIME_SEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_SG_SLIT_FOCUS_MOVE_TIME_SUBSEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SG_SLIT_FOCUS_POS_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SG_SLIT_FOCUS_POS_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_SG_SLIT_FOCUS_ERR_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_SG_SLIT_FOCUS_ERR_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SG_SLIT_FOCUS_RESERVED,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_SG_GRATING_FOCUS_MOVE_TIME_SEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_SG_GRATING_FOCUS_MOVE_TIME_SUBSEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SG_GRATING_FOCUS_POS_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SG_GRATING_FOCUS_POS_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_SG_GRATING_FOCUS_ERR_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_SG_GRATING_FOCUS_ERR_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_SG_GRATING_FOCUS_RESERVED,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_CI_FOCUS_MOVE_TIME_SEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_CI_FOCUS_MOVE_TIME_SUBSEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_CI_FOCUS_POS_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_CI_FOCUS_POS_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_CI_FOCUS_ERR_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_CI_FOCUS_ERR_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_CI_FOCUS_RESERVED,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_CI_APERTURE_SELECTOR_MOVE_TIME_SEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_CI_APERTURE_SELECTOR_MOVE_TIME_SUBSEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_CI_APERTURE_SELECTOR_AMAX,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_CI_APERTURE_SELECTOR_VMAX,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_CI_APERTURE_SELECTOR_POS_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_CI_APERTURE_SELECTOR_TARGET_POS,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_CI_APERTURE_SELECTOR_TSCALE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,-32768,32767,MECH_CI_APERTURE_SELECTOR_XF,FITS comment is ISP mnemonic
+X,X,,,,MMAS_POS,Integer,0,65535,MECH_CI_APERTURE_SELECTOR_POS_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_CI_APERTURE_SELECTOR_ERR_PRE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_CI_APERTURE_SELECTOR_ERR_POST,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_WEDGE_MOTOR1_MOVE_TIME_SEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_WEDGE_MOTOR1_MOVE_TIME_SUBSEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_WEDGE_MOTOR1_AMP,FITS comment is ISP mnemonic
+X,X,,,,MMWM1POS,Integer,0,65535,MECH_WEDGE_MOTOR1_POS,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_WEDGE_MOTOR1_MOVE_DUR,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_WEDGE_MOTOR1_TARGET_POS,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_WEDGE_MOTOR1_DONE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_WEDGE_MOTOR1_RESERVED,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_WEDGE_MOTOR2_MOVE_TIME_SEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_WEDGE_MOTOR2_MOVE_TIME_SUBSEC,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,4294967295,MECH_WEDGE_MOTOR2_AMP,FITS comment is ISP mnemonic
+X,X,,,,MMWM2POS,Integer,0,65535,MECH_WEDGE_MOTOR2_POS,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_WEDGE_MOTOR2_MOVE_DUR,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,MECH_WEDGE_MOTOR2_TARGET_POS,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_WEDGE_MOTOR2_DONE,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,MECH_WEDGE_MOTOR2_RESERVED,FITS comment is ISP mnemonic
+X,X,,,,MIS_DIOD,Integer,0,255,ISS_DIODES,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,ISS_GAIN,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_ISS_X_ERROR,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_ISS_Y_ERROR,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_CI_PZT_OFFSET_A,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_CI_PZT_OFFSET_B,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_CI_PZT_OFFSET_C,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_CI_X_ERROR_AVG,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_CI_X_ERROR_MIN,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_CI_X_ERROR_MAX,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_CI_Y_ERROR_AVG,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_CI_Y_ERROR_MIN,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_CI_Y_ERROR_MAX,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,ISS_CI_ISS_LOOP,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,ISS_CI_X_ERROR_OFFSET,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,ISS_CI_Y_ERROR_OFFSET,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,ISS_CI_RESERVED,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_SG_PZT_OFFSET_A,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_SG_PZT_OFFSET_B,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_SG_PZT_OFFSET_C,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_SG_X_ERROR_AVG,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_SG_X_ERROR_MIN,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_SG_X_ERROR_MAX,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_SG_Y_ERROR_AVG,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_SG_Y_ERROR_MIN,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ISS_SG_Y_ERROR_MAX,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,ISS_SG_ISS_LOOP,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,ISS_SG_X_ERROR_OFFSET,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,ISS_SG_Y_ERROR_OFFSET,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,ISS_SG_RESERVED,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,65535,ACS_ACS_STATUS_WD,FITS comment is ISP mnemonic
+X,X,,,,MLED1HWP,Integer,0,255,LEDS_LED1,FITS comment is ISP mnemonic
+X,X,,,,MLED2HWP,Integer,0,255,LEDS_LED2,FITS comment is ISP mnemonic
+X,X,,,,MLED3HWP,Integer,0,255,LEDS_LED3,FITS comment is ISP mnemonic
+X,X,,,,,Integer,0,255,LEDS_LED_INTERLOCK,FITS comment is ISP mnemonic
+,,X,,,WCSAXES  ,Integer,,,,
+,,X,,,CTYPE1   ,String,,,,
+,,X,,,CNAME1   ,String,,,,
+,,X,,,CUNIT1   ,String,,,,
+,,X,,,CRPIX1   ,Float,,,,
+,,X,,,CRVAL1   ,Float,,,,
+,,X,,,CDELT1   ,Float,,,,
+,,X,,,PC1_1    ,Float,,,,
+,,X,,,PC1_3    ,Float,,,Slit separation in pixels,
+,,X,,,CTYPE2   ,String,,,,
+,,X,,,CNAME2   ,String,,,,
+,,X,,,CUNIT2   ,String,,,,
+,,X,,,CRPIX2   ,Float,,,,
+,,X,,,CRVAL2   ,Float,,,,
+,,X,,,CDELT2   ,Float,,,,
+,,X,,,PC2_2    ,Float,,,cosine of satelite rotation,
+,,X,,,PC2_3    ,Float,,,Slit sep in pix * sine of sat rot,
+,,X,,,CTYPE3   ,String,,,,
+,,X,,,CNAME3   ,String,,,,
+,,X,,,CUNIT3   ,String,,,,
+,,X,,,CRPIX3   ,Float,,,,
+,,X,,,CRVAL3   ,Float,,,,
+,,X,,,CDELT3   ,Float,,,,
+,,X,,,PC3_3    ,Float,,,Slit sep in pix * cosine of sat rot,
+,,X,,,PC3_2 ,Float,,, -sine of satelite rotation,
+,,,,,,,,,,
+,,,,,,,,,,
+X,X,,,,TTYPE1  ,String,,,,created by astropy fits
+X,X,,,,TFORM1  ,String,,,,created by astropy fits
+X,X,,,,CHECKSUM,String,,, HDU checksum updated [ISO Time String],created by astropy fits
+X,X,,,,DATASUM ,String,,, data unit checksum updated [ISO Time String],created by astropy fits

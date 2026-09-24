@@ -1,0 +1,9 @@
+spec = "muse-level0"
+spec_version = "0.1"
+title = "Level 0"
+source_document = "MUSE FITS Keyword Master v0.1 (sheet export, specs/keywords.csv)"
+
+[[hdus]]
+name = "COMPRESSED_IMAGE"
+kind = "compressed-image"
+compression = "RICE_1"

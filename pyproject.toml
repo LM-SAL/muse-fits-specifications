@@ -9,13 +9,12 @@ description = "Machine-readable MUSE FITS keyword specifications and header vali
 license = "BSD-3-Clause"
 license-files = ["LICENSE"]
 requires-python = ">=3.12"
-dependencies = [
-    "pyyaml>=6",
-]
+dependencies = []
 
 [project.optional-dependencies]
 test = [
     "pytest",
+    "astropy",
 ]
 docs = [
     "sphinx",
@@ -32,4 +31,4 @@ line_length = 120
 where = ["src"]
 
 [tool.setuptools.package-data]
-muse_fits_specifications = ["specs/*/*.yml"]
+muse_fits_specifications = ["specs/*.csv", "specs/*/*.toml"]
