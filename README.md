@@ -11,37 +11,28 @@ This is modeled on the DKIST Data Center's [`dkist-fits-specifications`](https:/
 
 You need git and Python 3.12 or newer.
 
-1. Clone the repository and move into it:
+1. Clone/fork the repository and move into it:
 
    ```bash
    git clone https://github.com/LM-SAL/muse-fits-specifications.git
    cd muse-fits-specifications
    ```
 
-2. Create a virtual environment and activate it. A virtual environment keeps this project's packages apart from everything else on your machine:
-
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
-
-   On Windows, run `py -m venv .venv`, then in PowerShell run `.\.venv\Scripts\Activate.ps1`; in Command Prompt, run `.venv\Scripts\activate`.
-   Your prompt now starts with `(.venv)`. Activate the environment again in every new terminal; `deactivate` leaves it.
+2. Create a virtual environment and activate it.
+   A virtual environment keeps this project's packages apart from everything else on your machine.
 
 3. Install the package in editable mode together with the test and docs tools, and turn on the pre-commit checks:
 
    ```bash
-   python -m pip install -e ".[test,docs]" pre-commit
-   pre-commit install
+   python -m pip install -e ".[test,docs]" tox
    ```
 
    Editable mode (`-e`) makes Python import the code straight from this directory, so your edits take effect without reinstalling.
-   `pre-commit install` makes git run the project's checks before every commit.
 
-4. Check that everything works:
+5. Check that everything works:
 
    ```bash
    pytest --pyargs muse_fits_specifications
    ```
 
-To build the documentation, run `python -m pip install tox` once, then `tox -e build_docs` and open `docs/_build/html/index.html`.
+To build the documentation, run `tox -e build_docs` and open `docs/_build/html/index.html`.
