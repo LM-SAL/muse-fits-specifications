@@ -1,0 +1,33 @@
+{#-
+  Header links from html_context["navbar_links"], after sunpy-sphinx-theme's navbar_center:
+  (label, docname) renders a link and (label, [(label, docname), ...]) a dropdown.
+  The theme also includes this component in the mobile sidebar with the dropdown cutoff
+  raised to 999; dropdowns do not work there, so the sub-links are listed flat instead.
+-#}
+{% set flat = theme_header_links_before_dropdown|int == 999 %}
+{% macro link(label, doc, class) -%}
+  <a class="{{ class }} nav-internal{% if pagename == doc %} active{% endif %}" href="{{ pathto(doc) }}"{% if pagename == doc %} aria-current="page"{% endif %}>{{ label }}</a>
+{%- endmacro %}
+<nav aria-label="Main navigation">
+  <ul class="bd-navbar-elements navbar-nav">
+    {% for label, target in navbar_links %}
+      {% if target is string %}
+        <li class="nav-item{% if pagename == target %} current active{% endif %}">{{ link(label, target, "nav-link") }}</li>
+      {% elif flat %}
+        {% for sub_label, doc in target %}
+          <li class="nav-item{% if pagename == doc %} current active{% endif %}">{{ link(sub_label, doc, "nav-link") }}</li>
+        {% endfor %}
+      {% else %}
+        {% set open = pagename in target|map(attribute=1)|list %}
+        <li class="nav-item dropdown{% if open %} current active{% endif %}">
+          <button class="btn dropdown-toggle nav-item{% if open %} active{% endif %}" type="button" data-bs-toggle="dropdown" aria-expanded="false">{{ label }}</button>
+          <ul class="dropdown-menu">
+            {% for sub_label, doc in target %}
+              <li>{{ link(sub_label, doc, "nav-link dropdown-item") }}</li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</nav>
