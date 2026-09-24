@@ -1,30 +1,38 @@
 """
-Checks for spec loading, spec self-validation, and header validation.
+Checks for sheet loading, sheet self-validation, header validation, and rendering.
 """
 
 from __future__ import annotations
 
+import io
+
 import pytest
 
 from muse_fits_specifications import (
+    SHEET_PATH,
     HeaderValidationError,
     KeywordSpec,
     Spec,
     SpecDefinitionError,
     ensure_valid,
     example_header,
-    example_value,
     load_spec,
     validate,
 )
-from muse_fits_specifications.render import render_spec
-from muse_fits_specifications.spec import _keyword
+from muse_fits_specifications.spec import _LIBRARY_OWNED, _collect, _parse_meta, defined_levels
+from muse_fits_specifications.spec import parse_sheet
+
+SHEET_HEADER = "ISP,L0,L1,L2,L3,FITS  KW,Type,Lower Limit,Upper Limit,FITS Comment,Comment"
+
+
+def _rows(*lines: str):
+    return parse_sheet([SHEET_HEADER, *lines])
 
 
 def _spec(**keywords: KeywordSpec) -> Spec:
     return Spec(
         name="test-spec",
-        version=1,
+        version="1",
         title="test",
         source_document="test",
         hdus=(),
@@ -32,91 +40,149 @@ def _spec(**keywords: KeywordSpec) -> Spec:
     )
 
 
-def test_both_levels_load_and_are_substantial():
-    for level, minimum in (("level0", 250), ("level1", 200)):
-        spec = load_spec(level)
-        assert spec.name == f"muse-{level}"
-        assert len(spec.keywords) > minimum
-        assert any(kw.required for kw in spec.keywords.values())
+def test_levels_load_from_the_sheet():
+    assert defined_levels() == ("level0", "level1")
+    level0, level1 = load_spec("level0"), load_spec("level1")
+    assert level0.name == "muse-level0"
+    assert level0.version == level1.version != ""  # every sheet export bumps both
+    assert list(level0.keywords)[:3] == ["XTENSION", "BITPIX", "NAXIS"]  # sheet order
 
 
-def test_mission_identity_keywords():
-    for level in ("level0", "level1"):
-        camera = load_spec(level).keywords["CAMERA"]
-        assert camera.required
-        assert camera.values == ("CI", "CI171", "CI304", "SG108", "SG171", "SG284")
-        date_obs = load_spec(level).keywords["DATE-OBS"]
-        assert date_obs.format == "isot"
-    assert load_spec("level0").keywords["QUALLEV0"].required
-    assert load_spec("level1").keywords["QUALLEV1"].required
+def test_sheet_path_is_the_packaged_csv():
+    assert SHEET_PATH.name == "keywords.csv"
+    assert SHEET_PATH.read_text(encoding="utf-8-sig").startswith("ISP,L0,L1,L2,L3,")
 
 
-def test_structural_cards_are_not_required():
-    for name in ("XTENSION", "ZCMPTYPE", "BZERO"):
-        assert not load_spec("level0").keywords[name].required, name
-
-
-def test_checksum_cards_are_required():
-    for level in ("level0", "level1"):
-        for name in ("CHECKSUM", "DATASUM"):
-            assert load_spec(level).keywords[name].required, f"{level} {name}"
-
-
-def test_example_header_conforms_to_its_own_spec():
-    for level in ("level0", "level1"):
-        spec = load_spec(level)
-        header = example_header(spec)
-        # Only the fits section (checksums) is absent: the library computes it.
-        errors = validate(header, spec)
-        assert all("CHECKSUM" in e or "DATASUM" in e for e in errors), errors
-        assert header["CAMERA"] in spec.keywords["CAMERA"].values
-
-
-def test_example_values_parse_typed():
-    spec = load_spec("level0")
-    assert example_value(spec.keywords["FSN"]) == 136374300
-    assert example_value(spec.keywords["CAMERA"]) == "SG108"
-    assert abs(example_value(spec.keywords["EXPTIME"]) - 0.298752815) < 1e-12
-    assert example_value(KeywordSpec("X", required=True)) is None
-
-
-def test_unknown_level_is_rejected():
+def test_levels_without_rows_or_meta_are_rejected():
+    with pytest.raises(SpecDefinitionError, match="level2"):
+        load_spec("level2")
     with pytest.raises(ValueError, match="unknown level"):
-        load_spec("level3")
+        load_spec("level7")
 
 
-def test_bad_keyword_definitions_are_rejected():
-    with pytest.raises(SpecDefinitionError):
-        _keyword("BAD", {"required": True, "type": "int", "typo": 1}, "test", "s")
-    with pytest.raises(SpecDefinitionError):
-        _keyword("BAD", {"type": "int"}, "test", "s")
-    with pytest.raises(SpecDefinitionError):
-        _keyword("BAD", {"required": True, "type": "complex"}, "test", "s")
+def test_sheet_rows_are_typed():
+    fsn = load_spec("level0").keywords["MSQ_FSN"]
+    assert (fsn.type, fsn.minimum, fsn.maximum, fsn.comment) == ("int", 0, 4294967295, "FSN")
+    assert not fsn.library_owned
+    offset = load_spec("level0").keywords["MGTPOFFX"]
+    assert (offset.minimum, offset.maximum) == (-32768, 32767)
+    assert load_spec("level0").keywords["FILENAME"].type == "str"
+    cdelt = load_spec("level1").keywords["CDELT1"]
+    assert (cdelt.type, cdelt.minimum, cdelt.maximum) == ("float", None, None)
+    assert "CDELT1" not in load_spec("level0").keywords
 
 
-def test_keywords_carry_their_section():
-    spec = load_spec("level1")
-    assert spec.keywords["CAMERA"].section == "exposure"
-    assert spec.keywords["CRVAL1"].section == "wcs"
-    assert "isp-thermal" in spec.sections
-    assert "wcs" not in load_spec("level0").sections
+def test_library_owned_cards_are_flagged():
+    level0 = load_spec("level0").keywords
+    for name in ("XTENSION", "ZCMPTYPE", "TTYPE1", "EXTNAME", "CHECKSUM", "DATASUM", "BZERO"):
+        assert level0[name].library_owned, name
+    assert not level0["MSQ_FSN"].library_owned
+    assert not load_spec("level1").keywords["WCSAXES"].library_owned
 
 
-def test_missing_required_and_optional():
-    spec = _spec(
-        NEEDED=KeywordSpec("NEEDED", required=True),
-        MAYBE=KeywordSpec("MAYBE", required=False),
-    )
-    assert validate({}, spec) == ["missing required keyword NEEDED"]
-    assert validate({"NEEDED": 1}, spec) == []
+def test_sheet_parsing_rules():
+    ((levels, kw),) = _rows(",X,x,,,MSQ_FSN ,Integer,0,10,FSN,note")
+    assert levels == {"level0", "level1"}
+    assert kw == KeywordSpec("MSQ_FSN", "int", 0, 10, "FSN", "note")
+    (_, tbd), (_, blank) = _rows(",X,,,,TBD,Integer,,,MNEMONIC,", ",X,,,,,Float,-1.5,,,")
+    assert tbd.name == blank.name == ""
+    assert (tbd.comment, blank.minimum) == ("MNEMONIC", -1.5)
+    assert _rows(",,,,,,,,,,") == []  # blank separator rows are skipped
+    assert _rows("", "   ") == []
+    assert _rows(",X,,,,KW,,,,,")[0][1].type is None
+    assert _rows(',X,,,,KW,String,,,"comment, with comma",note')[0][1].comment == "comment, with comma"
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        ",X,,,,msq_fsn,Integer,,,,",  # lowercase
+        ",X,,,,TOOLONGKW,Integer,,,,",  # nine characters
+        ",X,,,,KW,Complex,,,,",  # unknown type
+        ",X,,,,KW,String,0,,,",  # limit on a string
+        ",X,,,,KW,Integer,zero,,,",  # non-numeric limit
+        ",X,,,,KW,Integer,5,1,,",  # lower above upper
+        ",X,,,,KW",  # truncated row
+        ",X,,,,KW,Integer,,,,,extra",  # extra cell
+        ",Y,,,,KW,Integer,,,,",  # invalid level marker
+        "Y,X,,,,KW,Integer,,,,",  # invalid ISP marker
+        ",X,,,,KW,Float,nan,,,",  # non-finite limit
+        ",X,,,,KW,Float,,inf,,",  # non-finite limit
+        ",,,,,KW,Integer,,,,",  # not marked for any level
+        ',X,,,,KW,String,,,"unfinished,note',  # malformed CSV quoting
+    ],
+)
+def test_bad_sheet_rows_are_rejected(line):
+    with pytest.raises(SpecDefinitionError, match="row 2"):
+        _rows(line)
+
+
+def test_missing_sheet_columns_are_rejected():
+    with pytest.raises(SpecDefinitionError, match="Type"):
+        parse_sheet(["L0,FITS KW", "X,KW"])
+
+
+@pytest.mark.parametrize(
+    ("header", "message"),
+    [
+        (SHEET_HEADER.replace("L0,", ""), "missing columns.*L0"),
+        (SHEET_HEADER + ",Extra", "unexpected columns"),
+        (SHEET_HEADER + ",", "unexpected columns"),
+        (SHEET_HEADER + ",Type", "duplicate columns"),
+        (SHEET_HEADER + ",FITS KW", "duplicate columns"),
+    ],
+)
+def test_invalid_sheet_columns_are_rejected(header, message):
+    with pytest.raises(SpecDefinitionError, match=message):
+        parse_sheet([header])
+
+
+GOOD_META = (
+    'spec = "s"\nspec_version = "0.1"\ntitle = "t"\nsource_document = "d"\n[[hdus]]\nname = "A"\nkind = "image"\n'
+)
+
+
+def test_good_meta_parses():
+    assert _parse_meta(GOOD_META, "meta")["hdus"] == [{"name": "A", "kind": "image"}]
+
+
+@pytest.mark.parametrize(
+    ("text", "message"),
+    [
+        ("spec_version = \n", "meta: invalid TOML"),
+        (GOOD_META.replace('spec_version = "0.1"', "spec_version = 0.1"), "spec_version must be a quoted string"),
+        (GOOD_META.replace('title = "t"\n', ""), "title must be"),
+        (GOOD_META.split("[[hdus]]", maxsplit=1)[0], "hdus"),
+        (GOOD_META.replace('kind = "image"\n', ""), "name and kind"),
+        (GOOD_META + "compression = 1\n", "name and kind"),
+    ],
+)
+def test_bad_meta_is_rejected(text, message):
+    with pytest.raises(SpecDefinitionError, match=message):
+        _parse_meta(text, "meta")
+
+
+def test_duplicate_keyword_in_a_level_is_rejected():
+    rows = _rows(",X,,,,KW,Integer,,,,", ",X,X,,,KW,Integer,,,,")
+    with pytest.raises(SpecDefinitionError, match="twice"):
+        _collect(rows, "level0")
+    assert list(_collect(rows, "level1")[0]) == ["KW"]
+    with pytest.raises(SpecDefinitionError, match="no keywords"):
+        _collect(rows, "level2")
+
+
+def test_missing_keywords():
+    spec = _spec(NEEDED=KeywordSpec("NEEDED"), OTHER=KeywordSpec("OTHER"))
+    assert validate({}, spec) == ["missing keyword NEEDED", "missing keyword OTHER"]
+    assert validate({"NEEDED": 1, "OTHER": "x"}, spec) == []
 
 
 def test_type_checks():
     spec = _spec(
-        N=KeywordSpec("N", required=True, type="int"),
-        X=KeywordSpec("X", required=True, type="float"),
-        S=KeywordSpec("S", required=True, type="str"),
-        B=KeywordSpec("B", required=True, type="bool"),
+        N=KeywordSpec("N", type="int"),
+        X=KeywordSpec("X", type="float"),
+        S=KeywordSpec("S", type="str"),
+        B=KeywordSpec("B", type="bool"),
     )
     good = {"N": 3, "X": 1.5, "S": "ok", "B": True}
     assert validate(good, spec) == []
@@ -129,39 +195,59 @@ def test_type_checks():
     assert len(validate(good | {"B": 1}, spec)) == 1
 
 
-def test_values_and_format_checks():
-    spec = _spec(
-        CAMERA=KeywordSpec("CAMERA", required=True, type="str", values=("CI", "SG108")),
-        T=KeywordSpec("T", required=True, type="str", format="isot"),
-    )
-    good = {"CAMERA": "SG108", "T": "2024-11-08T00:59:04.234"}
-    assert validate(good, spec) == []
-    assert "must be one of" in validate(good | {"CAMERA": "VBI"}, spec)[0]
-    assert "ISO 8601" in validate(good | {"T": "yesterday"}, spec)[0]
+def test_range_checks_are_inclusive():
+    spec = _spec(N=KeywordSpec("N", "int", 0, 10), X=KeywordSpec("X", "float", -1.5, None))
+    assert validate({"N": 0, "X": -1.5}, spec) == []
+    assert validate({"N": 10, "X": 1e9}, spec) == []
+    assert "N must be >= 0" in validate({"N": -1, "X": 0}, spec)[0]
+    assert "N must be <= 10" in validate({"N": 11, "X": 0}, spec)[0]
+    assert "X must be >= -1.5" in validate({"N": 0, "X": -2}, spec)[0]
+    assert "must be an integer" in validate({"N": "9", "X": 0}, spec)[0]
 
 
 def test_untyped_keyword_only_checks_presence():
-    spec = _spec(FREE=KeywordSpec("FREE", required=True))
+    spec = _spec(FREE=KeywordSpec("FREE"))
     assert validate({"FREE": object()}, spec) == []
 
 
+def test_library_owned_cards_are_not_validated():
+    spec = _spec(ZIMAGE=KeywordSpec("ZIMAGE", type="bool", library_owned=True), N=KeywordSpec("N", type="int"))
+    assert validate({"N": 1}, spec) == []
+    assert validate({"N": 1, "ZIMAGE": "not a bool"}, spec) == []
+
+
 def test_ensure_valid_raises_with_error_list():
-    spec = _spec(NEEDED=KeywordSpec("NEEDED", required=True))
+    spec = _spec(NEEDED=KeywordSpec("NEEDED"))
     ensure_valid({"NEEDED": 1}, spec)
     with pytest.raises(HeaderValidationError) as caught:
         ensure_valid({}, spec)
-    assert caught.value.errors == ["missing required keyword NEEDED"]
+    assert caught.value.errors == ["missing keyword NEEDED"]
 
 
-def test_empty_header_reports_every_required_keyword():
+def test_example_header_conforms_to_its_own_spec():
+    for level in ("level0", "level1"):
+        spec = load_spec(level)
+        header = example_header(spec)
+        assert validate(header, spec) == []
+        assert not any(spec.keywords[name].library_owned for name in header)
+    assert example_header(load_spec("level0"))["MGTPOFFX"] == -32768
+
+
+def test_library_owned_matches_astropy():
+    """
+    The permanent form of the check that astropy hides only cards we skip.
+    """
+    fits = pytest.importorskip("astropy.io.fits")
+    np = pytest.importorskip("numpy")
     spec = load_spec("level0")
-    required = sum(1 for kw in spec.keywords.values() if kw.required)
-    assert len(validate({}, spec)) == required
-
-
-def test_render_contains_keywords_and_escapes_markup():
-    page = render_spec(load_spec("level1"))
-    assert "   * - CAMERA\n     - yes" in page
-    assert "one of CI, CI171, CI304, SG108, SG171, SG284" in page
-    spec = _spec(P=KeywordSpec("P", required=True, comment="a|b*c"))
-    assert "a\\|b\\*c" in render_spec(spec)
+    hdu = fits.CompImageHDU(np.zeros((3, 4), dtype=np.int16), compression_type="RICE_1", name="COMPRESSED_IMAGE")
+    hdu.header.update(example_header(spec))
+    buf = io.BytesIO()
+    fits.HDUList([fits.PrimaryHDU(), hdu]).writeto(buf, checksum=True)
+    with fits.open(io.BytesIO(buf.getvalue())) as hdul:
+        image_header = hdul[1].header.copy()
+    assert validate(image_header, spec) == []
+    with fits.open(io.BytesIO(buf.getvalue()), disable_image_compression=True) as hdul:
+        hidden = [key for key in hdul[1].header if key and key not in image_header]
+    assert hidden  # astropy really does hide cards from hdul[1].header
+    assert all(_LIBRARY_OWNED.fullmatch(key) for key in hidden), hidden

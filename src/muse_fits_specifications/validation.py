@@ -1,13 +1,16 @@
 """
 Validate FITS headers against a loaded MUSE specification.
 
-Keywords not in the spec are ignored: FITS headers legitimately carry structural and
-history cards the mission spec does not govern.
+Keywords not in the spec are ignored: FITS headers legitimately carry history and other
+cards the mission spec does not govern. Library-owned cards
+(``KeywordSpec.library_owned``) are skipped too: astropy hides or rewrites them in
+``hdul[1].header``. Astropy consumes the compression cards through the decompressor;
+checking existing checksum cards requires ``fits.open(..., checksum=True)`` and is
+separate from this header validator.
 """
 
 from __future__ import annotations
 
-from datetime import datetime
 from math import isfinite
 from typing import TYPE_CHECKING, Any
 
@@ -44,36 +47,29 @@ def _check_value(kw: KeywordSpec, value: object) -> str | None:
     problem = _check_type(kw, value)
     if problem is not None:
         return problem
-    if kw.values is not None and value not in kw.values:
-        return f"{kw.name} must be one of {list(kw.values)}, got {value!r}"
-    if kw.format == "isot":
-        try:
-            datetime.fromisoformat(str(value).strip())
-        except ValueError:
-            return f"{kw.name} must be an ISO 8601 timestamp, got {value!r}"
+    # Limits only exist on numeric keywords (the loader enforces it), so the
+    # type check above guarantees a comparable value here.
+    if kw.minimum is not None and value < kw.minimum:  # type: ignore[operator]
+        return f"{kw.name} must be >= {kw.minimum}, got {value!r}"
+    if kw.maximum is not None and value > kw.maximum:  # type: ignore[operator]
+        return f"{kw.name} must be <= {kw.maximum}, got {value!r}"
     return None
 
 
-def validate(
-    header: Mapping[str, Any],
-    spec: Spec,
-    *,
-    skip_sections: tuple[str, ...] = (),
-) -> list[str]:
+def validate(header: Mapping[str, Any], spec: Spec) -> list[str]:
     """
     Return every way ``header`` violates ``spec``; empty means valid.
 
-    ``skip_sections`` excludes whole sections, e.g. the structural ``fits`` section
-    whose cards (checksums, tile-compression bookkeeping) are owned and verified by the
-    FITS library rather than header comparison.
+    Every keyword of the level must be present with the sheet's type and within its
+    limits, except library-owned cards. Checksum verification is handled separately by
+    the FITS library when explicitly enabled.
     """
     errors = []
     for name, kw in spec.keywords.items():
-        if kw.section in skip_sections:
+        if kw.library_owned:
             continue
         if name not in header:
-            if kw.required:
-                errors.append(f"missing required keyword {name}")
+            errors.append(f"missing keyword {name}")
             continue
         problem = _check_value(kw, header[name])
         if problem is not None:
