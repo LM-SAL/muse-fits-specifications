@@ -76,4 +76,4 @@ showcontent = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-muse_fits_specifications = ["specs/*.csv", "specs/*.yml", "specs/*/*.toml"]
+muse_fits_specifications = ["specs/*.csv", "specs/keywords/*.yml", "specs/*/*.toml"]

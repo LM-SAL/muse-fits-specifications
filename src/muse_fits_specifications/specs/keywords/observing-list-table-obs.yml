@@ -1,0 +1,41 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Observing list table (OBS)
+keywords:
+- name: SOBL_ID
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 4294967295
+  mnemonic: SEQUENCER_OBS_LIST_ID
+  comment: OBS list ID
+  notes: Correct FITS comment?
+- name: SOBLCRRP
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  comment: OBS list current repeat index
+  notes: Correct FITS comment? Correct FITS keyyword?
+- name: SOBLNMRP
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  comment: OBS list number of repeats
+  notes: Correct FITS comment? Correct FITS keyyword?
+- name: SOBLCRDX
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  mnemonic: SEQUENCER_OBS_LIST_STAT_CURRENT_OL_INDX
+  comment: OBS list current entry index
+  notes: Correct FITS comment?
+- name: SOBLNMDX
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  mnemonic: SEQUENCER_OBS_LIST_STAT_NUM_OL_INDX
+  comment: OBS list number of entries
+  notes: Correct FITS comment?

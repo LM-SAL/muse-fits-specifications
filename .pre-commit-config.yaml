@@ -66,7 +66,7 @@ repos:
     hooks:
       - id: keyword-sheet
         name: check keyword sheet and its YAML
-        # Checks keywords.yml matches keywords.csv and loads every defined level from the source tree.
+        # Checks specs/keywords/ matches keywords.csv and loads every defined level from the source tree.
         entry: env PYTHONPATH=src python -m muse_fits_specifications
         language: python
         additional_dependencies: ["pyyaml"]

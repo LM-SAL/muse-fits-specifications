@@ -1,0 +1,35 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Frame definition block table (FDB)
+keywords:
+- name: S_CI__FD
+  levels: {level0: all, level1: all}
+  type: int
+  minimum: 0
+  maximum: 4294967295
+  mnemonic: SEQUENCER_CI_FDB_ID
+  comment: FDB ID for CI
+  notes: Correct FITS comment? Is this zero of camera is not CI?
+- name: SS108_FD
+  levels: {level0: all, level1: all}
+  type: int
+  minimum: 0
+  maximum: 4294967295
+  mnemonic: SEQUENCER_SG_CCD1_FDB_ID
+  comment: FDB ID for SG108
+  notes: Correct FITS comment? Is this zero of camera is not SG108?
+- name: SS171_FD
+  levels: {level0: all, level1: all}
+  type: int
+  minimum: 0
+  maximum: 4294967295
+  mnemonic: SEQUENCER_SG_CCD2_FDB_ID
+  comment: FDB ID for SG171
+  notes: Correct FITS comment? Is this zero of camera is not SG171?
+- name: SS284_FD
+  levels: {level0: all, level1: all}
+  type: int
+  minimum: 0
+  maximum: 4294967295
+  mnemonic: SEQUENCER_SG_CCD3_FDB_ID
+  comment: FDB ID for SG284
+  notes: Correct FITS comment? Is this zero of camera is not SG284?

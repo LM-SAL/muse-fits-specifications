@@ -1,0 +1,43 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Frame list table (FRM)
+keywords:
+- name: SFRL_ID
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 4294967295
+  mnemonic: SEQUENCER_FRAME_LIST_ID
+  comment: FRM list ID
+  notes: Correct FITS comment?
+- name: SFRLCRRP
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  mnemonic: SEQUENCER_FRAME_LIST_STAT_CURRENT_FL_REPEAT_CNT
+  comment: FRM list current repeat index
+  notes: Correct FITS comment?
+- name: SFRLNMRP
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  mnemonic: SEQUENCER_FRAME_LIST_STAT_NUM_FL_REPEATS
+  comment: FRM list number of repeats
+  notes: Correct FITS comment?
+- name: SFRLCRDX
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  mnemonic: SEQUENCER_FRAME_LIST_STAT_CURRENT_FL_INDX
+  comment: FRM list current entry index
+  notes: Correct FITS comment?
+- name: SFRLNMDX
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  mnemonic: SEQUENCER_FRAME_LIST_STAT_NUM_FL_INDX
+  comment: FRM list number of entries
+  notes: Correct FITS comment?

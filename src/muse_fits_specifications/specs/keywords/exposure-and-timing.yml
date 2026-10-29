@@ -1,0 +1,18 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Exposure and timing
+keywords:
+- name: EXPTIME
+  levels: {}
+  type: float
+  comment: '[sec] Exposure duration: mean shutter open time'
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: EXPSDEV
+  levels: {}
+  type: float
+  comment: '[sec] Exposure standard deviation'
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: INT_TIME
+  levels: {}
+  type: float
+  comment: '[sec] CCD integration duration'
+  notes: '[TBC] Copied from old keyword excel sheet'
