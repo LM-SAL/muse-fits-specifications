@@ -117,6 +117,14 @@ def render_spec(spec: Spec) -> str:
         *_heading(page_title(spec), "="),
         f"Spec ``{spec.name}`` version {spec.version}.",
         f"Source: {spec.source_document}.",
+        *(
+            [
+                "",
+                f"The HDU layout is provisional; ``specs/{spec.name.removeprefix('muse-')}/_meta.toml`` says where it comes from.",
+            ]
+            if spec.provisional
+            else []
+        ),
         "",
         *_heading("HDUs", "-"),
         "The extensions that follow the empty primary HDU, in file order.",

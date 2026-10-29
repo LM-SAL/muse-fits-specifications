@@ -1,0 +1,1 @@
+Added ``muse_fits_specifications.files``, installed with the ``fits`` extra: ``build_header`` builds a header in sheet order with the sheet's comments, ``example_file`` and ``validate_file`` generate and check whole Level 0 files, and ``python -m muse_fits_specifications.files example`` or ``validate`` does the same from a shell.

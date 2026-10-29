@@ -27,8 +27,10 @@ Layout
   A keyword records the levels whose files carry it (``all``, ``CI`` or ``SG``), its type, its range or allowed values, its comment, notes and ISP mnemonic, and whether the FITS library owns it.
 - ``specs/<level>/_meta.toml``: what the sheet lacks: spec name, version, title, source document and HDU layout.
   ``spec_version`` must be a quoted string, such as ``"0.1"``; the loader rejects a bare number.
-  Each ``[[hdus]]`` table is one extension after the empty primary HDU, in file order: its ``name``, ``kind``, optional ``compression``, and optional ``family`` (``CI`` or ``SG``) for an extension that only that camera type's files have.
+  Each ``[[hdus]]`` table is one extension after the empty primary HDU, in file order: its ``name`` (compared without case, as astropy upper-cases it; ``{CAMERA}`` stands for the file's ``CAMERA``), ``kind`` (``compressed-image``, ``image`` or ``table``), ``compression`` for a compressed image only, and ``family`` (``CI`` or ``SG``) for an extension that only that camera type's files have.
   ``per_camera = true`` marks a level whose CI and SG files differ; only such a level may hold CI- or SG-only keywords or HDUs.
+  ``provisional = true`` marks a layout that is not settled; its comments say where it comes from, and files of that level cannot be generated or checked yet.
+  Level 0 is settled; Levels 1 to 3 are provisional.
 
 Levels and Camera Types
 -----------------------
@@ -92,6 +94,19 @@ Updating the Sheet
    A sheet error stops it with the row number: fix the row in the spreadsheet and export again.
 3. Review ``git diff src/muse_fits_specifications/specs/keywords/``, which shows what the export changed, topic by topic.
 4. Bump ``spec_version`` in each level's ``_meta.toml``, run ``pytest --pyargs muse_fits_specifications`` (the astropy round-trip test proves every mission keyword survives a compressed write and read), build the docs (``tox -e build_docs``), and commit the CSV, the YAML and the version bumps together.
+
+Files
+-----
+
+``muse_fits_specifications.files`` (the ``fits`` extra, which brings astropy) works on whole files:
+
+- ``build_header(spec, values)`` builds a header in sheet order with the sheet's comments, each shortened to fit its card; ``fill=True`` adds example values for the keywords ``values`` lacks, and keys the sheet does not define follow without a comment.
+- ``example_file(spec)`` builds a conforming file: an empty primary HDU, then the level's HDUs, the first carrying every keyword.
+- ``validate_file(file, spec)`` checks the empty primary HDU, the HDUs' names, kinds and compression, and the first extension's keywords.
+- ``python -m muse_fits_specifications.files example|validate LEVEL PATH [--family CI|SG]`` does the last two from a shell.
+
+Example values are the first allowed value, else the lower limit, else a typed placeholder, and a fixed timestamp for ``ISO 8601`` cards.
+The sheet does not yet say which HDU carries each keyword, so every keyword goes in, and is checked in, the first extension, as Level 0 has them.
 
 Library-owned Cards
 -------------------

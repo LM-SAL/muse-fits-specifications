@@ -55,6 +55,8 @@ The packaged directory of YAML generated from the sheet, which the loader reads.
 SECTIONS = "_sections.yml"
 
 _META_FIELDS = ("spec", "spec_version", "title", "source_document")
+_META_FLAGS = ("provisional", "per_camera")
+HDU_KINDS = ("compressed-image", "image", "table")
 
 
 class SpecDefinitionError(Exception):
@@ -96,6 +98,7 @@ class Spec:
     keywords: Mapping[str, KeywordSpec]
     unassigned: tuple[KeywordSpec, ...] = ()
     family: str | None = None
+    provisional: bool = False
 
     @property
     def sections(self) -> tuple[str, ...]:
@@ -180,9 +183,10 @@ def _parse_meta(text: str, source: str) -> dict:
         if not isinstance(meta.get(field), str):
             msg = f"{source}: {field} must be a quoted string"
             raise SpecDefinitionError(msg)
-    if not isinstance(meta.get("per_camera", False), bool):
-        msg = f"{source}: per_camera must be true or false"
-        raise SpecDefinitionError(msg)
+    for flag in _META_FLAGS:
+        if not isinstance(meta.get(flag, False), bool):
+            msg = f"{source}: {flag} must be true or false"
+            raise SpecDefinitionError(msg)
     hdus = meta.get("hdus")
     if not isinstance(hdus, list) or not hdus:
         msg = f"{source}: needs at least one [[hdus]] table"
@@ -191,14 +195,17 @@ def _parse_meta(text: str, source: str) -> dict:
         if not (
             isinstance(hdu, dict)
             and isinstance(hdu.get("name"), str)
-            and isinstance(hdu.get("kind"), str)
+            and hdu.get("kind") in HDU_KINDS
             and isinstance(hdu.get("compression", ""), str)
             and hdu.get("family", FAMILIES[0]) in FAMILIES
         ):
             msg = (
-                f"{source}: each [[hdus]] table needs string name and kind, optionally compression "
-                f"and family ({' or '.join(FAMILIES)}); got {hdu!r}"
+                f"{source}: each [[hdus]] table needs a string name and a kind in {HDU_KINDS}, optionally "
+                f"compression and family ({' or '.join(FAMILIES)}); got {hdu!r}"
             )
+            raise SpecDefinitionError(msg)
+        if "compression" in hdu and hdu["kind"] != "compressed-image":
+            msg = f"{source}: only a compressed-image HDU takes a compression; got {hdu!r}"
             raise SpecDefinitionError(msg)
         if "family" in hdu and not meta.get("per_camera", False):
             msg = f"{source}: an HDU with a family needs per_camera = true; got {hdu!r}"
@@ -262,10 +269,22 @@ def load_spec(level: str, family: str | None = None) -> Spec:
         keywords=MappingProxyType(keywords),
         unassigned=unassigned,
         family=family,
+        provisional=meta.get("provisional", False),
     )
 
 
 _PLACEHOLDERS = {"bool": False, "int": 0, "float": 0.0, "str": "UNKNOWN", None: 0}
+_ISO_PLACEHOLDER = "2000-01-01T00:00:00.000"
+
+
+def _example_value(kw: KeywordSpec) -> bool | int | float | str:
+    if kw.values:
+        return kw.values[0]
+    if kw.minimum is not None:
+        return kw.minimum
+    if kw.maximum is not None:
+        return kw.maximum
+    return _ISO_PLACEHOLDER if kw.format == "isot" else _PLACEHOLDERS[kw.type]
 
 
 def example_header(spec: Spec) -> dict[str, bool | int | float | str]:
@@ -274,12 +293,9 @@ def example_header(spec: Spec) -> dict[str, bool | int | float | str]:
 
     Generators (simulators, fixture writers) start from this so their files conform to
     the same spec the validator enforces. Values are the first allowed value, else the
-    lower limit, else a neutral typed placeholder (``0``/``0.0``/``UNKNOWN``; presence-
-    only keywords get ``0``). Library-owned cards are left to the FITS library. The
-    result passes :func:`~muse_fits_specifications.validation.validate`.
+    lower limit, else the upper limit, else a neutral typed placeholder
+    (``0``/``0.0``/``UNKNOWN``, a fixed timestamp for ISO 8601 cards; presence-only
+    keywords get ``0``). Library-owned cards are left to the FITS library. The result
+    passes :func:`~muse_fits_specifications.validation.validate`.
     """
-    return {
-        name: kw.values[0] if kw.values else kw.minimum if kw.minimum is not None else _PLACEHOLDERS[kw.type]
-        for name, kw in spec.keywords.items()
-        if not kw.library_owned
-    }
+    return {name: _example_value(kw) for name, kw in spec.keywords.items() if not kw.library_owned}

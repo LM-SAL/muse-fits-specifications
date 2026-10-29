@@ -132,8 +132,9 @@ def test_levels_whose_ci_and_sg_files_differ_load_per_camera_type():
     assert ci["PC1_1"].comment != sg["PC1_1"].comment  # one keyword, a row per camera type
     assert "PC1_2" in ci
     assert "PC1_2" not in sg
-    assert [hdu.name for hdu in load_spec("level2", "SG").hdus] == ["SCI", "DQ", "AUX", "WAVELENGTH"]
+    assert [hdu.name for hdu in load_spec("level2", "SG").hdus] == ["Fe XIX 108.355", "Fe IX 171.073", "Fe XV 284.163"]
     assert [hdu.name for hdu in load_spec("level2", "CI").hdus] == ["SCI", "DQ", "AUX"]
+    assert [spec.provisional for _, spec in level_pages()] == [False, True, True, True, True, True]
 
 
 def test_unknown_or_undefined_levels_are_rejected(monkeypatch):
@@ -287,6 +288,7 @@ GOOD_META = (
 def test_good_meta_parses():
     assert _parse_meta(GOOD_META, "meta")["hdus"] == [{"name": "A", "kind": "image"}]
     assert _parse_meta("per_camera = true\n" + GOOD_META + 'family = "SG"\n', "meta")["hdus"][0]["family"] == "SG"
+    assert _parse_meta("provisional = true\n" + GOOD_META, "meta")["provisional"] is True
 
 
 @pytest.mark.parametrize(
@@ -296,11 +298,14 @@ def test_good_meta_parses():
         (GOOD_META.replace('spec_version = "0.1"', "spec_version = 0.1"), "spec_version must be a quoted string"),
         (GOOD_META.replace('title = "t"\n', ""), "title must be"),
         (GOOD_META.split("[[hdus]]", maxsplit=1)[0], "hdus"),
-        (GOOD_META.replace('kind = "image"\n', ""), "name and kind"),
-        (GOOD_META + "compression = 1\n", "name and kind"),
-        (GOOD_META + 'family = "XX"\n', "name and kind"),
+        (GOOD_META.replace('kind = "image"\n', ""), "name and a kind"),
+        (GOOD_META.replace('kind = "image"', 'kind = "picture"'), "name and a kind"),
+        (GOOD_META + "compression = 1\n", "name and a kind"),
+        (GOOD_META + 'compression = "RICE_1"\n', "only a compressed-image HDU takes a compression"),
+        (GOOD_META + 'family = "XX"\n', "name and a kind"),
         (GOOD_META + 'family = "SG"\n', "needs per_camera = true"),
         ('per_camera = "yes"\n' + GOOD_META, "per_camera must be true or false"),
+        ('provisional = "yes"\n' + GOOD_META, "provisional must be true or false"),
     ],
 )
 def test_bad_meta_is_rejected(text, message):
@@ -391,6 +396,10 @@ def test_example_header_conforms_to_its_own_spec():
         assert validate(header, spec) == []
         assert not any(spec.keywords[name].library_owned for name in header)
     assert example_header(load_spec("level1", "SG"))["CAMERA"] == "CI"  # the first allowed value
+    assert example_header(load_spec("level0"))["DATE-OBS"] == "2000-01-01T00:00:00.000"
+    below_zero = _spec(NEG=KeywordSpec("NEG", "int", maximum=-5))
+    assert example_header(below_zero) == {"NEG": -5}  # the upper limit when there is no lower one
+    assert validate(example_header(below_zero), below_zero) == []
 
 
 def test_library_owned_matches_astropy():
@@ -398,12 +407,11 @@ def test_library_owned_matches_astropy():
     The permanent form of the check that astropy hides only cards we skip.
     """
     fits = pytest.importorskip("astropy.io.fits")
-    np = pytest.importorskip("numpy")
+    from muse_fits_specifications.files import example_file  # noqa: PLC0415 - needs astropy
+
     spec = load_spec("level0")
-    hdu = fits.CompImageHDU(np.zeros((3, 4), dtype=np.int16), compression_type="RICE_1", name="COMPRESSED_IMAGE")
-    hdu.header.update(example_header(spec))
     buf = io.BytesIO()
-    fits.HDUList([fits.PrimaryHDU(), hdu]).writeto(buf, checksum=True)
+    example_file(spec).writeto(buf, checksum=True)
     with fits.open(io.BytesIO(buf.getvalue())) as hdul:
         image_header = hdul[1].header.copy()
     assert validate(image_header, spec) == []
@@ -420,6 +428,8 @@ def test_render_spec_groups_keywords_by_section_and_escapes_markup():
     assert "   * - CAMERA\n     - str\n     - CI; SG108; SG171; SG284\n" in page
     assert "     - str (ISO 8601)\n" in page
     assert "Unassigned" not in page
+    assert "The HDU layout is provisional; ``specs/level1/_meta.toml``" in page
+    assert "provisional" not in render_spec(load_spec("level0"))
     assert "   * - NAXIS1\n     - int\n     - 1 to 4294967295\n" in render_spec(load_spec("level0"))
     spec = replace(_spec(P=KeywordSpec("P", comment="a|b*c")), unassigned=(KeywordSpec("", "int", mnemonic="M"),))
     page = render_spec(spec)

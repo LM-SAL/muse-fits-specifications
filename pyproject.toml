@@ -14,14 +14,18 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+fits = [
+    "astropy>=7.2",  # where CompImageHDU is an ImageHDU; checked on 7.2 and 8.0
+]
 test = [
     "pytest",
-    "astropy",
+    "astropy>=7.2",  # where CompImageHDU is an ImageHDU; checked on 7.2 and 8.0
     "pytest-doctestplus>=1.3.0",
 ]
 docs = [
     "sphinx",
     "pydata-sphinx-theme",
+    "astropy>=7.2",  # autodoc imports muse_fits_specifications.files
 ]
 
 # Keep isort's wrapping style identical to ruff-format's so the two

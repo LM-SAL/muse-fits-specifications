@@ -1,1 +1,1 @@
-PyYAML is now a dependency.
+PyYAML is now a dependency, and the new ``fits`` extra installs astropy 7.2 or later.

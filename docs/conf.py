@@ -23,6 +23,9 @@ exclude_patterns = ["_build"]
 default_role = "py:obj"
 nitpicky = True
 intersphinx_mapping = {"python": ("https://docs.python.org/3/", None)}
+# files.py annotates with module aliases, some imported only for type checking, which autodoc
+# leaves as text it cannot link; the docstrings say what each one is.
+nitpick_ignore = [("py:class", name) for name in ("fits.Header", "fits.HDUList", "np.ndarray", "PathLike")]
 
 html_theme = "pydata_sphinx_theme"
 html_title = f"{project} {release}"

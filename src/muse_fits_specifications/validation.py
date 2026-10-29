@@ -44,6 +44,9 @@ def _check_type(kw: KeywordSpec, value: object) -> str | None:
 
 
 def _check_value(kw: KeywordSpec, value: object) -> str | None:
+    item = getattr(value, "item", None)
+    if getattr(value, "ndim", None) == 0 and callable(item):
+        value = item()  # a numpy scalar, as a header built from arrays holds, checks as its Python value
     problem = _check_type(kw, value)
     if problem is not None:
         return problem
