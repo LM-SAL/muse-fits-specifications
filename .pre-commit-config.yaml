@@ -65,11 +65,12 @@ repos:
   - repo: local
     hooks:
       - id: keyword-sheet
-        name: check keyword sheet
-        # Loads the sheet and every defined level from the source tree; stdlib only.
+        name: check keyword sheet and its YAML
+        # Checks specs/keywords/ matches keywords.csv and loads every defined level from the source tree.
         entry: env PYTHONPATH=src python -m muse_fits_specifications
-        language: system
-        files: ^src/muse_fits_specifications/specs/
+        language: python
+        additional_dependencies: ["pyyaml"]
+        files: ^src/muse_fits_specifications/(specs/|sheet\.py|spec\.py)
         pass_filenames: false
 ci:
   autofix_prs: false

@@ -7,21 +7,39 @@ Provenance
 .. code-block:: text
 
     "MUSE FITS Keyword Master" spreadsheet  (exported as CSV)
-                  ->  src/muse_fits_specifications/specs/keywords.csv
+        ->  src/muse_fits_specifications/specs/keywords.csv
+        ->  src/muse_fits_specifications/specs/keywords/*.yml  (python -m muse_fits_specifications.sheet)
+        ->  loader, header validator and reference pages
 
-The keyword sheet is the master source; the :doc:`keywords` page shows it whole, with an X column per level.
-The loader, the header validator and the generated keyword reference pages all read the same file, so they cannot drift apart.
+The keyword sheet is the master source: the team edits the spreadsheet and exports it over ``keywords.csv``.
+``python -m muse_fits_specifications.sheet`` converts the export into ``specs/keywords/``, one YAML file per sheet section, which the loader, the header validator and the generated reference pages all read, so they cannot drift apart.
+All of it is committed: the YAML diff shows which topics an export changed, one keyword per block, however the spreadsheet ordered or quoted the CSV.
+The :doc:`keywords` page shows the whole sheet with a column per level.
 An earlier DKIST-style set of per-section YAML files, bootstrapped from the xlsx on 2026-08-18, was replaced by the sheet on 2026-09-22.
 
 Layout
 ------
 
-- ``specs/keywords.csv``: one row per keyword; installed, it is ``muse_fits_specifications.SHEET_PATH``.
-  An ``X`` in a level column (``L0``..``L3``) means the card is present in every file of that level; a keyword is never optional.
-  The ``ISP`` column duplicates ``L0`` and is ignored.
+- ``specs/keywords.csv``: the sheet export, one row per keyword; installed, it is ``muse_fits_specifications.SHEET_PATH``.
+- ``specs/keywords/``: generated from the sheet, never edited by hand; installed, it is ``muse_fits_specifications.KEYWORDS_PATH``.
+  Each section of the sheet is one file named after its title, such as ``exposure-and-timing.yml`` (``untitled.yml`` for the rows above the first section row), and ``_sections.yml`` lists the files in sheet order, so the sheet sets the order.
+  Renaming a section renames its file; two titles that give one file name are rejected.
+  A keyword records the levels whose files carry it (``all``, ``CI`` or ``SG``), its type, its range or allowed values, its comment, notes and ISP mnemonic, and whether the FITS library owns it.
 - ``specs/<level>/_meta.toml``: what the sheet lacks: spec name, version, title, source document and HDU layout.
-  A level without one cannot be loaded; add the file when a level is defined, and its page will appear on the next build.
   ``spec_version`` must be a quoted string, such as ``"0.1"``; the loader rejects a bare number.
+  Each ``[[hdus]]`` table is one extension after the empty primary HDU, in file order: its ``name`` (compared without case, as astropy upper-cases it; ``{CAMERA}`` stands for the file's ``CAMERA``), ``kind`` (``compressed-image``, ``image`` or ``table``), ``compression`` for a compressed image only, and ``family`` (``CI`` or ``SG``) for an extension that only that camera type's files have.
+  ``per_camera = true`` marks a level whose CI and SG files differ; only such a level may hold CI- or SG-only keywords or HDUs.
+  ``provisional = true`` marks a layout that is not settled; its comments say where it comes from, and files of that level cannot be generated or checked yet.
+  Level 0 is settled; Levels 1 to 3 are provisional.
+
+Levels and Camera Types
+-----------------------
+
+A keyword is never optional: a level's files carry every keyword marked for that level.
+A level whose ``_meta.toml`` sets ``per_camera = true`` (Levels 1 and 2) is loaded per camera type, as in ``load_spec("level1", "SG")``, and each camera type gets its own reference page.
+The flag, not the sheet, decides this, so a weekly export cannot change which levels need a camera type: a CI- or SG-only row in any other level fails the check.
+``muse_fits_specifications.families(level)`` says whether a level is split this way.
+A keyword may have one row per camera type, as ``PC1_1`` does, because its meaning differs between CI and SG files.
 
 Sheet Columns
 -------------
@@ -32,37 +50,63 @@ Sheet Columns
    * - Column
      - Meaning
    * - ``FITS KW``
-     - The keyword. Trailing padding is stripped.
-       Blank or ``tbd`` marks an ISP field with no keyword assigned yet: such rows are skipped by validation and listed on the level page as unassigned.
+     - The keyword: 1-8 characters of ``A-Z0-9_-``; padding is stripped.
+       Blank or ``tbd`` marks an ISP field with no keyword assigned yet: such rows are never validated and are listed on the level page as unassigned.
+       A row whose ``FITS KW`` starts with ``#`` is a section row: its ``Type`` cell names the section of the rows below it, and a blank ``Type`` makes it a spacer.
    * - ``Type``
-     - ``Integer``/``String``/``Float``/``Boolean``; blank means no type check.
-       An integer value is accepted where ``Float`` is specified, not vice versa.
-   * - ``Lower Limit`` / ``Upper Limit``
-     - Inclusive numeric range; only allowed with a numeric ``Type``.
+     - ``str``, ``bool``, ``int``, ``float``, ``float32``, ``float64``, ``ISO 8601`` (a timestamp string), or a sized integer such as ``uint8``, ``uint16``, ``uint32`` or ``int16``.
+       A sized integer's range bounds the row's limits and allowed values, and fills a blank limit.
+       Blank means no type check.
+       An integer value is accepted where a float is specified, not vice versa.
+   * - ``ISP``
+     - Not used.
+   * - ``L0`` to ``L3``
+     - ``X`` when every file of the level carries the card, ``CI`` or ``SG`` when only that camera type's files do, blank otherwise.
+       A row marked for no level is parked: it stays in the YAML and on the :doc:`keywords` page but in no level.
+   * - ``Lower Limit``
+     - A number, the inclusive minimum; or ``;``-separated allowed values, such as ``8;16;32`` or ``CI; SG108``.
+       Double quotes around a value are dropped, and a ``bool`` value is ``T`` or ``F``.
+       A non-numeric ``Type`` can only list allowed values.
+   * - ``Upper Limit``
+     - The inclusive maximum, for a numeric ``Type`` without allowed values.
    * - ``FITS Comment``
-     - The card comment. On ISP rows this is the ISP mnemonic.
+     - The card comment.
    * - ``Comment``
      - Free-text notes.
+   * - ``ISP mnemonic``
+     - The ISP field the value comes from.
 
-The sheet must contain exactly the documented columns, including ``ISP`` and ``L0`` through ``L3``, with no duplicate columns.
-Nonblank rows must have one cell per column, and level markers must be ``X`` (case-insensitive) or blank.
+The sheet must contain exactly these columns, in any order, with no duplicates.
+Nonblank rows must have one cell per column; level markers are case-insensitive.
 Blank separator lines are allowed; quote comments containing commas when exporting CSV.
 
-Sheet typos fail loudly: ``load_spec`` raises ``SpecDefinitionError`` for malformed CSV, an illegal keyword (anything but 1-8 characters of ``A-Z0-9_-``), an unknown ``Type``, a limit on a non-numeric type, an unparsable or non-finite limit, a lower limit above the upper one, a row marked for no level, or a keyword listed twice for one level.
+Sheet typos fail loudly: the converter raises ``SpecDefinitionError`` with the row number for malformed CSV, an illegal keyword, an unknown ``Type``, a limit without a ``Type``, an unparsable or non-finite limit, a lower limit above the upper one, a limit or value outside a sized integer's range, an upper limit beside allowed values, an unknown level marker, or a keyword listed twice for one level and camera type.
 A malformed ``_meta.toml`` raises the same error, naming the file and field.
-Row errors include their row number; duplicate-keyword errors identify the keyword and level.
-``python -m muse_fits_specifications`` runs every check and also fails when the sheet marks a level that has no ``_meta.toml``; pre-commit runs it whenever a file under ``specs/`` changes.
-Documentation builds render only the defined levels.
+``python -m muse_fits_specifications`` runs every check: it fails when ``specs/keywords/`` is not what the sheet converts to, file by file, when the sheet marks a level that has no ``_meta.toml``, and when a level fails to load.
+Pre-commit runs it whenever the sheet, the YAML, a ``_meta.toml`` or the converter changes, and the tests run it too.
 
 Updating the Sheet
 ------------------
 
 1. Export the spreadsheet as CSV over ``src/muse_fits_specifications/specs/keywords.csv``.
-2. ``git diff`` shows the change row by row.
    ``.gitattributes`` normalizes the file's line endings, so an export from a different tool does not rewrite every line.
-3. Commit: the pre-commit hook runs ``python -m muse_fits_specifications`` against the source tree and rejects a malformed row with its row number.
-   Run ``pytest --pyargs muse_fits_specifications`` too; the astropy round-trip test proves every mission keyword survives a compressed write and read.
-4. Bump ``spec_version`` in each level's ``_meta.toml``, build the docs (``tox -e build_docs``) and commit.
+2. Run ``python -m muse_fits_specifications.sheet`` to regenerate ``specs/keywords/``; it also deletes the files of sections that are gone.
+   A sheet error stops it with the row number: fix the row in the spreadsheet and export again.
+3. Review ``git diff src/muse_fits_specifications/specs/keywords/``, which shows what the export changed, topic by topic.
+4. Bump ``spec_version`` in each level's ``_meta.toml``, run ``pytest --pyargs muse_fits_specifications`` (the astropy round-trip test proves every mission keyword survives a compressed write and read), build the docs (``tox -e build_docs``), and commit the CSV, the YAML and the version bumps together.
+
+Files
+-----
+
+``muse_fits_specifications.files`` (the ``fits`` extra, which brings astropy) works on whole files:
+
+- ``build_header(spec, values)`` builds a header in sheet order with the sheet's comments, each shortened to fit its card; ``fill=True`` adds example values for the keywords ``values`` lacks, and keys the sheet does not define follow without a comment.
+- ``example_file(spec)`` builds a conforming file: an empty primary HDU, then the level's HDUs, the first carrying every keyword.
+- ``validate_file(file, spec)`` checks the empty primary HDU, the HDUs' names, kinds and compression, and the first extension's keywords.
+- ``python -m muse_fits_specifications.files example|validate LEVEL PATH [--family CI|SG]`` does the last two from a shell.
+
+Example values are the first allowed value, else the lower limit, else a typed placeholder, and a fixed timestamp for ``ISO 8601`` cards.
+The sheet does not yet say which HDU carries each keyword, so every keyword goes in, and is checked in, the first extension, as Level 0 has them.
 
 Library-owned Cards
 -------------------
@@ -94,7 +138,6 @@ The test suite rebuilds this experiment so the rule cannot rot silently.
 Current Known Caveats
 ---------------------
 
-- Most level 0 rows are ISP fields without a FITS keyword yet (plus one ``tbd``); they are listed as unassigned until the sheet names them.
-- Levels 2 and 3 have columns in the sheet but no rows and no ``_meta.toml`` yet.
-- The sheet has no columns for allowed values, example values or timestamp format, so those checks do not exist; add a column and the loader can grow the check.
-- One row per keyword means one type and one range across all levels; give a keyword two rows if that ever differs.
+- The Level 2 and Level 3 HDU layouts are provisional: their ``_meta.toml`` files copy what the pipeline's placeholder writers produced on 2026-10-29.
+- Allowed values are one set per row. ``CTYPE1`` lists ``WAVE`` and ``HPLN-TAN`` for every Level 1 and Level 2 file, so either passes for both camera types until the sheet gives it a row per camera type.
+- ``ISO 8601`` keywords are checked as strings; the timestamp format itself is not checked.

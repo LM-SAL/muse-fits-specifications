@@ -1,0 +1,91 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Data quality and statistics
+keywords:
+- name: QUALLEV0
+  levels: {level1: all, level2: all}
+  type: int
+  comment: Level 0 Quality word
+- name: QUALLEV1
+  levels: {level1: all, level2: all}
+  type: int
+  comment: Level 1 Quality word
+- name: TOTVALS
+  levels: {level1: all, level2: all}
+  type: int
+  comment: Expected number of data values (pixels)
+- name: DATAVALS
+  levels: {level1: all, level2: all}
+  type: int
+  comment: Actual number of data values in image
+- name: MISSVALS
+  levels: {level1: all, level2: all}
+  type: int
+  comment: 'Missing values: TOTVALS - DATAVALS'
+- name: PERCENTD
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Percent data; 100*DATAVALS/TOTVALS
+- name: DATAMIN
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Minimum value of all pixels
+- name: DATAMAX
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Maximum value of all pixels
+- name: DATAMEDN
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Median value of all pixels
+- name: DATAMEAN
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Mean value of all pixels
+- name: DATARMS
+  levels: {level1: all, level2: all}
+  type: float
+  comment: RMS deviation from the mean value of all pixels
+- name: DATASKEW
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Skewness from the mean value of all pixels
+- name: DATAKURT
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Kurtosis of all pixels
+- name: DATAP01
+  levels: {level1: all, level2: all}
+  type: float
+  comment: 1% level for histogram of pixel values
+- name: DATAP10
+  levels: {level1: all, level2: all}
+  type: float
+  comment: 10% level for histogram of pixel values
+- name: DATAP25
+  levels: {level1: all, level2: all}
+  type: float
+  comment: 25% level for histogram of pixel values
+- name: DATAP75
+  levels: {level1: all, level2: all}
+  type: float
+  comment: 75% level for histogram of pixel values
+- name: DATAP90
+  levels: {level1: all, level2: all}
+  type: float
+  comment: 90% level for histogram of pixel values
+- name: DATAP95
+  levels: {level1: all, level2: all}
+  type: float
+  comment: 95% level for histogram of pixel values
+- name: DATAP98
+  levels: {level1: all, level2: all}
+  type: float
+  comment: 98% level for histogram of pixel values
+- name: DATAP99
+  levels: {level1: all, level2: all}
+  type: float
+  comment: 99% level for histogram of pixel values
+- name: NSATPIX
+  levels: {level1: all, level2: all}
+  type: int
+  comment: Number of saturated pixels
