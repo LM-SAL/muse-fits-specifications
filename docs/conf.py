@@ -16,9 +16,13 @@ release = tomllib.loads((DOCS.parent / "pyproject.toml").read_text())["project"]
 
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
 ]
 exclude_patterns = ["_build"]
+default_role = "py:obj"
+nitpicky = True
+intersphinx_mapping = {"python": ("https://docs.python.org/3/", None)}
 
 html_theme = "pydata_sphinx_theme"
 html_title = f"{project} {release}"

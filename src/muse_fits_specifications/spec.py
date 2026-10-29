@@ -231,7 +231,7 @@ def _meta_path(level: str):
 
 def defined_levels() -> tuple[str, ...]:
     """
-    The levels that have a ``specs/<level>/_meta.toml``, in :data:`LEVELS` order.
+    The levels that have a ``specs/<level>/_meta.toml``, in ``LEVELS`` order.
     """
     return tuple(level for level in LEVELS if _meta_path(level).is_file())
 
@@ -301,7 +301,7 @@ def example_header(spec: Spec) -> dict[str, bool | int | float | str]:
     the same spec the validator enforces. Values are the sheet's lower limit where there
     is one, otherwise a neutral typed placeholder (``0``/``0.0``/``UNKNOWN``; presence-
     only keywords get ``0``). Library-owned cards are left to the FITS library. The
-    result passes :func:`validate`.
+    result passes :func:`~muse_fits_specifications.validation.validate`.
     """
     return {
         name: kw.minimum if kw.minimum is not None else _PLACEHOLDERS[kw.type]

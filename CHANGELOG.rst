@@ -1,8 +1,5 @@
-Changelog
-=========
-
 0.1.0 (unreleased)
-------------------
+==================
 
 - Initial draft specification: the mission keyword sheet ("MUSE FITS Keyword Master", packaged as ``specs/keywords.csv``) is the single source of truth for all levels.
   For now, it is just ISP and L0.
