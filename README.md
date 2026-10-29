@@ -6,6 +6,7 @@ The mission keyword sheet, kept in `src/muse_fits_specifications/specs/keywords.
 `python -m muse_fits_specifications.sheet` converts the sheet into `specs/keywords/`, one YAML file per sheet section in the order `_sections.yml` lists, which the loader, the header validator, and the generated keyword reference docs all read, so they cannot drift apart.
 To update the spec, follow "Updating the Sheet" in [`docs/format.rst`](docs/format.rst).
 `muse_fits_specifications.SHEET_PATH` and `KEYWORDS_PATH` point at the installed copies for reading them directly.
+With the `fits` extra, `python -m muse_fits_specifications.files example level0 out.fits` writes a conforming Level 0 file and `... validate level0 in.fits` checks one.
 
 This is modeled on the DKIST Data Center's [`dkist-fits-specifications`](https://bitbucket.org/dkistdc/dkist-fits-specifications) and [`dkist-header-validator`](https://bitbucket.org/dkistdc/dkist-header-validator).
 

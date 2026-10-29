@@ -14,12 +14,16 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+fits = [
+    "astropy>=8.0",  # the oldest version tested
+]
 test = [
+    "muse-fits-specifications[fits]",
     "pytest",
-    "astropy",
     "pytest-doctestplus>=1.3.0",
 ]
 docs = [
+    "muse-fits-specifications[fits]",  # autodoc imports muse_fits_specifications.files
     "sphinx",
     "pydata-sphinx-theme",
 ]

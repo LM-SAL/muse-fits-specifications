@@ -2,8 +2,9 @@ spec = "muse-level3"
 spec_version = "0.2"
 title = "Level 3"
 source_document = "MUSE FITS Keyword Master v0.1 (sheet export, specs/keywords.csv)"
-
-# Provisional: the extensions after the empty primary HDU that muse-pipeline's placeholder Level 3 writer (SG moment maps) produced on 2026-10-29.
+# Provisional: the extensions after the empty primary HDU that muse-pipeline's placeholder Level 3
+# writer (SG moment maps) produced on 2026-10-29.
+provisional = true
 
 [[hdus]]
 name = "INTENSITY"

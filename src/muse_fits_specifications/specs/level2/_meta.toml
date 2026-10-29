@@ -2,25 +2,42 @@ spec = "muse-level2"
 spec_version = "0.2"
 title = "Level 2"
 source_document = "MUSE FITS Keyword Master v0.1 (sheet export, specs/keywords.csv)"
+# Provisional. SG: from the muse repo's mock writer (muse.fits.create_mock_l2_fits, branch
+# pipeline_dev, 2026-10-28): one file per raster with one image per SG window, named after its
+# line, as IRIS writes spectral windows. That mock puts the first window in the primary HDU; IRIS
+# keeps the primary header-only and ends with auxiliary HDUs, which the mock does not write.
+# CI: no mock yet, so the muse-pipeline placeholder's SCI, DQ and AUX segment layout (2026-10-29).
+provisional = true
 per_camera = true
 
-# Provisional: the extensions after the empty primary HDU that muse-pipeline's placeholder Level 2 writer produced on 2026-10-29.
+[[hdus]]
+name = "Fe XIX 108.355"
+kind = "image"
+family = "SG"
+
+[[hdus]]
+name = "Fe IX 171.073"
+kind = "image"
+family = "SG"
+
+[[hdus]]
+name = "Fe XV 284.163"
+kind = "image"
+family = "SG"
 
 [[hdus]]
 name = "SCI"
 kind = "compressed-image"
 compression = "RICE_1"
+family = "CI"
 
 [[hdus]]
 name = "DQ"
 kind = "compressed-image"
 compression = "RICE_1"
+family = "CI"
 
 [[hdus]]
 name = "AUX"
 kind = "table"
-
-[[hdus]]
-name = "WAVELENGTH"
-kind = "image"
-family = "SG"
+family = "CI"

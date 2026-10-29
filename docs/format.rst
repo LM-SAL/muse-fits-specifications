@@ -27,8 +27,10 @@ Layout
   A keyword records the levels whose files carry it (``all``, ``CI`` or ``SG``), its type, its range or allowed values, its comment, notes and ISP mnemonic, and whether the FITS library owns it.
 - ``specs/<level>/_meta.toml``: what the sheet lacks: spec name, version, title, source document and HDU layout.
   ``spec_version`` must be a quoted string, such as ``"0.1"``; the loader rejects a bare number.
-  Each ``[[hdus]]`` table is one extension after the empty primary HDU, in file order: its ``name``, ``kind``, optional ``compression``, and optional ``family`` (``CI`` or ``SG``) for an extension that only that camera type's files have.
+  Each ``[[hdus]]`` table is one extension after the empty primary HDU, in file order: its ``name`` (compared without case, as astropy upper-cases it; ``{CAMERA}`` stands for the file's ``CAMERA``), ``kind`` (``compressed-image``, ``image`` or ``table``), ``compression`` for a compressed image only, and ``family`` (``CI`` or ``SG``) for an extension that only that camera type's files have.
   ``per_camera = true`` marks a level whose CI and SG files differ; only such a level may hold CI- or SG-only keywords or HDUs.
+  ``provisional = true`` marks a layout that is not settled; its comments say where it comes from, and files of that level cannot be generated or checked yet.
+  Level 0 is settled; Levels 1 to 3 are provisional.
 
 Levels and Camera Types
 -----------------------
@@ -93,36 +95,42 @@ Updating the Sheet
 3. Run ``git add src/muse_fits_specifications/specs/`` and review ``git diff --staged src/muse_fits_specifications/specs/keywords/``, which shows what the export changed, topic by topic, new sections included.
 4. Bump ``spec_version`` in each level's ``_meta.toml``, run ``pytest --pyargs muse_fits_specifications`` (the astropy round-trip test proves every Level 0 keyword survives a compressed write and read), build the docs (``tox -e build_docs``), and commit the CSV, the YAML and the version bumps together.
 
+Files
+-----
+
+``muse_fits_specifications.files``, which needs the ``fits`` extra, builds headers and generates and checks whole files; see the :doc:`reference`.
+The sheet does not yet say which HDU carries each keyword, so every keyword goes in, and is checked in, the first extension, as Level 0 has them.
+
 Library-owned Cards
 -------------------
 
 Cards the FITS library writes and consumes itself are flagged ``library_owned`` by name and are never validated or generated:
 ``XTENSION``, ``BITPIX``, ``NAXIS*``, ``PCOUNT``, ``GCOUNT``, ``TFIELDS``, ``TTYPEn``, ``TFORMn``, ``Z*``, ``EXTNAME``, ``BZERO``, ``BSCALE``, ``CHECKSUM``, ``DATASUM``.
-These cards describe the on-disk representation, but Astropy's ``CompImageHDU`` hides or rewrites them in ``hdul[1].header`` (verified with astropy 7.2, ``RICE_1``, and a file written with ``checksum=True``):
+These cards describe the on-disk representation, but Astropy's ``CompImageHDU`` hides or rewrites them in ``hdul[1].header`` (verified with astropy 8.0, ``RICE_1``, and a file written with ``checksum=True``):
 
 .. list-table::
    :header-rows: 1
 
    * - Cards
      - In ``hdul[1].header``
-   * - ``TFIELDS``, ``Z*``, ``EXTNAME``, ``TTYPE1``, ``TFORM1``, ``CHECKSUM``, ``DATASUM``
+   * - ``TFIELDS``, ``Z*``, ``TTYPE1``, ``TFORM1``, ``CHECKSUM``, ``DATASUM``
      - Hidden.
+   * - ``EXTNAME``
+     - Hidden when it is ``COMPRESSED_IMAGE``, the default; present otherwise.
    * - ``XTENSION``, ``BITPIX``, ``NAXIS``, ``NAXIS1``, ``NAXIS2``, ``PCOUNT``
      - Present with the decompressed image's values, not the on-disk ones.
    * - ``BZERO``, ``BSCALE``
-     - Only written for unsigned data.
+     - Present only for data stored with an offset, such as ``uint16`` and ``int8``.
 
 To inspect the cards actually written, open the raw table header with ``fits.open(path, disable_image_compression=True)``.
 Astropy consumes the compression cards when decompressing the image.
-It verifies existing ``CHECKSUM`` and ``DATASUM`` cards only when opened with ``fits.open(path, checksum=True)``; the default is ``False``.
-Checksum failures produce warnings, and absent checksum cards are not reported as failures.
-This package's header validator does not perform checksum verification.
+Opened with ``fits.open(path, checksum=True)``, it verifies existing ``CHECKSUM`` and ``DATASUM`` cards, warning on a failure and ignoring absent cards; the default is ``False``.
+``validate_file(path, spec, checksums=True)`` and the ``validate`` command report a missing or failing card as an error instead.
 See `Astropy's file-opening options <https://docs.astropy.org/en/stable/io/fits/api/files.html#astropy.io.fits.open>`_.
 The test suite rebuilds this experiment so the rule cannot rot silently.
 
 Current Known Caveats
 ---------------------
 
-- The Level 2 and Level 3 HDU layouts are provisional: their ``_meta.toml`` files copy what the pipeline's placeholder writers produced on 2026-10-29.
 - Allowed values are one set per row. ``INSTRUME``, ``CAMERA``, ``CTYPE1``, ``CNAME1``, ``CUNIT1``, ``CTYPE3``, ``CNAME3`` and ``CUNIT3`` each list the values of several camera types or levels in one row, so any of them passes in every file that carries the keyword until the sheet splits the row, as it does for ``PC1_1``.
 - ``ISO 8601`` keywords are checked as strings; the timestamp format itself is not checked.

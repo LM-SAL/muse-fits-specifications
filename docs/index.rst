@@ -20,46 +20,33 @@ Quick Start
 -----------
 
 In a Python 3.12 or newer environment, install the current draft from the repository.
-Astropy is needed for this example to read a FITS file:
+The ``fits`` extra adds astropy, which the example needs:
 
 .. code-block:: bash
 
     git clone https://github.com/LM-SAL/muse-fits-specifications.git
     cd muse-fits-specifications
-    python -m pip install . astropy
+    python -m pip install ".[fits]"
 
-Replace ``observation_level0.fits`` below with the path to your Level 0 file.
-For a Level 1 file, use ``load_spec("level1", "SG")`` or ``load_spec("level1", "CI")``: those levels differ by camera type.
-The example checks the compressed image extension's header and prints every validation error:
+``validate_file`` checks a file's HDU layout and the compressed image extension's header, and returns every error.
+Give it the path to your Level 0 file; here it checks a generated example that lacks its frame sequence number:
 
-.. code-block:: python
+>>> from muse_fits_specifications import load_spec
+>>> from muse_fits_specifications.files import example_file, validate_file
+>>> spec = load_spec("level0")
+>>> hdul = example_file(spec)
+>>> del hdul[1].header["FSN"]
+>>> validate_file(hdul, spec)
+['missing keyword FSN']
 
-    from astropy.io import fits
-    from muse_fits_specifications import load_spec, validate
-
-    spec = load_spec("level0")
-    with fits.open("observation_level0.fits", checksum=True) as hdul:
-        errors = validate(hdul[1].header, spec)
-
-    if errors:
-        print("\n".join(errors))
-    else:
-        print("Header passes the draft's keyword checks.")
-
-For example, a missing frame sequence number produces:
-
-.. code-block:: text
-
-    missing keyword FSN
-
-Use ``ensure_valid(header, spec)`` instead of ``validate`` if you want a ``HeaderValidationError`` on failure.
+From a shell, ``python -m muse_fits_specifications.files validate level0 observation_level0.fits`` prints the same errors and, like ``validate_file(path, spec, checksums=True)``, also requires a correct ``CHECKSUM`` and ``DATASUM`` on every HDU, and ``python -m muse_fits_specifications.files example level0 example.fits`` writes a file that passes, to test a Level 0 writer against.
+Files can be generated and checked only for levels whose HDU layout is settled, Level 0 today; the others are provisional.
+To check one header without astropy, use ``validate(header, spec)``, or ``ensure_valid(header, spec)`` for a ``HeaderValidationError`` on failure.
+``files.build_header(spec, values)`` builds a header in sheet order with the sheet's comments, for writers of every level.
 The checks cover keyword presence, types, numeric limits and allowed values defined in the current draft.
 Unassigned fields are not checked; a passing result does not imply the specification is complete.
 
-``checksum=True`` separately asks Astropy to verify existing ``CHECKSUM`` and ``DATASUM`` cards.
-Checksum failures are reported as Astropy warnings, not entries in ``errors``; checksum checking is off by default.
-
-The validator accepts any mapping, so astropy is not a dependency of this package.
+The header validator accepts any mapping, so astropy is needed only for ``muse_fits_specifications.files`` (the ``fits`` extra).
 Keywords not in the spec are ignored; sheet typos fail loudly when the sheet is converted and in the check that pre-commit and the tests run.
 
 Reading the Sheet

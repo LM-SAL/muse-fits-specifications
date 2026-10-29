@@ -4,9 +4,7 @@ Validate FITS headers against a loaded MUSE specification.
 Keywords not in the spec are ignored: FITS headers legitimately carry history and other
 cards the mission spec does not govern. Library-owned cards
 (``KeywordSpec.library_owned``) are skipped too: astropy hides or rewrites them in
-``hdul[1].header``. Astropy consumes the compression cards through the decompressor;
-checking existing checksum cards requires ``fits.open(..., checksum=True)`` and is
-separate from this header validator.
+``hdul[1].header``.
 """
 
 from __future__ import annotations
@@ -44,6 +42,9 @@ def _check_type(kw: KeywordSpec, value: object) -> str | None:
 
 
 def _check_value(kw: KeywordSpec, value: object) -> str | None:
+    item = getattr(value, "item", None)
+    if getattr(value, "ndim", None) == 0 and callable(item):
+        value = item()  # a numpy scalar, as a header built from arrays holds, checks as its Python value
     problem = _check_type(kw, value)
     if problem is not None:
         return problem

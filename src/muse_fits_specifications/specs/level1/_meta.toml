@@ -2,9 +2,13 @@ spec = "muse-level1"
 spec_version = "0.2"
 title = "Level 1"
 source_document = "MUSE FITS Keyword Master v0.1 (sheet export, specs/keywords.csv)"
+# Provisional: from the muse repo's mock writer (muse.fits.create_mock_l1_fits, branch pipeline_dev,
+# 2026-10-28), which writes one RICE-compressed image per exposure named after its camera, such as
+# SG108. The sheet's EXTNAME allows only COMPRESSED_IMAGE, so one of the two must change.
+provisional = true
 per_camera = true
 
 [[hdus]]
-name = "COMPRESSED_IMAGE"
+name = "{CAMERA}"
 kind = "compressed-image"
 compression = "RICE_1"
