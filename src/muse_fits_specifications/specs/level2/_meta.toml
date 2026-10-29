@@ -1,0 +1,26 @@
+spec = "muse-level2"
+spec_version = "0.2"
+title = "Level 2"
+source_document = "MUSE FITS Keyword Master v0.1 (sheet export, specs/keywords.csv)"
+per_camera = true
+
+# Provisional: the extensions after the empty primary HDU that muse-pipeline's placeholder Level 2 writer produced on 2026-10-29.
+
+[[hdus]]
+name = "SCI"
+kind = "compressed-image"
+compression = "RICE_1"
+
+[[hdus]]
+name = "DQ"
+kind = "compressed-image"
+compression = "RICE_1"
+
+[[hdus]]
+name = "AUX"
+kind = "table"
+
+[[hdus]]
+name = "WAVELENGTH"
+kind = "image"
+family = "SG"

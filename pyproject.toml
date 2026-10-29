@@ -9,7 +9,9 @@ description = "Machine-readable MUSE FITS keyword specifications and header vali
 license = "BSD-3-Clause"
 license-files = ["LICENSE"]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pyyaml>=6",
+]
 
 [project.optional-dependencies]
 test = [
@@ -74,4 +76,4 @@ showcontent = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-muse_fits_specifications = ["specs/*.csv", "specs/*/*.toml"]
+muse_fits_specifications = ["specs/*.csv", "specs/*.yml", "specs/*/*.toml"]

@@ -1,14 +1,18 @@
 """
-Checks for sheet loading, sheet self-validation, header validation, and rendering.
+Checks for sheet conversion, loading, header validation, and rendering.
 """
 
 from __future__ import annotations
 
+import csv
 import io
+from dataclasses import replace
 
 import pytest
 
 from muse_fits_specifications import (
+    FAMILIES,
+    KEYWORDS_PATH,
     SHEET_PATH,
     HeaderValidationError,
     KeywordSpec,
@@ -16,19 +20,25 @@ from muse_fits_specifications import (
     SpecDefinitionError,
     ensure_valid,
     example_header,
+    families,
     load_spec,
     validate,
 )
-from muse_fits_specifications.render import main, render_sheet, render_spec
-from muse_fits_specifications.spec import _LIBRARY_OWNED, _collect, _parse_meta, defined_levels, load_sheet
-from muse_fits_specifications.spec import main as check_sheet
-from muse_fits_specifications.spec import parse_sheet
+from muse_fits_specifications.render import level_pages, main, render_sheet, render_spec
+from muse_fits_specifications.sheet import _LIBRARY_OWNED, check, convert
+from muse_fits_specifications.spec import _collect, _meta, _parse_meta, defined_levels
 
-SHEET_HEADER = "ISP,L0,L1,L2,L3,FITS  KW,Type,Lower Limit,Upper Limit,FITS Comment,Comment"
+SHEET_HEADER = "FITS KW,Type,ISP,L0,L1,L2,L3,Lower Limit,Upper Limit,FITS Comment,Comment,ISP mnemonic"
 
 
-def _rows(*lines: str):
-    return parse_sheet([SHEET_HEADER, *lines])
+def _line(name="KW", kind="", lower="", upper="", *, levels=("X", "", "", ""), comment="", notes="", mnemonic=""):
+    out = io.StringIO()
+    csv.writer(out).writerow([name, kind, "", *levels, lower, upper, comment, notes, mnemonic])
+    return out.getvalue().rstrip("\r\n")
+
+
+def _keywords(*lines: str) -> list[dict]:
+    return [kw for section in convert([SHEET_HEADER, *lines]) for kw in section["keywords"]]
 
 
 def _spec(**keywords: KeywordSpec) -> Spec:
@@ -42,87 +52,173 @@ def _spec(**keywords: KeywordSpec) -> Spec:
     )
 
 
-def test_levels_load_from_the_sheet():
-    assert defined_levels() == ("level0", "level1")
-    level0, level1 = load_spec("level0"), load_spec("level1")
+def test_every_level_loads_from_the_yaml():
+    assert defined_levels() == ("level0", "level1", "level2", "level3")
+    pages = level_pages()
+    assert [docname for docname, _ in pages] == [
+        "level0",
+        "level1-ci",
+        "level1-sg",
+        "level2-ci",
+        "level2-sg",
+        "level3",
+    ]
+    assert len({spec.version for _, spec in pages}) == 1  # every sheet export bumps every level
+    level0 = load_spec("level0")
     assert level0.name == "muse-level0"
-    assert level0.version == level1.version != ""  # every sheet export bumps both
-    assert f"version {level0.version}." in render_spec(level0)
     assert list(level0.keywords)[:3] == ["XTENSION", "BITPIX", "NAXIS"]  # sheet order
+    assert level0.sections[:2] == ("", "Basic file and observation metadata")
 
 
-def test_sheet_path_is_the_packaged_csv():
-    assert SHEET_PATH.name == "keywords.csv"
-    assert SHEET_PATH.read_text(encoding="utf-8-sig").startswith("ISP,L0,L1,L2,L3,")
+def test_packaged_yaml_matches_the_packaged_sheet():
+    assert SHEET_PATH.read_text(encoding="utf-8-sig").startswith("FITS KW,Type,")
+    assert KEYWORDS_PATH.read_text(encoding="utf-8").startswith("# Generated from keywords.csv")
+    assert check() == 0
 
 
-def test_levels_without_rows_or_meta_are_rejected():
-    with pytest.raises(SpecDefinitionError, match="level2"):
-        load_spec("level2")
+def test_levels_whose_ci_and_sg_files_differ_load_per_camera_type():
+    assert families("level0") == families("level3") == (None,)
+    assert families("level1") == families("level2") == FAMILIES
+    with pytest.raises(ValueError, match="family='CI'"):
+        load_spec("level1")
+    with pytest.raises(ValueError, match="unknown camera family"):
+        load_spec("level1", "XX")
+    assert load_spec("level0", "SG").family is None
+    assert dict(load_spec("level0", "SG").keywords) == dict(load_spec("level0").keywords)
+    ci, sg = load_spec("level1", "CI").keywords, load_spec("level1", "SG").keywords
+    assert ci["PC1_1"].comment != sg["PC1_1"].comment  # one keyword, a row per camera type
+    assert "PC1_2" in ci
+    assert "PC1_2" not in sg
+    assert [hdu.name for hdu in load_spec("level2", "SG").hdus] == ["SCI", "DQ", "AUX", "WAVELENGTH"]
+    assert [hdu.name for hdu in load_spec("level2", "CI").hdus] == ["SCI", "DQ", "AUX"]
+
+
+def test_unknown_or_undefined_levels_are_rejected(monkeypatch):
     with pytest.raises(ValueError, match="unknown level"):
         load_spec("level7")
+    monkeypatch.setattr("muse_fits_specifications.spec.defined_levels", lambda: ("level0",))
+    with pytest.raises(SpecDefinitionError, match="does not exist; add it to define level3"):
+        _meta.__wrapped__("level3")
 
 
 def test_sheet_rows_are_typed():
-    fsn = load_spec("level0").keywords["MSQ_FSN"]
-    assert (fsn.type, fsn.minimum, fsn.maximum, fsn.comment) == ("int", 0, 4294967295, "FSN")
-    assert not fsn.library_owned
-    offset = load_spec("level0").keywords["MGTPOFFX"]
-    assert (offset.minimum, offset.maximum) == (-32768, 32767)
-    assert load_spec("level0").keywords["FILENAME"].type == "str"
-    cdelt = load_spec("level1").keywords["CDELT1"]
-    assert (cdelt.type, cdelt.minimum, cdelt.maximum) == ("float", None, None)
-    assert "CDELT1" not in load_spec("level0").keywords
+    level0 = load_spec("level0").keywords
+    fsn = level0["FSN"]
+    assert (fsn.type, fsn.minimum, fsn.maximum, fsn.values) == ("int", 0, 4294967295, None)
+    assert (fsn.section, fsn.library_owned) == ("ISP mnemonic", False)
+    assert level0["NAXIS1"].maximum == 4294967295  # the sheet gives only the minimum; uint32 fills the rest
+    assert level0["BITPIX"].values == (8, 16, 32, 64, -32, -64)
+    assert (level0["DATE-OBS"].type, level0["DATE-OBS"].format) == ("str", "isot")
+    assert load_spec("level1", "SG").keywords["CAMERA"].values == ("CI", "SG108", "SG171", "SG284")
 
 
 def test_library_owned_cards_are_flagged():
     level0 = load_spec("level0").keywords
     for name in ("XTENSION", "ZCMPTYPE", "TTYPE1", "EXTNAME", "CHECKSUM", "DATASUM", "BZERO"):
         assert level0[name].library_owned, name
-    assert not level0["MSQ_FSN"].library_owned
-    assert not load_spec("level1").keywords["WCSAXES"].library_owned
+    assert not level0["FSN"].library_owned
+    assert not load_spec("level1", "SG").keywords["WCSAXES"].library_owned
 
 
-def test_sheet_parsing_rules():
-    ((levels, kw),) = _rows(",X,x,,,MSQ_FSN ,Integer,0,10,FSN,note")
-    assert levels == {"level0", "level1"}
-    assert kw == KeywordSpec("MSQ_FSN", "int", 0, 10, "FSN", "note")
-    (_, tbd), (_, blank) = _rows(",X,,,,TBD,Integer,,,MNEMONIC,", ",X,,,,,Float,-1.5,,,")
-    assert tbd.name == blank.name == ""
-    assert (tbd.comment, blank.minimum) == ("MNEMONIC", -1.5)
-    assert _rows(",,,,,,,,,,") == []  # blank separator rows are skipped
-    assert _rows("", "   ") == []
-    assert _rows(",X,,,,KW,,,,,")[0][1].type is None
-    assert _rows(',X,,,,KW,String,,,"comment, with comma",note')[0][1].comment == "comment, with comma"
+def test_sheet_conversion():
+    sections = convert(
+        [
+            SHEET_HEADER,
+            _line("XTENSION", "str", "BINTABLE;", comment="ext"),
+            "###,,,,,,,,,,,",
+            "###,Timing,,,,,,,,,,",
+            _line("FSN ", "uint32", levels=("X", "x", "", ""), comment="frame, number", notes="note", mnemonic="M1"),
+            _line("PC1_1", "float64", levels=("", "SG", "CI", "")),
+            _line("PC1_1", "float64", levels=("", "CI", "", "")),
+            _line("TBD", "uint8", mnemonic="M2"),
+            _line("PARKED", "ISO 8601", levels=("", "", "", "")),
+            ",,,,,,,,,,,",  # blank separator rows are skipped
+            "",
+        ]
+    )
+    assert [section["section"] for section in sections] == ["", "Timing"]
+    xtension, fsn, sg, ci, tbd, parked = (kw for section in sections for kw in section["keywords"])
+    assert xtension == {
+        "name": "XTENSION",
+        "levels": {"level0": "all"},
+        "type": "str",
+        "values": ["BINTABLE"],
+        "comment": "ext",
+        "library_owned": True,
+    }
+    assert fsn == {
+        "name": "FSN",
+        "levels": {"level0": "all", "level1": "all"},
+        "type": "int",
+        "minimum": 0,
+        "maximum": 4294967295,
+        "mnemonic": "M1",
+        "comment": "frame, number",
+        "notes": "note",
+    }
+    assert (sg["levels"], ci["levels"]) == ({"level1": "SG", "level2": "CI"}, {"level1": "CI"})
+    assert (tbd["name"], tbd["maximum"], tbd["mnemonic"]) == ("", 255, "M2")
+    assert parked == {"name": "PARKED", "levels": {}, "type": "str", "format": "isot"}
+
+
+@pytest.mark.parametrize(
+    ("kind", "lower", "values"),
+    [
+        ("str", 'SG; "Corrected DN";', ["SG", "Corrected DN"]),
+        ("int16", "8;16;-32", [8, 16, -32]),
+        ("float", "0.5;1", [0.5, 1.0]),
+        ("bool", "T", [True]),
+    ],
+)
+def test_lower_limit_can_list_allowed_values(kind, lower, values):
+    (kw,) = _keywords(_line("KW", kind, lower))
+    assert kw["values"] == values
+    assert "minimum" not in kw
+    assert "maximum" not in kw
 
 
 @pytest.mark.parametrize(
     "line",
     [
-        ",X,,,,msq_fsn,Integer,,,,",  # lowercase
-        ",X,,,,TOOLONGKW,Integer,,,,",  # nine characters
-        ",X,,,,KW,Complex,,,,",  # unknown type
-        ",X,,,,KW,String,0,,,",  # limit on a string
-        ",X,,,,KW,Integer,zero,,,",  # non-numeric limit
-        ",X,,,,KW,Integer,5,1,,",  # lower above upper
-        ",X,,,,KW",  # truncated row
-        ",X,,,,KW,Integer,,,,,extra",  # extra cell
-        ",Y,,,,KW,Integer,,,,",  # invalid level marker
-        "Y,X,,,,KW,Integer,,,,",  # invalid ISP marker
-        ",X,,,,KW,Float,nan,,,",  # non-finite limit
-        ",X,,,,KW,Float,,inf,,",  # non-finite limit
-        ",,,,,KW,Integer,,,,",  # not marked for any level
-        ',X,,,,KW,String,,,"unfinished,note',  # malformed CSV quoting
+        _line("kw", "str"),  # lowercase
+        _line("TOOLONGKW", "str"),  # nine characters
+        _line("KW", "ISO"),  # unknown type
+        _line("KW", "", "0"),  # limit without a type
+        _line("KW", "int", "zero"),  # non-numeric limit
+        _line("KW", "int", "1.5"),  # fractional limit on an integer
+        _line("KW", "int", "5", "1"),  # lower above upper
+        _line("KW", "uint8", "0", "256"),  # beyond the type's range
+        _line("KW", "int16", "8;65536"),  # an allowed value beyond the type's range
+        _line("KW", "str", "A", "B"),  # upper limit on a string
+        _line("KW", "int", "1;2", "3"),  # upper limit with allowed values
+        _line("KW", "bool", "yes"),  # bool values are T or F
+        _line("KW", "str", ";"),  # an empty list of values
+        _line("KW", "str", '""'),  # a quoted empty value
+        _line("KW", "int", "1_000"),  # Python reads it as 1000; a sheet number never has an underscore
+        _line("KW", "float", "nan"),  # non-finite limits
+        _line("KW", "float", "", "inf"),
+        _line("KW", "str", levels=("Y", "", "", "")),  # unknown level marker
+        "KW,str",  # truncated row
+        _line("KW", "str") + ",extra",  # extra cell
+        'KW,str,,X,,,,,,"unfinished,note',  # malformed CSV quoting
     ],
 )
 def test_bad_sheet_rows_are_rejected(line):
     with pytest.raises(SpecDefinitionError, match="row 2"):
-        _rows(line)
+        _keywords(line)
+
+
+def test_a_keyword_is_listed_once_per_level_and_camera_type():
+    with pytest.raises(SpecDefinitionError, match="row 3: KW is already listed for level1 on row 2"):
+        _keywords(_line(levels=("", "X", "", "")), _line(levels=("", "SG", "", "")))
+    assert len(_keywords(_line(levels=("", "CI", "", "")), _line(levels=("", "SG", "", "")))) == 2
+    assert len(_keywords(_line(levels=("", "", "", "")), _line(levels=("", "", "", "")))) == 2  # parked rows
+    assert len(_keywords(_line("TBD"), _line(""))) == 2  # unassigned fields
 
 
 def test_missing_sheet_columns_are_rejected():
     with pytest.raises(SpecDefinitionError, match="Type"):
-        parse_sheet(["L0,FITS KW", "X,KW"])
+        convert(["L0,FITS KW", "X,KW"])
 
 
 @pytest.mark.parametrize(
@@ -132,12 +228,12 @@ def test_missing_sheet_columns_are_rejected():
         (SHEET_HEADER + ",Extra", "unexpected columns"),
         (SHEET_HEADER + ",", "unexpected columns"),
         (SHEET_HEADER + ",Type", "duplicate columns"),
-        (SHEET_HEADER + ",FITS KW", "duplicate columns"),
+        (SHEET_HEADER + ",FITS  KW", "duplicate columns"),  # whitespace in headers is collapsed
     ],
 )
 def test_invalid_sheet_columns_are_rejected(header, message):
     with pytest.raises(SpecDefinitionError, match=message):
-        parse_sheet([header])
+        convert([header])
 
 
 GOOD_META = (
@@ -147,6 +243,7 @@ GOOD_META = (
 
 def test_good_meta_parses():
     assert _parse_meta(GOOD_META, "meta")["hdus"] == [{"name": "A", "kind": "image"}]
+    assert _parse_meta("per_camera = true\n" + GOOD_META + 'family = "SG"\n', "meta")["hdus"][0]["family"] == "SG"
 
 
 @pytest.mark.parametrize(
@@ -158,6 +255,9 @@ def test_good_meta_parses():
         (GOOD_META.split("[[hdus]]", maxsplit=1)[0], "hdus"),
         (GOOD_META.replace('kind = "image"\n', ""), "name and kind"),
         (GOOD_META + "compression = 1\n", "name and kind"),
+        (GOOD_META + 'family = "XX"\n', "name and kind"),
+        (GOOD_META + 'family = "SG"\n', "needs per_camera = true"),
+        ('per_camera = "yes"\n' + GOOD_META, "per_camera must be true or false"),
     ],
 )
 def test_bad_meta_is_rejected(text, message):
@@ -165,13 +265,21 @@ def test_bad_meta_is_rejected(text, message):
         _parse_meta(text, "meta")
 
 
-def test_duplicate_keyword_in_a_level_is_rejected():
-    rows = _rows(",X,,,,KW,Integer,,,,", ",X,X,,,KW,Integer,,,,")
+def test_collect_picks_one_level_and_camera_type():
+    rows = [
+        ({"level0": "all"}, KeywordSpec("KW")),
+        ({"level0": "all", "level1": "SG"}, KeywordSpec("KW", comment="sg")),
+        ({"level1": "CI"}, KeywordSpec("KW", comment="ci")),
+    ]
     with pytest.raises(SpecDefinitionError, match="twice"):
         _collect(rows, "level0")
-    assert list(_collect(rows, "level1")[0]) == ["KW"]
+    assert _collect(rows, "level1", "SG")[0]["KW"].comment == "sg"
+    assert _collect(rows, "level1", "CI")[0]["KW"].comment == "ci"
     with pytest.raises(SpecDefinitionError, match="no keywords"):
         _collect(rows, "level2")
+    # A level loaded without a camera type is not split, so a CI- or SG-only row there is an error.
+    with pytest.raises(SpecDefinitionError, match="KW is SG-only in level1, but"):
+        _collect(rows, "level1")
 
 
 def test_missing_keywords():
@@ -208,6 +316,13 @@ def test_range_checks_are_inclusive():
     assert "must be an integer" in validate({"N": "9", "X": 0}, spec)[0]
 
 
+def test_allowed_values():
+    spec = _spec(S=KeywordSpec("S", "str", values=("CI", "SG")), N=KeywordSpec("N", "int", values=(1, 2)))
+    assert validate({"S": "SG", "N": 2}, spec) == []
+    assert validate({"S": "XX", "N": 2}, spec) == ["S must be one of ['CI', 'SG'], got 'XX'"]
+    assert "N must be an integer" in validate({"S": "CI", "N": True}, spec)[0]  # True == 1 in Python
+
+
 def test_untyped_keyword_only_checks_presence():
     spec = _spec(FREE=KeywordSpec("FREE"))
     assert validate({"FREE": object()}, spec) == []
@@ -228,12 +343,11 @@ def test_ensure_valid_raises_with_error_list():
 
 
 def test_example_header_conforms_to_its_own_spec():
-    for level in ("level0", "level1"):
-        spec = load_spec(level)
+    for _, spec in level_pages():
         header = example_header(spec)
         assert validate(header, spec) == []
         assert not any(spec.keywords[name].library_owned for name in header)
-    assert example_header(load_spec("level0"))["MGTPOFFX"] == -32768
+    assert example_header(load_spec("level1", "SG"))["CAMERA"] == "CI"  # the first allowed value
 
 
 def test_library_owned_matches_astropy():
@@ -256,36 +370,53 @@ def test_library_owned_matches_astropy():
     assert all(_LIBRARY_OWNED.fullmatch(key) for key in hidden), hidden
 
 
-def test_render_lists_keywords_and_unassigned_fields_and_escapes_markup():
-    page = render_spec(load_spec("level0"))
-    assert "   * - MSQ\\_FSN\n     - int\n     - 0\n     - 4294967295\n     - FSN" in page
-    assert "Unassigned ISP fields (" in page
-    assert "   * - CCSDS\\_SECONDS\n     - int\n     - 0\n     - 4294967295" in page
-    assert "Unassigned" not in render_spec(load_spec("level1"))
-    spec = _spec(P=KeywordSpec("P", comment="a|b*c"))
-    assert "a\\|b\\*c" in render_spec(spec)
+def test_render_spec_groups_keywords_by_section_and_escapes_markup():
+    page = render_spec(load_spec("level1", "SG"))
+    assert page.startswith("Level 1 (SG)\n============\n")
+    assert "Basic file and observation metadata\n^^^^^" in page
+    assert "   * - CAMERA\n     - str\n     - CI; SG108; SG171; SG284\n" in page
+    assert "     - str (ISO 8601)\n" in page
+    assert "Unassigned" not in page
+    assert "   * - NAXIS1\n     - int\n     - 1 to 4294967295\n" in render_spec(load_spec("level0"))
+    spec = replace(_spec(P=KeywordSpec("P", comment="a|b*c")), unassigned=(KeywordSpec("", "int", mnemonic="M"),))
+    page = render_spec(spec)
+    assert "a\\|b\\*c" in page
+    assert "Unassigned ISP fields (1)" in page
 
 
-def test_render_sheet_mirrors_the_sheet_with_a_column_per_level():
-    page = render_sheet(load_sheet())
-    assert "   * - L0\n     - L1\n     - L2\n     - L3\n     - Keyword" in page
-    assert "   * - X\n     -\n     -\n     -\n     - MSQ\\_FSN\n     - int" in page  # level 0 only
-    assert "   * -\n     - X\n     -\n     -\n     - WCSAXES" in page
-    # an unassigned row keeps its place, with a blank keyword cell
-    assert "     -\n     - int\n     - 0\n     - 4294967295\n     - CCSDS\\_SECONDS" in page
-
-
-def test_main_writes_the_sheet_page_and_one_page_per_defined_level(tmp_path):
-    (tmp_path / "level3.rst").write_text("stale page from a level that is no longer defined")
-    assert main([str(tmp_path)]) == 0
-    assert sorted(p.name for p in tmp_path.iterdir()) == ["keywords.csv", "keywords.rst", "level0.rst", "level1.rst"]
-
-
-def test_check_sheet_passes_and_rejects_a_marked_but_undefined_level(monkeypatch):
-    assert check_sheet() == 0
-    rows = load_sheet()
-    monkeypatch.setattr(
-        "muse_fits_specifications.spec.load_sheet", lambda: (*rows, (frozenset({"level3"}), KeywordSpec("KW")))
+def test_render_sheet_has_a_column_per_level():
+    page = render_sheet(
+        [({"level0": "all", "level1": "SG"}, KeywordSpec("KW", "int", 0, 9)), ({}, KeywordSpec("PARKED"))]
     )
+    assert "   * - L0\n     - L1\n     - L2\n     - L3\n     - Keyword" in page
+    assert "   * - X\n     - SG\n     -\n     -\n     - KW\n     - int\n     - 0 to 9\n" in page
+    assert "   * -\n     -\n     -\n     -\n     - PARKED\n" in page
+    assert ":download:`the YAML generated from it <keywords.yml>`" in page
+
+
+def test_main_writes_the_sheet_its_yaml_and_one_page_per_level_and_camera_type(tmp_path):
+    (tmp_path / "level9.rst").write_text("stale page from a level that is no longer defined")
+    assert main([str(tmp_path)]) == 0
+    assert sorted(p.name for p in tmp_path.iterdir()) == [
+        "keywords.csv",
+        "keywords.rst",
+        "keywords.yml",
+        "level0.rst",
+        "level1-ci.rst",
+        "level1-sg.rst",
+        "level2-ci.rst",
+        "level2-sg.rst",
+        "level3.rst",
+    ]
+
+
+def test_check_rejects_a_stale_yaml_and_a_marked_but_undefined_level(monkeypatch, tmp_path):
+    stale = tmp_path / "keywords.yml"
+    stale.write_text(KEYWORDS_PATH.read_text(encoding="utf-8").replace("XTENSION", "XTENSIO", 1))
+    monkeypatch.setattr("muse_fits_specifications.sheet.KEYWORDS_PATH", stale)
+    with pytest.raises(SpecDefinitionError, match="does not match"):
+        check()
+    monkeypatch.undo()
+    monkeypatch.setattr("muse_fits_specifications.sheet.defined_levels", lambda: ("level0", "level1", "level2"))
     with pytest.raises(SpecDefinitionError, match="level3"):
-        check_sheet()
+        check()

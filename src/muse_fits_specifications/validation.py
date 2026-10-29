@@ -47,6 +47,8 @@ def _check_value(kw: KeywordSpec, value: object) -> str | None:
     problem = _check_type(kw, value)
     if problem is not None:
         return problem
+    if kw.values is not None and value not in kw.values:
+        return f"{kw.name} must be one of {list(kw.values)}, got {value!r}"
     # Limits only exist on numeric keywords (the loader enforces it), so the
     # type check above guarantees a comparable value here.
     if kw.minimum is not None and value < kw.minimum:  # type: ignore[operator]
@@ -60,9 +62,9 @@ def validate(header: Mapping[str, Any], spec: Spec) -> list[str]:
     """
     Return every way ``header`` violates ``spec``; empty means valid.
 
-    Every keyword of the level must be present with the sheet's type and within its
-    limits, except library-owned cards. Checksum verification is handled separately by
-    the FITS library when explicitly enabled.
+    Every keyword of the level must be present with the sheet's type, within its limits
+    and among its allowed values, except library-owned cards. Checksum verification is
+    handled separately by the FITS library when explicitly enabled.
     """
     errors = []
     for name, kw in spec.keywords.items():
