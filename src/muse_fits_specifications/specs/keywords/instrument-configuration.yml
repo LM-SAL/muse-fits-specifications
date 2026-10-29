@@ -1,0 +1,37 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Instrument configuration
+keywords:
+- name: INSTRUME
+  levels: {level1: all, level2: all}
+  type: str
+  values: [SG, CI]
+  comment: 'Instrument: SG or CI'
+- name: CAMERA
+  levels: {level1: all, level2: all}
+  type: str
+  values: [CI, SG108, SG171, SG284]
+  comment: 'Camera: CI; SG108; SG171; SG284'
+- name: IMG_PATH
+  levels: {level1: all, level2: all}
+  type: str
+  comment: Light path and SJI filter setting
+  notes: Shouldn't that be CI filter setting? Required?
+- name: IMG_TYPE
+  levels: {level1: all, level2: all}
+  type: str
+  values: [LIGHT, DARK, LED, LTC, SPAT, VPAT]
+  comment: 'Image type: LIGHT; DARK; LED; LTC; SPAT; VPAT'
+  notes: Verify if all image types are listed
+- name: SUMSPTRL
+  levels: {level1: all, level2: all}
+  type: int
+  comment: CCD summing in spectral direction
+- name: SUMSPAT
+  levels: {level1: all, level2: all}
+  type: int
+  comment: CCD summing in spatial direction
+- name: ISYSN
+  levels: {level1: all, level2: all}
+  type: int
+  comment: 'System Number: CI=0; ...'
+  notes: Redundant with CAMERA? Possible values?

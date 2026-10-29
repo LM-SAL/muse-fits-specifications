@@ -1,0 +1,35 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Camera readout specification
+keywords:
+- name: IMCRSTRW
+  levels: {level0: all, level1: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  mnemonic: IMAGE_CFG_CROP_CFG_START_ROW
+  comment: Start row for readout window
+  notes: Correct FITS comment?
+- name: IMCREDRW
+  levels: {level0: all, level1: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  mnemonic: IMAGE_CFG_CROP_CFG_END_ROW
+  comment: End row for readout window
+  notes: Correct FITS comment?
+- name: IMCRSTCL
+  levels: {level0: all, level1: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  mnemonic: IMAGE_CFG_CROP_CFG_START_COLUMN
+  comment: Start column for readout window
+  notes: Correct FITS comment?
+- name: IMCREDCL
+  levels: {level0: all, level1: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  mnemonic: IMAGE_CFG_CROP_CFG_END_COLUMN
+  comment: End column for readout window
+  notes: Correct FITS comment?

@@ -1,0 +1,15 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Checksum
+keywords:
+- name: CHECKSUM
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: str
+  comment: HDU checksum updated [ISO Time String]
+  notes: created by astropy fits
+  library_owned: true
+- name: DATASUM
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: str
+  comment: data unit checksum updated [ISO Time String]
+  notes: created by astropy fits
+  library_owned: true

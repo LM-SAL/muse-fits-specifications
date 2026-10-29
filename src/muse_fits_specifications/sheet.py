@@ -3,10 +3,13 @@ Convert the mission keyword sheet into the YAML that the loader and the docs rea
 
 The team edits the "MUSE FITS Keyword Master" spreadsheet and exports it over
 ``specs/keywords.csv`` (:data:`~muse_fits_specifications.spec.SHEET_PATH`); ``python -m
-muse_fits_specifications.sheet`` then rewrites ``specs/keywords.yml``
-(:data:`~muse_fits_specifications.spec.KEYWORDS_PATH`). Both files are committed, so a review
-reads the YAML diff, which shows what an export changed however the spreadsheet reordered
-or quoted the CSV. ``python -m muse_fits_specifications`` fails while the YAML is stale.
+muse_fits_specifications.sheet`` then rewrites ``specs/keywords/``
+(:data:`~muse_fits_specifications.spec.KEYWORDS_PATH`): one YAML file per sheet section,
+named after its title (``untitled.yml`` for the rows above the first section row), and
+``_sections.yml``, which lists them in sheet order. All of it is committed, so a review
+reads the YAML diff, which shows which topics an export changed however the spreadsheet
+reordered or quoted the CSV. ``python -m muse_fits_specifications`` fails while the YAML
+is stale.
 
 Sheet rules:
 
@@ -47,6 +50,7 @@ from .spec import (
     KEYWORDS,
     KEYWORDS_PATH,
     LEVELS,
+    SECTIONS,
     SHEET,
     SHEET_PATH,
     SpecDefinitionError,
@@ -197,12 +201,12 @@ def _keyword(record: dict[str, str], row: int) -> dict:
 
 def convert(lines: Iterable[str]) -> list[dict]:
     """
-    Convert the sheet's CSV lines into ``keywords.yml``'s sections, in sheet order.
+    Convert the sheet's CSV lines into its sections, in sheet order.
 
     Each section is ``{"section": title, "keywords": [...]}``; rows above the first
     section row form an untitled section. Raises
-    :class:`~muse_fits_specifications.spec.SpecDefinitionError` on any
-    broken sheet rule, naming the row.
+    :class:`~muse_fits_specifications.spec.SpecDefinitionError` on any broken sheet rule,
+    naming the row, including two sections whose titles give one file name.
     """
     reader = csv.reader(lines, strict=True)
     try:
@@ -226,6 +230,7 @@ def _convert(reader) -> list[dict]:
         msg = "sheet has duplicate columns"
         raise SpecDefinitionError(msg)
     sections: list[dict] = [{"section": "", "keywords": []}]
+    heading_rows = [0]
     first_rows: dict[tuple[str, str, str], int] = {}
     for cells in reader:
         if not any(cell.strip() for cell in cells):
@@ -238,6 +243,7 @@ def _convert(reader) -> list[dict]:
         if record["FITS KW"].startswith("#"):
             if record["Type"]:
                 sections.append({"section": record["Type"], "keywords": []})
+                heading_rows.append(row)
             continue
         keyword = _keyword(record, row)
         for level, marker in keyword["levels"].items():
@@ -247,16 +253,50 @@ def _convert(reader) -> list[dict]:
                     msg = f"row {row}: {keyword['name']} is already listed for {level} on row {first}"
                     raise SpecDefinitionError(msg)
         sections[-1]["keywords"].append(keyword)
-    return [section for section in sections if section["keywords"]]
+    kept = [(section, row) for section, row in zip(sections, heading_rows, strict=True) if section["keywords"]]
+    file_rows: dict[str, int] = {}
+    for section, row in kept:
+        first = file_rows.setdefault(section_file(section["section"]), row)
+        if first != row:
+            where = f"the section on row {first}" if first else "the rows above the first section row"
+            msg = f"row {row}: section {section['section']!r} has the same file name as {where}"
+            raise SpecDefinitionError(msg)
+    return [section for section, _ in kept]
 
 
-def dump(sections: list[dict]) -> str:
+def section_file(title: str) -> str:
     """
-    The text of ``keywords.yml`` for :func:`convert`'s sections.
+    The YAML file name of the sheet section ``title``, e.g. ``exposure-and-timing.yml``.
     """
+    return (re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-") or "untitled") + ".yml"
+
+
+def _yaml(value: object, *, flow: bool | None = None) -> str:
     return _HEADER + yaml.safe_dump(
-        sections, sort_keys=False, allow_unicode=True, width=float("inf"), default_flow_style=None
+        value, sort_keys=False, allow_unicode=True, width=float("inf"), default_flow_style=flow
     )
+
+
+def dump(sections: list[dict]) -> dict[str, str]:
+    """
+    The files of ``specs/keywords/`` for :func:`convert`'s sections, by name: one per
+    section and ``_sections.yml``, their order.
+    """
+    files = {section_file(section["section"]): _yaml(section) for section in sections}
+    return {SECTIONS: _yaml(list(files), flow=False), **files}  # one line per file, so an inserted section is one line
+
+
+def write(directory: Path, files: dict[str, str]) -> None:
+    """
+    Write :func:`dump`'s ``files`` into ``directory`` and delete any other ``*.yml``
+    there.
+    """
+    directory.mkdir(parents=True, exist_ok=True)
+    for stale in directory.glob("*.yml"):
+        if stale.name not in files:
+            stale.unlink()
+    for name, text in files.items():
+        (directory / name).write_text(text, encoding="utf-8", newline="\n")
 
 
 def check() -> int:
@@ -265,14 +305,19 @@ def check() -> int:
     muse_fits_specifications``.
 
     Raises :class:`~muse_fits_specifications.spec.SpecDefinitionError` when the sheet
-    breaks a rule, ``keywords.yml``
-    is not what the sheet converts to, the sheet marks a level that has no
-    ``_meta.toml``, or a level fails to load. Run by pre-commit on spec changes and by
-    the tests.
+    breaks a rule, ``specs/keywords/`` is not what the sheet converts to, the sheet marks
+    a level that has no ``_meta.toml``, or a level fails to load. Run by pre-commit on
+    spec changes and by the tests.
     """
     expected = dump(convert(io.StringIO(SHEET_PATH.read_text(encoding="utf-8-sig"))))
-    if KEYWORDS_PATH.read_text(encoding="utf-8") != expected:
-        msg = "specs/keywords.yml does not match specs/keywords.csv; run python -m muse_fits_specifications.sheet"
+    packaged = {
+        entry.name: entry.read_text(encoding="utf-8")
+        for entry in KEYWORDS_PATH.iterdir()
+        if entry.name.endswith(".yml")
+    }
+    stale = sorted(name for name in expected.keys() | packaged.keys() if expected.get(name) != packaged.get(name))
+    if stale:
+        msg = f"specs/keywords/ does not match specs/keywords.csv ({', '.join(stale)}); run python -m muse_fits_specifications.sheet"
         raise SpecDefinitionError(msg)
     marked = {level for levels, _ in load_sheet() for level in levels}
     undefined = [level for level in LEVELS if level in marked and level not in defined_levels()]
@@ -287,11 +332,10 @@ def check() -> int:
 
 def main() -> int:
     """
-    Rewrite ``specs/keywords.yml`` in the source tree from ``specs/keywords.csv``.
+    Rewrite ``specs/keywords/`` in the source tree from ``specs/keywords.csv``.
     """
     specs = Path(__file__).with_name("specs")
-    text = dump(convert(io.StringIO((specs / SHEET).read_text(encoding="utf-8-sig"))))
-    (specs / KEYWORDS).write_text(text, encoding="utf-8", newline="\n")
+    write(specs / KEYWORDS, dump(convert(io.StringIO((specs / SHEET).read_text(encoding="utf-8-sig")))))
     return 0
 
 

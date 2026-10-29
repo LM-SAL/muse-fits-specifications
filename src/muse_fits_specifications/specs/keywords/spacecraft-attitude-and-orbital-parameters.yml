@@ -1,0 +1,39 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Spacecraft attitude and orbital parameters
+keywords:
+- name: TIME_QBI
+  levels: {level1: all, level2: all}
+  type: str
+  format: isot
+  comment: Packet time of the quaternion parameters
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: AEULRBRX
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Euler Angle Sun ref to S/C body frame X comp.
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: AEULRBRY
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Euler Angle Sun ref to S/C body frame Y comp.
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: AEULRBRZ
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Euler Angle Sun ref to S/C body frame Z comp.
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: ACG_ROLL
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Roll profile commanded angle from solar north
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: OPHASE
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Orbital phase
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: SAT_ROT
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[deg] Satellite roll angle: M_TAT_ACS_SC_ROLL'
+  notes: '[TBC] Copied from old keyword excel sheet'

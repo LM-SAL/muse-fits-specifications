@@ -1,8 +1,9 @@
 """
 Load the packaged MUSE FITS keyword specification.
 
-The specification is ``specs/keywords.yml`` (:data:`KEYWORDS_PATH`), generated from the
-mission keyword sheet ``specs/keywords.csv`` (:data:`SHEET_PATH`) by
+The specification is the YAML in ``specs/keywords/`` (:data:`KEYWORDS_PATH`), one file
+per sheet section in the order ``_sections.yml`` lists, generated from the mission
+keyword sheet ``specs/keywords.csv`` (:data:`SHEET_PATH`) by
 :mod:`muse_fits_specifications.sheet`, which documents the sheet's rules. Each keyword
 lists the levels whose files carry it: every file of the level (``all``), or only the CI
 or SG camera files. A keyword is never optional. Each level's
@@ -45,11 +46,13 @@ The packaged keyword sheet, e.g. ``SHEET_PATH.read_text(encoding="utf-8-sig")`` 
 raw CSV.
 """
 
-KEYWORDS = "keywords.yml"
+KEYWORDS = "keywords"
 KEYWORDS_PATH = files("muse_fits_specifications") / "specs" / KEYWORDS
 """
-The packaged YAML generated from the sheet, which the loader reads.
+The packaged directory of YAML generated from the sheet, which the loader reads.
 """
+
+SECTIONS = "_sections.yml"
 
 _META_FIELDS = ("spec", "spec_version", "title", "source_document")
 
@@ -111,7 +114,8 @@ def load_sheet() -> tuple[tuple[Mapping[str, str], KeywordSpec], ...]:
     ``"SG"``; it is empty for a row parked in no level.
     """
     rows = []
-    for section in yaml.safe_load(KEYWORDS_PATH.read_text(encoding="utf-8")):
+    for name in yaml.safe_load((KEYWORDS_PATH / SECTIONS).read_text(encoding="utf-8")):
+        section = yaml.safe_load((KEYWORDS_PATH / name).read_text(encoding="utf-8"))
         for entry in section["keywords"]:
             levels = MappingProxyType(entry.pop("levels"))
             if "values" in entry:
@@ -133,7 +137,7 @@ def _collect(
         marker = levels.get(level)
         if family is None and marker in FAMILIES:
             msg = (
-                f"{KEYWORDS}: {kw.name or 'an unassigned ISP field'} is {marker}-only in {level}, "
+                f"{KEYWORDS}/: {kw.name or 'an unassigned ISP field'} is {marker}-only in {level}, "
                 f"but specs/{level}/_meta.toml does not set per_camera = true"
             )
             raise SpecDefinitionError(msg)
@@ -142,12 +146,12 @@ def _collect(
         if not kw.name:
             unassigned.append(kw)
         elif kw.name in keywords:
-            msg = f"{KEYWORDS}: {kw.name} is listed twice for {level}"
+            msg = f"{KEYWORDS}/: {kw.name} is listed twice for {level}"
             raise SpecDefinitionError(msg)
         else:
             keywords[kw.name] = kw
     if not keywords:
-        msg = f"{KEYWORDS}: no keywords marked for {level}"
+        msg = f"{KEYWORDS}/: no keywords marked for {level}"
         raise SpecDefinitionError(msg)
     return keywords, tuple(unassigned)
 

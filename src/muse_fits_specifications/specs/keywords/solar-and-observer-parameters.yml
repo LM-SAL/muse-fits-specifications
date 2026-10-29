@@ -1,0 +1,70 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Solar and observer parameters
+keywords:
+- name: RSUN_OBS
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[arcsec] Apparent radius of the Sun'
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: DSUN_OBS
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[m] Distance from MUSE to Sun center'
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: OBS_VR
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[m/s] Speed of observer in radial direction'
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: GEIX_OBS
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[m] Geocentric Equatorial Inertial x'
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: GEIY_OBS
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[m] Geocentric Equatorial Inertial y'
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: GEIZ_OBS
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[m] Geocentric Equatorial Inertial z'
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: HEIX_OBS
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[m] Heliocentric Equatorial Inertial x'
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: HEIY_OBS
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[m] Heliocentric Equatorial Inertial y'
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: HEIZ_OBS
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[m] Heliocentric Equatorial Inertial z'
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: HLZ
+  levels: {level1: all, level2: all}
+  type: int
+  comment: High Latitude Flag
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: SAA
+  levels: {level1: all, level2: all}
+  type: int
+  comment: South Atlantic Anomaly Flag
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: BTYPE
+  levels: {level1: all, level2: all}
+  type: str
+  values: [Intensity]
+  comment: Data type
+  notes: '[TBC] Copied from old keyword excel sheet'
+- name: BUNIT
+  levels: {level1: all, level2: all}
+  type: str
+  values: [Corrected DN]
+  comment: Data units
+  notes: '[TBC] Copied from old keyword excel sheet'

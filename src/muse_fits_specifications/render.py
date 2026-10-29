@@ -1,8 +1,8 @@
 """
 Render the packaged specs as reStructuredText reference pages.
 
-Runs at docs build time and reads ``keywords.yml``, so the pages cannot drift from the
-keyword sheet.
+Runs at docs build time and reads the YAML in ``specs/keywords/``, so the pages cannot
+drift from the keyword sheet.
 """
 
 from __future__ import annotations
@@ -14,7 +14,6 @@ from typing import TYPE_CHECKING
 
 from .spec import (
     KEYWORDS,
-    KEYWORDS_PATH,
     LEVELS,
     SHEET,
     SHEET_PATH,
@@ -169,9 +168,9 @@ def render_sheet(rows: Sequence[tuple[Mapping[str, str], KeywordSpec]]) -> str:
     """
     lines = [
         *_heading("Keywords", "="),
-        f":download:`Download the keyword sheet <{SHEET}>` or :download:`the YAML generated from it <{KEYWORDS}>`.",
+        f":download:`Download the keyword sheet <{SHEET}>`.",
         "",
-        f"Every row of ``specs/{SHEET}`` in sheet order, as ``specs/{KEYWORDS}`` records it.",
+        f"Every row of ``specs/{SHEET}`` in sheet order, as the YAML in ``specs/{KEYWORDS}/`` records it, one file per section.",
         "A level column holds X when every file of the level carries the card, and CI or SG when only that camera type's files do.",
         "A row without a keyword is an ISP field not yet assigned one; a row without a level is parked and not validated.",
         "",
@@ -205,8 +204,8 @@ def render_sheet(rows: Sequence[tuple[Mapping[str, str], KeywordSpec]]) -> str:
 
 def main(argv: list[str]) -> int:
     """
-    Write the sheet, its YAML, ``keywords.rst`` and one page per :func:`level_pages`
-    entry into ``argv[0]``.
+    Write the sheet, ``keywords.rst`` and one page per :func:`level_pages` entry into
+    ``argv[0]``.
 
     Level pages left over from a level that is no longer defined are removed.
     """
@@ -217,7 +216,6 @@ def main(argv: list[str]) -> int:
     for stale in out.glob("level*.rst"):
         stale.unlink()
     (out / SHEET).write_bytes(SHEET_PATH.read_bytes())
-    (out / KEYWORDS).write_bytes(KEYWORDS_PATH.read_bytes())
     (out / "keywords.rst").write_text(render_sheet(load_sheet()))
     for docname, spec in level_pages():
         (out / f"{docname}.rst").write_text(render_spec(spec))

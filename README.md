@@ -3,7 +3,7 @@
 Machine-readable MUSE FITS keyword specifications and header validation.
 
 The mission keyword sheet, kept in `src/muse_fits_specifications/specs/keywords.csv`, is the source of truth for the mission's FITS keywords; each level's `_meta.toml` adds the spec name, version, title, source document and HDU layout.
-`python -m muse_fits_specifications.sheet` converts the sheet into `specs/keywords.yml`, which the loader, the header validator, and the generated keyword reference docs all read, so they cannot drift apart.
+`python -m muse_fits_specifications.sheet` converts the sheet into `specs/keywords/`, one YAML file per sheet section in the order `_sections.yml` lists, which the loader, the header validator, and the generated keyword reference docs all read, so they cannot drift apart.
 To update the spec, export the sheet over `keywords.csv`, run that command, review the YAML's `git diff`, and commit both files: the converter rejects a malformed row with its row number, and the pre-commit hook and the tests reject a stale YAML.
 `muse_fits_specifications.SHEET_PATH` and `KEYWORDS_PATH` point at the installed copies for reading them directly.
 

@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import csv
 import io
+import shutil
 from dataclasses import replace
 
 import pytest
@@ -25,7 +26,7 @@ from muse_fits_specifications import (
     validate,
 )
 from muse_fits_specifications.render import level_pages, main, render_sheet, render_spec
-from muse_fits_specifications.sheet import _LIBRARY_OWNED, check, convert
+from muse_fits_specifications.sheet import _LIBRARY_OWNED, check, convert, dump, section_file, write
 from muse_fits_specifications.spec import _collect, _meta, _parse_meta, defined_levels
 
 SHEET_HEADER = "FITS KW,Type,ISP,L0,L1,L2,L3,Lower Limit,Upper Limit,FITS Comment,Comment,ISP mnemonic"
@@ -72,8 +73,50 @@ def test_every_level_loads_from_the_yaml():
 
 def test_packaged_yaml_matches_the_packaged_sheet():
     assert SHEET_PATH.read_text(encoding="utf-8-sig").startswith("FITS KW,Type,")
-    assert KEYWORDS_PATH.read_text(encoding="utf-8").startswith("# Generated from keywords.csv")
+    assert (KEYWORDS_PATH / "_sections.yml").read_text(encoding="utf-8").startswith("# Generated from keywords.csv")
     assert check() == 0
+
+
+def test_yaml_is_one_file_per_section_in_sheet_order(tmp_path):
+    sections = convert(
+        [
+            SHEET_HEADER,
+            _line("XTENSION", "str"),
+            "###,Exposure and timing,,,,,,,,,,",
+            _line("EXPTIME", "float"),
+            "###,World Coordinate System (WCS),,,,,,,,,,",
+            _line("CTYPE1", "str"),
+            "###,Empty,,,,,,,,,,",
+        ]
+    )
+    files = dump(sections)
+    assert files["_sections.yml"].splitlines()[1:] == [
+        "- untitled.yml",
+        "- exposure-and-timing.yml",
+        "- world-coordinate-system-wcs.yml",
+    ]
+    assert files["exposure-and-timing.yml"].splitlines()[1:3] == ["section: Exposure and timing", "keywords:"]
+    (tmp_path / "removed-section.yml").write_text("stale")
+    (tmp_path / "notes.txt").write_text("kept")
+    write(tmp_path, files)
+    assert sorted(path.name for path in tmp_path.iterdir()) == sorted([*files, "notes.txt"])
+    assert section_file("") == "untitled.yml"
+
+
+def test_sections_whose_titles_give_one_file_name_are_rejected():
+    with pytest.raises(SpecDefinitionError, match="row 5: section 'Exposure and Timing' has the same file name"):
+        convert(
+            [
+                SHEET_HEADER,
+                "###,Exposure and timing,,,,,,,,,,",
+                _line("A"),
+                "###,Other,,,,,,,,,,",  # empty, so dropped
+                "###,Exposure and Timing,,,,,,,,,,",
+                _line("B"),
+            ]
+        )
+    with pytest.raises(SpecDefinitionError, match="the rows above the first section row"):
+        convert([SHEET_HEADER, _line("A"), "###,Untitled,,,,,,,,,,", _line("B")])
 
 
 def test_levels_whose_ci_and_sg_files_differ_load_per_camera_type():
@@ -391,16 +434,15 @@ def test_render_sheet_has_a_column_per_level():
     assert "   * - L0\n     - L1\n     - L2\n     - L3\n     - Keyword" in page
     assert "   * - X\n     - SG\n     -\n     -\n     - KW\n     - int\n     - 0 to 9\n" in page
     assert "   * -\n     -\n     -\n     -\n     - PARKED\n" in page
-    assert ":download:`the YAML generated from it <keywords.yml>`" in page
+    assert ":download:`Download the keyword sheet <keywords.csv>`." in page
 
 
-def test_main_writes_the_sheet_its_yaml_and_one_page_per_level_and_camera_type(tmp_path):
+def test_main_writes_the_sheet_and_one_page_per_level_and_camera_type(tmp_path):
     (tmp_path / "level9.rst").write_text("stale page from a level that is no longer defined")
     assert main([str(tmp_path)]) == 0
     assert sorted(p.name for p in tmp_path.iterdir()) == [
         "keywords.csv",
         "keywords.rst",
-        "keywords.yml",
         "level0.rst",
         "level1-ci.rst",
         "level1-sg.rst",
@@ -411,10 +453,16 @@ def test_main_writes_the_sheet_its_yaml_and_one_page_per_level_and_camera_type(t
 
 
 def test_check_rejects_a_stale_yaml_and_a_marked_but_undefined_level(monkeypatch, tmp_path):
-    stale = tmp_path / "keywords.yml"
-    stale.write_text(KEYWORDS_PATH.read_text(encoding="utf-8").replace("XTENSION", "XTENSIO", 1))
-    monkeypatch.setattr("muse_fits_specifications.sheet.KEYWORDS_PATH", stale)
-    with pytest.raises(SpecDefinitionError, match="does not match"):
+    copy = tmp_path / "keywords"
+    shutil.copytree(str(KEYWORDS_PATH), copy)
+    monkeypatch.setattr("muse_fits_specifications.sheet.KEYWORDS_PATH", copy)
+    untitled = copy / "untitled.yml"
+    untitled.write_text(untitled.read_text(encoding="utf-8").replace("XTENSION", "XTENSIO", 1), encoding="utf-8")
+    with pytest.raises(SpecDefinitionError, match=r"does not match specs/keywords.csv \(untitled.yml\)"):
+        check()
+    shutil.copy(str(KEYWORDS_PATH / "untitled.yml"), untitled)
+    (copy / "old-section.yml").write_text("stale")
+    with pytest.raises(SpecDefinitionError, match=r"\(old-section.yml\)"):
         check()
     monkeypatch.undo()
     monkeypatch.setattr("muse_fits_specifications.sheet.defined_levels", lambda: ("level0", "level1", "level2"))

@@ -8,12 +8,12 @@ Provenance
 
     "MUSE FITS Keyword Master" spreadsheet  (exported as CSV)
         ->  src/muse_fits_specifications/specs/keywords.csv
-        ->  src/muse_fits_specifications/specs/keywords.yml  (python -m muse_fits_specifications.sheet)
+        ->  src/muse_fits_specifications/specs/keywords/*.yml  (python -m muse_fits_specifications.sheet)
         ->  loader, header validator and reference pages
 
 The keyword sheet is the master source: the team edits the spreadsheet and exports it over ``keywords.csv``.
-``python -m muse_fits_specifications.sheet`` converts the export into ``keywords.yml``, which the loader, the header validator and the generated reference pages all read, so they cannot drift apart.
-Both files are committed: the YAML diff shows what an export changed, one keyword per block, however the spreadsheet ordered or quoted the CSV.
+``python -m muse_fits_specifications.sheet`` converts the export into ``specs/keywords/``, one YAML file per sheet section, which the loader, the header validator and the generated reference pages all read, so they cannot drift apart.
+All of it is committed: the YAML diff shows which topics an export changed, one keyword per block, however the spreadsheet ordered or quoted the CSV.
 The :doc:`keywords` page shows the whole sheet with a column per level.
 An earlier DKIST-style set of per-section YAML files, bootstrapped from the xlsx on 2026-08-18, was replaced by the sheet on 2026-09-22.
 
@@ -21,8 +21,9 @@ Layout
 ------
 
 - ``specs/keywords.csv``: the sheet export, one row per keyword; installed, it is ``muse_fits_specifications.SHEET_PATH``.
-- ``specs/keywords.yml``: generated from the sheet, never edited by hand; installed, it is ``muse_fits_specifications.KEYWORDS_PATH``.
-  It lists the sheet's sections in order, each with its keywords.
+- ``specs/keywords/``: generated from the sheet, never edited by hand; installed, it is ``muse_fits_specifications.KEYWORDS_PATH``.
+  Each section of the sheet is one file named after its title, such as ``exposure-and-timing.yml`` (``untitled.yml`` for the rows above the first section row), and ``_sections.yml`` lists the files in sheet order, so the sheet sets the order.
+  Renaming a section renames its file; two titles that give one file name are rejected.
   A keyword records the levels whose files carry it (``all``, ``CI`` or ``SG``), its type, its range or allowed values, its comment, notes and ISP mnemonic, and whether the FITS library owns it.
 - ``specs/<level>/_meta.toml``: what the sheet lacks: spec name, version, title, source document and HDU layout.
   ``spec_version`` must be a quoted string, such as ``"0.1"``; the loader rejects a bare number.
@@ -79,7 +80,7 @@ Blank separator lines are allowed; quote comments containing commas when exporti
 
 Sheet typos fail loudly: the converter raises ``SpecDefinitionError`` with the row number for malformed CSV, an illegal keyword, an unknown ``Type``, a limit without a ``Type``, an unparsable or non-finite limit, a lower limit above the upper one, a limit or value outside a sized integer's range, an upper limit beside allowed values, an unknown level marker, or a keyword listed twice for one level and camera type.
 A malformed ``_meta.toml`` raises the same error, naming the file and field.
-``python -m muse_fits_specifications`` runs every check: it fails when ``keywords.yml`` is not what the sheet converts to, when the sheet marks a level that has no ``_meta.toml``, and when a level fails to load.
+``python -m muse_fits_specifications`` runs every check: it fails when ``specs/keywords/`` is not what the sheet converts to, file by file, when the sheet marks a level that has no ``_meta.toml``, and when a level fails to load.
 Pre-commit runs it whenever the sheet, the YAML, a ``_meta.toml`` or the converter changes, and the tests run it too.
 
 Updating the Sheet
@@ -87,9 +88,9 @@ Updating the Sheet
 
 1. Export the spreadsheet as CSV over ``src/muse_fits_specifications/specs/keywords.csv``.
    ``.gitattributes`` normalizes the file's line endings, so an export from a different tool does not rewrite every line.
-2. Run ``python -m muse_fits_specifications.sheet`` to regenerate ``keywords.yml``.
+2. Run ``python -m muse_fits_specifications.sheet`` to regenerate ``specs/keywords/``; it also deletes the files of sections that are gone.
    A sheet error stops it with the row number: fix the row in the spreadsheet and export again.
-3. Review ``git diff src/muse_fits_specifications/specs/keywords.yml``, which shows what the export changed.
+3. Review ``git diff src/muse_fits_specifications/specs/keywords/``, which shows what the export changed, topic by topic.
 4. Bump ``spec_version`` in each level's ``_meta.toml``, run ``pytest --pyargs muse_fits_specifications`` (the astropy round-trip test proves every mission keyword survives a compressed write and read), build the docs (``tox -e build_docs``), and commit the CSV, the YAML and the version bumps together.
 
 Library-owned Cards

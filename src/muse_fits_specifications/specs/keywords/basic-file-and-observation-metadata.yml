@@ -1,0 +1,88 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Basic file and observation metadata
+keywords:
+- name: EXTNAME
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: str
+  values: [COMPRESSED_IMAGE]
+  comment: Name of this extension
+  notes: created by astropy fits
+  library_owned: true
+- name: BZERO
+  levels: {level0: all}
+  type: float
+  comment: Zero point in FITS scaling
+  notes: created by astropy fits
+  library_owned: true
+- name: BSCALE
+  levels: {level0: all}
+  type: float
+  comment: Linear factor in FITS scaling
+  notes: created by astropy fits
+  library_owned: true
+- name: FILENAME
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: str
+  comment: Filename of the FITS file
+- name: SOLARNET
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: float
+  comment: Fully SOLARNET-compliant=1.0; part=0.5; non=0
+- name: OBS_HDU
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: bool
+  comment: HDU is an observational HDU (1) or not (0)
+- name: ORIGIN
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: str
+  comment: Organisation responsible for creating the FITS
+- name: TELESCOP
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: str
+  values: [MUSE]
+  comment: Telescope/Sensor name
+- name: BLD_VERS
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: str
+  comment: Build version
+- name: LEVEL
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: float
+  comment: Data level
+- name: DATE
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: str
+  format: isot
+  comment: '[ISO] Date_time of processing'
+- name: DATE-OBS
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: str
+  format: isot
+  comment: '[ISO] Date when observation started'
+  notes: Same as DATE-BEG? IRIS legacy?
+- name: DATE-BEG
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: str
+  format: isot
+  comment: '[ISO] Start time of data'
+- name: T_OBS
+  levels: {level0: all}
+  type: str
+  format: isot
+  comment: '[ISO] Observation time'
+  notes: What is this?
+- name: IMGFPT
+  levels: {level0: all}
+  type: str
+  format: isot
+  comment: '[ISO] Telemetry First Packet Time'
+- name: STARTOBS
+  levels: {level2: all, level3: all}
+  type: str
+  format: isot
+  comment: '[ISO] Start of OBS; first exposure'
+- name: ENDOBS
+  levels: {level2: all, level3: all}
+  type: str
+  format: isot
+  comment: '[ISO] End of OBS; end of last exposure'
