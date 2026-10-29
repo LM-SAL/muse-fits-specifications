@@ -39,8 +39,10 @@ templates_path = ["_templates"]
 autodoc_member_order = "bysource"
 
 # Regenerate the keyword reference pages from the packaged specs
+from muse_fits_specifications.render import level_pages
 from muse_fits_specifications.render import main as _render_specs
-from muse_fits_specifications.spec import defined_levels, load_spec
+from muse_fits_specifications.render import page_title
+from muse_fits_specifications.spec import load_spec
 
 _render_specs([str(DOCS)])
 html_theme_options["announcement"] = (
@@ -53,7 +55,7 @@ html_context = {
     "navbar_links": [
         ("Format", "format"),
         ("Keywords", "keywords"),
-        ("Levels", [(load_spec(level).title, level) for level in defined_levels()]),
+        ("Levels", [(page_title(spec), docname) for docname, spec in level_pages()]),
         ("API reference", "reference"),
         ("Release History", "changelog"),
     ],

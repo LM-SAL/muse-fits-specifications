@@ -1,10 +1,10 @@
 """
-``python -m muse_fits_specifications`` checks the packaged keyword sheet and every
-defined level.
+``python -m muse_fits_specifications`` checks the packaged keyword sheet, its generated
+YAML and every defined level.
 """
 
 import sys
 
-from .spec import main
+from .sheet import check
 
-sys.exit(main())
+sys.exit(check())

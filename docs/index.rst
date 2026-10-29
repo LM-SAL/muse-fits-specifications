@@ -3,7 +3,7 @@ MUSE FITS Specifications
 
 Machine-readable MUSE FITS keyword specifications and header validation, modeled on the DKIST Data Center's ``dkist-fits-specifications`` and ``dkist-header-validator``.
 
-The mission keyword sheet, ``src/muse_fits_specifications/specs/keywords.csv``, is the source of truth for the keywords; each level's ``_meta.toml`` adds its name, version and HDU layout.
+The mission keyword sheet, ``src/muse_fits_specifications/specs/keywords.csv``, is the source of truth for the keywords; it is converted into ``keywords.yml``, and each level's ``_meta.toml`` adds its name, version and HDU layout.
 The loader, the header validator, and the keyword reference pages below all read the same files; the reference pages are regenerated on every docs build.
 
 .. toctree::
@@ -29,7 +29,7 @@ Astropy is needed for this example to read a FITS file:
     python -m pip install . astropy
 
 Replace ``observation_level0.fits`` below with the path to your Level 0 file.
-For a Level 1 file, use ``load_spec("level1")``.
+For a Level 1 file, use ``load_spec("level1", "SG")`` or ``load_spec("level1", "CI")``: those levels differ by camera type.
 The example checks the compressed image extension's header and prints every validation error:
 
 .. code-block:: python
@@ -50,29 +50,29 @@ For example, a missing frame sequence number produces:
 
 .. code-block:: text
 
-    missing keyword MSQ_FSN
+    missing keyword FSN
 
 Use ``ensure_valid(header, spec)`` instead of ``validate`` if you want a ``HeaderValidationError`` on failure.
-The checks cover keyword presence, types, and numeric limits defined in the current draft.
+The checks cover keyword presence, types, numeric limits and allowed values defined in the current draft.
 Unassigned fields are not checked; a passing result does not imply the specification is complete.
 
 ``checksum=True`` separately asks Astropy to verify existing ``CHECKSUM`` and ``DATASUM`` cards.
 Checksum failures are reported as Astropy warnings, not entries in ``errors``; checksum checking is off by default.
 
 The validator accepts any mapping, so astropy is not a dependency of this package.
-Keywords not in the spec are ignored; sheet typos fail loudly at ``load_spec`` time.
+Keywords not in the spec are ignored; sheet typos fail loudly when the sheet is converted and in the check that pre-commit and the tests run.
 
 Reading the Sheet
 -----------------
 
-The installed package carries the sheet itself, and ``SHEET_PATH`` points at it:
+The installed package carries the sheet and the YAML generated from it; ``SHEET_PATH`` and ``KEYWORDS_PATH`` point at them.
+Tools outside Python can read ``keywords.yml`` directly:
 
 .. code-block:: python
 
-    import csv
-    from muse_fits_specifications import SHEET_PATH
+    import yaml
+    from muse_fits_specifications import KEYWORDS_PATH
 
-    with SHEET_PATH.open(encoding="utf-8-sig") as sheet:
-        rows = list(csv.DictReader(sheet))
+    sections = yaml.safe_load(KEYWORDS_PATH.read_text(encoding="utf-8"))
 
-The :doc:`keywords` page shows the same file and offers it for download.
+The :doc:`keywords` page shows the same rows and offers both files for download.

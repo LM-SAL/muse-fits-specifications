@@ -5,6 +5,9 @@ API reference
    :members:
    :undoc-members:
 
+.. automodule:: muse_fits_specifications.sheet
+   :members:
+
 .. automodule:: muse_fits_specifications.validation
    :members:
 
