@@ -8,7 +8,7 @@ keywords:
   maximum: 65535
   mnemonic: IMAGE_CFG_CROP_CFG_START_ROW
   comment: Start row for readout window
-  notes: Correct FITS comment?
+  notes: Correct FITS comment? Is this x-axis on detector?
 - name: IMCREDRW
   levels: {level0: all, level1: all}
   type: int
@@ -16,7 +16,7 @@ keywords:
   maximum: 65535
   mnemonic: IMAGE_CFG_CROP_CFG_END_ROW
   comment: End row for readout window
-  notes: Correct FITS comment?
+  notes: Correct FITS comment? Is this x-axis on detector?
 - name: IMCRSTCL
   levels: {level0: all, level1: all}
   type: int
@@ -24,7 +24,7 @@ keywords:
   maximum: 65535
   mnemonic: IMAGE_CFG_CROP_CFG_START_COLUMN
   comment: Start column for readout window
-  notes: Correct FITS comment?
+  notes: Correct FITS comment? Is this y-axis on detector?
 - name: IMCREDCL
   levels: {level0: all, level1: all}
   type: int
@@ -32,4 +32,4 @@ keywords:
   maximum: 65535
   mnemonic: IMAGE_CFG_CROP_CFG_END_COLUMN
   comment: End column for readout window
-  notes: Correct FITS comment?
+  notes: Correct FITS comment? Is this y-axis on detector?

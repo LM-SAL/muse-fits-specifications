@@ -26,7 +26,7 @@ keywords:
   comment: FRM list number of repeats
   notes: Correct FITS comment?
 - name: SFRLCRDX
-  levels: {level0: all, level1: all, level2: all}
+  levels: {level0: all, level1: all}
   type: int
   minimum: 0
   maximum: 65535
@@ -34,7 +34,7 @@ keywords:
   comment: FRM list current entry index
   notes: Correct FITS comment?
 - name: SFRLNMDX
-  levels: {level0: all, level1: all, level2: all}
+  levels: {level0: all, level1: all}
   type: int
   minimum: 0
   maximum: 65535

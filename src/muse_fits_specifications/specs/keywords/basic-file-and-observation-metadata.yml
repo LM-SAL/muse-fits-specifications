@@ -8,6 +8,10 @@ keywords:
   comment: Name of this extension
   notes: created by astropy fits
   library_owned: true
+- name: OBS_HDU
+  levels: {level0: all, level1: all, level2: all, level3: all}
+  type: bool
+  comment: HDU is an observational HDU (1) or not (0)
 - name: BZERO
   levels: {level0: all}
   type: float
@@ -28,10 +32,6 @@ keywords:
   levels: {level0: all, level1: all, level2: all, level3: all}
   type: float
   comment: Fully SOLARNET-compliant=1.0; part=0.5; non=0
-- name: OBS_HDU
-  levels: {level0: all, level1: all, level2: all, level3: all}
-  type: bool
-  comment: HDU is an observational HDU (1) or not (0)
 - name: ORIGIN
   levels: {level0: all, level1: all, level2: all, level3: all}
   type: str
@@ -55,7 +55,7 @@ keywords:
   format: isot
   comment: '[ISO] Date_time of processing'
 - name: DATE-OBS
-  levels: {level0: all, level1: all, level2: all, level3: all}
+  levels: {level0: all, level1: all}
   type: str
   format: isot
   comment: '[ISO] Date when observation started'
@@ -77,12 +77,19 @@ keywords:
   format: isot
   comment: '[ISO] Telemetry First Packet Time'
 - name: STARTOBS
-  levels: {level2: all, level3: all}
+  levels: {level1: all, level2: all, level3: all}
   type: str
   format: isot
   comment: '[ISO] Start of OBS; first exposure'
+  notes: Can this information be in level 1? Would be useful to create OBS directory as in IRIS. See https://gitlab.com/LMSAL_HUB/muse_hub/muse/-/work_items/16
 - name: ENDOBS
-  levels: {level2: all, level3: all}
+  levels: {level1: all, level2: all, level3: all}
   type: str
   format: isot
   comment: '[ISO] End of OBS; end of last exposure'
+  notes: Can this information be in level 1? Would be useful to create OBS directory as in IRIS. See https://gitlab.com/LMSAL_HUB/muse_hub/muse/-/work_items/16
+- name: FULLOBID
+  levels: {level1: all, level2: all, level3: all}
+  type: str
+  comment: Full OBS ID; STARTOBS_OBSID
+  notes: Can this information be in level 1? Would be useful to create OBS directory as in IRIS. See https://gitlab.com/LMSAL_HUB/muse_hub/muse/-/work_items/16

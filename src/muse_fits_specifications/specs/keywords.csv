@@ -39,22 +39,23 @@ ZQUANTIZ,str,,X,X,X,,NO_DITHER,,No dithering during quantization,created by astr
 ###,Basic file and observation metadata,,,,,,,,,,
 ###,,,,,,,,,,,
 EXTNAME,str,,X,X,X,X,COMPRESSED_IMAGE,,Name of this extension,created by astropy fits,
+OBS_HDU,bool,,X,X,X,X,,,HDU is an observational HDU (1) or not (0),,
 BZERO,float64,,X,,,,,,Zero point in FITS scaling,created by astropy fits,
 BSCALE,float64,,X,,,,,,Linear factor in FITS scaling,created by astropy fits,
 FILENAME,str,,X,X,X,X,,,Filename of the FITS file,,
 SOLARNET,float32,,X,X,X,X,,,Fully SOLARNET-compliant=1.0; part=0.5; non=0,,
-OBS_HDU,bool,,X,X,X,X,,,HDU is an observational HDU (1) or not (0),,
 ORIGIN  ,str,,X,X,X,X,,,Organisation responsible for creating the FITS,,
 TELESCOP,str,,X,X,X,X,MUSE,,Telescope/Sensor name,,
 BLD_VERS,str,,X,X,X,X,,,Build version,,
 LEVEL,float32,,X,X,X,X,,,Data level,,
 DATE    ,ISO 8601,,X,X,X,X,,,[ISO] Date_time of processing,,
-DATE-OBS,ISO 8601,,X,X,X,X,,,[ISO] Date when observation started,Same as DATE-BEG? IRIS legacy?,
+DATE-OBS,ISO 8601,,X,X,,,,,[ISO] Date when observation started,Same as DATE-BEG? IRIS legacy?,
 DATE-BEG,ISO 8601,,X,X,X,X,,,[ISO] Start time of data,,
 T_OBS   ,ISO 8601,,X,,,,,,[ISO] Observation time,What is this?,
 IMGFPT  ,ISO 8601,,X,,,,,,[ISO] Telemetry First Packet Time,,
-STARTOBS,ISO 8601,,,,X,X,,,[ISO] Start of OBS; first exposure,,
-ENDOBS,ISO 8601,,,,X,X,,,[ISO] End of OBS; end of last exposure,,
+STARTOBS,ISO 8601,,,X,X,X,,,[ISO] Start of OBS; first exposure,Can this information be in level 1? Would be useful to create OBS directory as in IRIS. See https://gitlab.com/LMSAL_HUB/muse_hub/muse/-/work_items/16,
+ENDOBS,ISO 8601,,,X,X,X,,,[ISO] End of OBS; end of last exposure,Can this information be in level 1? Would be useful to create OBS directory as in IRIS. See https://gitlab.com/LMSAL_HUB/muse_hub/muse/-/work_items/16,
+FULLOBID,str,,,X,X,X,,,Full OBS ID; STARTOBS_OBSID,Can this information be in level 1? Would be useful to create OBS directory as in IRIS. See https://gitlab.com/LMSAL_HUB/muse_hub/muse/-/work_items/16,
 ###,,,,,,,,,,,
 ###,ISP mnemonic,,,,,,,,,,
 ###,,,,,,,,,,,
@@ -252,6 +253,7 @@ IMG_TYPE,str,,,X,X,,LIGHT; DARK; LED; LTC; SPAT; VPAT,,Image type: LIGHT; DARK; 
 SUMSPTRL,int,,,X,X,,,,CCD summing in spectral direction,,
 SUMSPAT,int,,,X,X,,,,CCD summing in spatial direction,,
 ISYSN,int,,,X,X,,,,System Number: CI=0; ...,Redundant with CAMERA? Possible values?,
+SLIT_SEP,float,,,X,X,,,,[pix] Slit separation,"Correct FITS comment? Correct FITS keyword? NEW, can it be added to level 1?",
 ###,,,,,,,,,,,
 ###,Exposure and timing,,,,,,,,,,
 ###,,,,,,,,,,,
@@ -261,9 +263,9 @@ INT_TIME,float,,,,,,,,[sec] CCD integration duration,[TBC] Copied from old keywo
 ###,,,,,,,,,,,
 ###,Observing list table (OBS),,,,,,,,,,
 ###,,,,,,,,,,,
-SOBL_ID,uint32,X,X,X,X,,0,4294967295,OBS list ID,Correct FITS comment?,SEQUENCER_OBS_LIST_ID
-SOBLCRRP,uint16,X,X,X,X,,0,65535,OBS list current repeat index,Correct FITS comment? Correct FITS keyyword?,
-SOBLNMRP,uint16,X,X,X,X,,0,65535,OBS list number of repeats,Correct FITS comment? Correct FITS keyyword?,
+SOBL_ID,uint32,X,X,X,X,,0,4294967295,OBS list ID,Correct FITS comment? Shouldn't this rather be OBSID as in IRIS?  Isn't the maximum = 9 999 999 999 ? See https://gitlab.com/LMSAL_HUB/muse_hub/muse/-/work_items/16,SEQUENCER_OBS_LIST_ID
+SOBLCRRP,uint16,X,X,X,X,,0,65535,OBS list current repeat index,"Correct FITS comment? Correct FITS keyword? NEW, can it be added to level 1?",
+SOBLNMRP,uint16,X,X,X,X,,0,65535,OBS list number of repeats,"Correct FITS comment? Correct FITS keyword? NEW, can it be added to level 1?",
 SOBLCRDX,uint16,X,X,X,X,,0,65535,OBS list current entry index,Correct FITS comment?,SEQUENCER_OBS_LIST_STAT_CURRENT_OL_INDX
 SOBLNMDX,uint16,X,X,X,X,,0,65535,OBS list number of entries,Correct FITS comment?,SEQUENCER_OBS_LIST_STAT_NUM_OL_INDX
 ###,,,,,,,,,,,
@@ -272,22 +274,22 @@ SOBLNMDX,uint16,X,X,X,X,,0,65535,OBS list number of entries,Correct FITS comment
 SFRL_ID,uint32,X,X,X,X,,0,4294967295,FRM list ID,Correct FITS comment?,SEQUENCER_FRAME_LIST_ID
 SFRLCRRP,uint16,X,X,X,X,,0,65535,FRM list current repeat index,Correct FITS comment?,SEQUENCER_FRAME_LIST_STAT_CURRENT_FL_REPEAT_CNT
 SFRLNMRP,uint16,X,X,X,X,,0,65535,FRM list number of repeats,Correct FITS comment?,SEQUENCER_FRAME_LIST_STAT_NUM_FL_REPEATS
-SFRLCRDX,uint16,X,X,X,X,,0,65535,FRM list current entry index,Correct FITS comment?,SEQUENCER_FRAME_LIST_STAT_CURRENT_FL_INDX
-SFRLNMDX,uint16,X,X,X,X,,0,65535,FRM list number of entries,Correct FITS comment?,SEQUENCER_FRAME_LIST_STAT_NUM_FL_INDX
+SFRLCRDX,uint16,X,X,X,,,0,65535,FRM list current entry index,Correct FITS comment?,SEQUENCER_FRAME_LIST_STAT_CURRENT_FL_INDX
+SFRLNMDX,uint16,X,X,X,,,0,65535,FRM list number of entries,Correct FITS comment?,SEQUENCER_FRAME_LIST_STAT_NUM_FL_INDX
 ###,,,,,,,,,,,
 ###,Frame definition block table (FDB),,,,,,,,,,
 ###,,,,,,,,,,,
-S_CI__FD,uint32,X,X,X,,,0,4294967295,FDB ID for CI,Correct FITS comment? Is this zero of camera is not CI?,SEQUENCER_CI_FDB_ID
-SS108_FD,uint32,X,X,X,,,0,4294967295,FDB ID for SG108,Correct FITS comment? Is this zero of camera is not SG108?,SEQUENCER_SG_CCD1_FDB_ID
-SS171_FD,uint32,X,X,X,,,0,4294967295,FDB ID for SG171,Correct FITS comment? Is this zero of camera is not SG171?,SEQUENCER_SG_CCD2_FDB_ID
-SS284_FD,uint32,X,X,X,,,0,4294967295,FDB ID for SG284,Correct FITS comment? Is this zero of camera is not SG284?,SEQUENCER_SG_CCD3_FDB_ID
+S_CI__FD,uint32,X,X,X,,,0,4294967295,FDB ID for CI,Correct FITS comment? Is this zero if camera is not CI? There is probably one underscore too many?,SEQUENCER_CI_FDB_ID
+SS108_FD,uint32,X,X,X,,,0,4294967295,FDB ID for SG108,Correct FITS comment? Is this zero if camera is not SG108?,SEQUENCER_SG_CCD1_FDB_ID
+SS171_FD,uint32,X,X,X,,,0,4294967295,FDB ID for SG171,Correct FITS comment? Is this zero if camera is not SG171?,SEQUENCER_SG_CCD2_FDB_ID
+SS284_FD,uint32,X,X,X,,,0,4294967295,FDB ID for SG284,Correct FITS comment? Is this zero if camera is not SG284?,SEQUENCER_SG_CCD3_FDB_ID
 ###,,,,,,,,,,,
 ###,Camera readout specification,,,,,,,,,,
 ###,,,,,,,,,,,
-IMCRSTRW,uint16,X,X,X,,,0,65535,Start row for readout window,Correct FITS comment?,IMAGE_CFG_CROP_CFG_START_ROW
-IMCREDRW,uint16,X,X,X,,,0,65535,End row for readout window,Correct FITS comment?,IMAGE_CFG_CROP_CFG_END_ROW
-IMCRSTCL,uint16,X,X,X,,,0,65535,Start column for readout window,Correct FITS comment?,IMAGE_CFG_CROP_CFG_START_COLUMN
-IMCREDCL,uint16,X,X,X,,,0,65535,End column for readout window,Correct FITS comment?,IMAGE_CFG_CROP_CFG_END_COLUMN
+IMCRSTRW,uint16,X,X,X,,,0,65535,Start row for readout window,Correct FITS comment? Is this x-axis on detector?,IMAGE_CFG_CROP_CFG_START_ROW
+IMCREDRW,uint16,X,X,X,,,0,65535,End row for readout window,Correct FITS comment? Is this x-axis on detector?,IMAGE_CFG_CROP_CFG_END_ROW
+IMCRSTCL,uint16,X,X,X,,,0,65535,Start column for readout window,Correct FITS comment? Is this y-axis on detector?,IMAGE_CFG_CROP_CFG_START_COLUMN
+IMCREDCL,uint16,X,X,X,,,0,65535,End column for readout window,Correct FITS comment? Is this y-axis on detector?,IMAGE_CFG_CROP_CFG_END_COLUMN
 ###,,,,,,,,,,,
 ###,Spacecraft attitude and orbital parameters,,,,,,,,,,
 ###,,,,,,,,,,,

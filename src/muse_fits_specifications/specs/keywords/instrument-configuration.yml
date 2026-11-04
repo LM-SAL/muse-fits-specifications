@@ -35,3 +35,8 @@ keywords:
   type: int
   comment: 'System Number: CI=0; ...'
   notes: Redundant with CAMERA? Possible values?
+- name: SLIT_SEP
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[pix] Slit separation'
+  notes: Correct FITS comment? Correct FITS keyword? NEW, can it be added to level 1?
