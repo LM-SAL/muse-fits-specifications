@@ -4,9 +4,7 @@ Validate FITS headers against a loaded MUSE specification.
 Keywords not in the spec are ignored: FITS headers legitimately carry history and other
 cards the mission spec does not govern. Library-owned cards
 (``KeywordSpec.library_owned``) are skipped too: astropy hides or rewrites them in
-``hdul[1].header``. Astropy consumes the compression cards through the decompressor;
-checking existing checksum cards requires ``fits.open(..., checksum=True)`` and is
-separate from this header validator.
+``hdul[1].header``.
 """
 
 from __future__ import annotations
@@ -44,10 +42,15 @@ def _check_type(kw: KeywordSpec, value: object) -> str | None:
 
 
 def _check_value(kw: KeywordSpec, value: object) -> str | None:
+    item = getattr(value, "item", None)
+    if getattr(value, "ndim", None) == 0 and callable(item):
+        value = item()  # a numpy scalar, as a header built from arrays holds, checks as its Python value
     problem = _check_type(kw, value)
     if problem is not None:
         return problem
-    # Limits only exist on numeric keywords (the loader enforces it), so the
+    if kw.values is not None and value not in kw.values:
+        return f"{kw.name} must be one of {list(kw.values)}, got {value!r}"
+    # Limits only exist on numeric keywords (the converter enforces it), so the
     # type check above guarantees a comparable value here.
     if kw.minimum is not None and value < kw.minimum:  # type: ignore[operator]
         return f"{kw.name} must be >= {kw.minimum}, got {value!r}"
@@ -60,9 +63,9 @@ def validate(header: Mapping[str, Any], spec: Spec) -> list[str]:
     """
     Return every way ``header`` violates ``spec``; empty means valid.
 
-    Every keyword of the level must be present with the sheet's type and within its
-    limits, except library-owned cards. Checksum verification is handled separately by
-    the FITS library when explicitly enabled.
+    Every keyword of the level must be present with the sheet's type, within its limits
+    and among its allowed values, except library-owned cards. Checksum verification is
+    handled separately by the FITS library when explicitly enabled.
     """
     errors = []
     for name, kw in spec.keywords.items():

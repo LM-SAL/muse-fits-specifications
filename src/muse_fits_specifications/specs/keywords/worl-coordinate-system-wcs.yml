@@ -1,0 +1,185 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: Worl Coordinate System (WCS)
+keywords:
+- name: WCSAXES
+  levels: {level1: SG, level2: SG}
+  type: int
+  minimum: 1
+  maximum: 999
+  comment: Number of WCS axes
+- name: CTYPE1
+  levels: {level1: all, level2: all}
+  type: str
+  values: [WAVE, HPLN-TAN]
+  comment: Type of coordinate 1
+- name: CNAME1
+  levels: {level1: all, level2: all}
+  type: str
+  values: [Wavelength, Solar X]
+  comment: Name of coordinate 1
+- name: CUNIT1
+  levels: {level1: all, level2: all}
+  type: str
+  values: [Angstrom, arcsec]
+  comment: Physical units of CRVAL and CDELT for coord 1
+- name: CRPIX1
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[pix] Reference point in the image for coord 1'
+- name: CRVAL1
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Value at the reference point of coordinate 1
+- name: CDELT1
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Increment in the coord value along axis 1
+- name: PC1_1
+  levels: {level1: SG, level2: SG}
+  type: float
+  comment: Wavelength dependence on Instrument-X; 1.0
+- name: PC1_1
+  levels: {level1: CI, level2: CI}
+  type: float
+  comment: Solar-X dep. on Instr-X axis; cos(SAT_ROT)
+- name: PC1_2
+  levels: {level1: CI, level2: CI}
+  type: float
+  comment: Solar-X dep. on Instr-Y axis; sin(SAT_ROT)
+- name: PC1_3
+  levels: {level1: SG}
+  type: float
+  comment: Wavelength dep. on slit coord; SLIT_SEP
+- name: PC1_3
+  levels: {level2: CI}
+  type: float
+  comment: Solar-X dep. on Raster axis; stepX/CDELT1
+- name: PC1_4
+  levels: {level2: SG}
+  type: float
+  comment: Wavelength dep. on slit coord; SLIT_SEP
+- name: CTYPE2
+  levels: {level1: all, level2: all}
+  type: str
+  values: [HPLT-TAN]
+  comment: Type of coordinate 2
+- name: CNAME2
+  levels: {level1: all, level2: all}
+  type: str
+  values: [Solar Y]
+  comment: Name of coordinate 2
+- name: CUNIT2
+  levels: {level1: all, level2: all}
+  type: str
+  values: [arcsec]
+  comment: Physical units of CRVAL and CDELT for coord 2
+- name: CRPIX2
+  levels: {level1: all, level2: all}
+  type: float
+  comment: '[pix] Reference point in the image for coord 2'
+- name: CRVAL2
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Value at the reference point of coordinate 2
+- name: CDELT2
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Increment in the coord value along axis 2
+- name: PC2_1
+  levels: {level1: CI, level2: CI}
+  type: float
+  comment: Solar-Y dep. on Instr-X axis; sin(SAT_ROT)
+- name: PC2_2
+  levels: {level1: all, level2: all}
+  type: float
+  comment: Solar-Y dep. on Instr-Y axis; cos(SAT_ROT)
+- name: PC2_3
+  levels: {level1: SG}
+  type: float
+  comment: Solar-Y dep. on Slit; SLIT_SEP*sin(SAT_ROT)
+- name: PC2_3
+  levels: {level2: all}
+  type: float
+  comment: Solar-Y dep. on Raster axis; stepY/CDELT2
+- name: PC2_4
+  levels: {level2: SG}
+  type: float
+  comment: Solar-Y dep. on Slit; SLIT_SEP*sin(SAT_ROT)
+- name: CTYPE3
+  levels: {level1: SG, level2: all}
+  type: str
+  values: [HPLN-TAN, Time]
+  comment: Type of coordinate 3
+- name: CNAME3
+  levels: {level1: SG, level2: all}
+  type: str
+  values: [Solar X, Time]
+  comment: Name of coordinate 3
+- name: CUNIT3
+  levels: {level1: SG, level2: all}
+  type: str
+  values: [arcsec, s]
+  comment: Physical units of CRVAL and CDELT for coord 3
+- name: CRPIX3
+  levels: {level1: SG, level2: all}
+  type: float
+  comment: '[pix] Reference point in the image for coord 3'
+- name: CRVAL3
+  levels: {level1: SG, level2: all}
+  type: float
+  comment: Value at the reference point of coordinate 3
+- name: CDELT3
+  levels: {level1: SG, level2: all}
+  type: float
+  comment: Increment in the coord value along axis 3
+- name: PC3_2
+  levels: {level1: SG}
+  type: float
+  comment: Solar-X dep. on Instr-Y axis; -sin(SAT_ROT)
+- name: PC3_3
+  levels: {level1: SG}
+  type: float
+  comment: Solar-X dep. on Slit; SLIT_SEP*cos(SAT_ROT)
+- name: PC3_3
+  levels: {level2: all}
+  type: float
+  comment: Time dependence on raster-step axis; 1.0
+- name: CTYPE4
+  levels: {level2: SG}
+  type: str
+  values: [HPLN-TAN]
+  comment: Type of coordinate 3
+- name: CNAME4
+  levels: {level2: SG}
+  type: str
+  values: [Solar X]
+  comment: Name of coordinate 3
+- name: CUNIT4
+  levels: {level2: SG}
+  type: str
+  values: [arcsec]
+  comment: Physical units of CRVAL and CDELT for coord 3
+- name: CRPIX4
+  levels: {level2: SG}
+  type: float
+  comment: '[pix] Reference point in the image for coord 3'
+- name: CRVAL4
+  levels: {level2: SG}
+  type: float
+  comment: Value at the reference point of coordinate 3
+- name: CDELT4
+  levels: {level2: SG}
+  type: float
+  comment: Increment in the coord value along axis 3
+- name: PC4_2
+  levels: {level2: SG}
+  type: float
+  comment: Solar-X dep. on Instr-Y axis; -sin(SAT_ROT)
+- name: PC4_3
+  levels: {level2: SG}
+  type: float
+  comment: Solar-X dep. on Raster axis; stepX/CDELT4
+- name: PC4_4
+  levels: {level2: SG}
+  type: float
+  comment: Solar-X dep. on Slit; SLIT_SEP*cos(SAT_ROT)

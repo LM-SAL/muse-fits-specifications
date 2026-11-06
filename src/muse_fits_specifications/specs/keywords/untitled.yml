@@ -1,0 +1,256 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+section: ''
+keywords:
+- name: XTENSION
+  levels: {level0: all, level1: all, level2: all}
+  type: str
+  values: [BINTABLE]
+  comment: binary table extension
+  notes: Assuming L0 and L1 data is written as a compressed in the first extension like for IRIS
+  library_owned: true
+- name: BITPIX
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  values: [8, 16, 32, 64, -32, -64]
+  comment: array data type
+  notes: created by astropy fits
+  library_owned: true
+- name: NAXIS
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 999
+  comment: number of array dimensions
+  notes: created by astropy fits
+  library_owned: true
+- name: NAXIS1
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 1
+  maximum: 4294967295
+  comment: width of table in bytes
+  notes: created by astropy fits
+  library_owned: true
+- name: NAXIS2
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 1
+  maximum: 4294967295
+  comment: number of rows in table
+  notes: created by astropy fits
+  library_owned: true
+- name: PCOUNT
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  comment: number of group parameters
+  notes: created by astropy fits
+  library_owned: true
+- name: GCOUNT
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  comment: number of groups
+  notes: created by astropy fits
+  library_owned: true
+- name: TFIELDS
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 999
+  comment: number of fields in each row
+  notes: created by astropy fits
+  library_owned: true
+- name: TTYPE1
+  levels: {level0: all, level1: all, level2: all}
+  type: str
+  values: [COMPRESSED_DATA]
+  notes: created by astropy fits
+  library_owned: true
+- name: TFORM1
+  levels: {level0: all, level1: all, level2: all}
+  type: str
+  notes: created by astropy fits
+  library_owned: true
+- name: TTYPE2
+  levels: {level1: all, level2: all}
+  type: str
+  values: [GZIP_COMPRESSED_DATA]
+  notes: created by astropy fits
+  library_owned: true
+- name: TFORM2
+  levels: {level1: all, level2: all}
+  type: str
+  notes: created by astropy fits
+  library_owned: true
+- name: TTYPE3
+  levels: {level1: all, level2: all}
+  type: str
+  values: [ZSCALE]
+  notes: created by astropy fits
+  library_owned: true
+- name: TFORM3
+  levels: {level1: all, level2: all}
+  type: str
+  notes: created by astropy fits
+  library_owned: true
+- name: TTYPE4
+  levels: {level1: all, level2: all}
+  type: str
+  values: [ZZERO]
+  notes: created by astropy fits
+  library_owned: true
+- name: TFORM4
+  levels: {level1: all, level2: all}
+  type: str
+  notes: created by astropy fits
+  library_owned: true
+- name: ZIMAGE
+  levels: {level0: all, level1: all, level2: all}
+  type: bool
+  values: [true]
+  comment: extension contains compressed image
+  notes: created by astropy fits
+  library_owned: true
+- name: ZTENSION
+  levels: {level0: all, level1: all, level2: all}
+  type: str
+  comment: Image extension
+  notes: created by astropy fits
+  library_owned: true
+- name: ZBITPIX
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  values: [8, 16, 32, 64, -32, -64]
+  comment: array data type
+  notes: created by astropy fits
+  library_owned: true
+- name: ZNAXIS
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 999
+  comment: number of array dimensions
+  notes: created by astropy fits
+  library_owned: true
+- name: ZNAXIS1
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 1
+  maximum: 4294967295
+  notes: created by astropy fits
+  library_owned: true
+- name: ZNAXIS2
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 1
+  maximum: 4294967295
+  notes: created by astropy fits
+  library_owned: true
+- name: ZNAXIS3
+  levels: {level2: all}
+  type: int
+  minimum: 1
+  maximum: 4294967295
+  notes: created by astropy fits
+  library_owned: true
+- name: ZPCOUNT
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  comment: number of parameters
+  notes: created by astropy fits
+  library_owned: true
+- name: ZGCOUNT
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  comment: number of groups
+  notes: created by astropy fits
+  library_owned: true
+- name: ZTILE1
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 1
+  maximum: 999
+  comment: size of tiles to be compressed
+  notes: created by astropy fits
+  library_owned: true
+- name: ZTILE2
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 1
+  maximum: 999
+  comment: size of tiles to be compressed
+  notes: created by astropy fits
+  library_owned: true
+- name: ZTILE3
+  levels: {level2: all}
+  type: int
+  minimum: 1
+  maximum: 999
+  comment: size of tiles to be compressed
+  notes: created by astropy fits
+  library_owned: true
+- name: ZCMPTYPE
+  levels: {level0: all, level1: all, level2: all}
+  type: str
+  values: [RICE_1]
+  comment: compression algorithm
+  notes: created by astropy fits
+  library_owned: true
+- name: ZNAME1
+  levels: {level0: all, level1: all, level2: all}
+  type: str
+  values: [BLOCKSIZE]
+  comment: compression block size
+  notes: created by astropy fits
+  library_owned: true
+- name: ZVAL1
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 1
+  maximum: 65535
+  comment: pixels per block
+  notes: created by astropy fits
+  library_owned: true
+- name: ZNAME2
+  levels: {level0: all, level1: all, level2: all}
+  type: str
+  values: [BYTEPIX]
+  comment: bytes per pixel (1; 2; 4; or 8)
+  notes: created by astropy fits
+  library_owned: true
+- name: ZVAL2
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  values: [1, 2, 4, 8]
+  comment: bytes per pixel (1; 2; 4; or 8)
+  notes: created by astropy fits
+  library_owned: true
+- name: ZNAME3
+  levels: {level0: all, level1: all, level2: all}
+  type: str
+  values: [NOISEBIT]
+  comment: floating point quantization level
+  notes: created by astropy fits
+  library_owned: true
+- name: ZVAL3
+  levels: {level0: all, level1: all, level2: all}
+  type: int
+  minimum: 0
+  maximum: 65535
+  comment: floating point quantization level
+  notes: created by astropy fits
+  library_owned: true
+- name: ZQUANTIZ
+  levels: {level0: all, level1: all, level2: all}
+  type: str
+  values: [NO_DITHER]
+  comment: No dithering during quantization
+  notes: created by astropy fits
+  library_owned: true

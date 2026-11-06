@@ -1,0 +1,15 @@
+# Generated from keywords.csv by `python -m muse_fits_specifications.sheet`; edit the sheet, not this file.
+- untitled.yml
+- basic-file-and-observation-metadata.yml
+- isp-mnemonic.yml
+- instrument-configuration.yml
+- exposure-and-timing.yml
+- observing-list-table-obs.yml
+- frame-list-table-frm.yml
+- frame-definition-block-table-fdb.yml
+- camera-readout-specification.yml
+- spacecraft-attitude-and-orbital-parameters.yml
+- solar-and-observer-parameters.yml
+- worl-coordinate-system-wcs.yml
+- data-quality-and-statistics.yml
+- checksum.yml
